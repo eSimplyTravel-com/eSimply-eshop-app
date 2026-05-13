@@ -50,22 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCn80uS0cL82TosQca6pSkMY8VFY2nbNvI',
-    appId: '1:566038591872:android:2602567ce80b0828afa965',
-    messagingSenderId: '566038591872',
-    projectId: 'esim-opensource-live',
-    storageBucket: 'esim-opensource-live.firebasestorage.app',
+    apiKey: 'AIzaSyDSnkP00Isw8Wytc6fp6ClSqB0tGFRXirQ',
+    appId: '1:796049769419:android:7bd16c15beb3f842afac4e',
+    messagingSenderId: '796049769419',
+    projectId: 'esimply-live',
+    storageBucket: 'esimply-live.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDT17rrLtKy5q82uRoVQcOhrSj4FrrBNDk',
-    appId: '1:566038591872:ios:01a5098c5188288bafa965',
-    messagingSenderId: '566038591872',
-    projectId: 'esim-opensource-live',
-    storageBucket: 'esim-opensource-live.firebasestorage.app',
-    androidClientId: '566038591872-akj9h0bedhsnu9q0r0ifbp1tmnj2vkv7.apps.googleusercontent.com',
-    iosClientId: '566038591872-5stl85go0r15mjire9i7q3bkd8k7hbbf.apps.googleusercontent.com',
-    iosBundleId: 'monty.esim.opensource',
+    apiKey: 'AIzaSyA4ZUg5sMRJ4iNtHmif9pfT1LNdSy5TwzI',
+    appId: '1:796049769419:ios:b948e22982569fc3afac4e',
+    messagingSenderId: '796049769419',
+    projectId: 'esimply-live',
+    storageBucket: 'esimply-live.firebasestorage.app',
+    androidClientId: '796049769419-i2tukjpood5kbc1gmkc4ivonlr9346qu.apps.googleusercontent.com',
+    iosClientId: '796049769419-14l7na91o751h5jb5ce5lq2o87ism18j.apps.googleusercontent.com',
+    iosBundleId: 'com.esimply.esim',
   );
 
 }

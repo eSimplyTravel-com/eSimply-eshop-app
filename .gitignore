@@ -50,3 +50,5 @@ ios/flutterfire_logs.txt
 *.orig
 /ios/build
 /android/build
+/android/app/EsimplyKey
+android/app/src/main/assets/adi-registration.properties

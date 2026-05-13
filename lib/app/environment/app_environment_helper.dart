@@ -31,7 +31,7 @@ class AppEnvironmentHelper {
     this.defaultPaymentTypeList = const <PaymentType>[
       PaymentType.card,
     ],
-    this.supabaseFacebookCallBackScheme = "iosupabaseflutter://login-callback",
+    this.supabaseFacebookCallBackScheme = "iosupabaseesimply://login-callback",
   });
 
   String baseApiUrl;

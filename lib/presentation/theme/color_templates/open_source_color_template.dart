@@ -40,7 +40,7 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color cGray_300 = const Color(0xff3d3d3f);
   @override
-  final Color cGray_350 = const Color(0xFF616161);
+  final Color cGray_350 = const Color(0xFF5B768F);
   @override
   final Color cGray_400 = const Color(0xFF9ea3a7);
 
@@ -58,9 +58,11 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   final Color cGreenLight = const Color(0xFF242d2a);
 
   @override
-  final Color defBaseBlack = const Color(0XFF122544);
+  final Color defBaseBlack = const Color(0xFF001F26);
   @override
   final Color defBaseWhite = const Color(0XFFFFFFFF);
+  @override
+  final Color defBaseNavy = const Color(0xFF001F26);
   @override
   final Color defError_50 = const Color(0XFFFEF3F2);
   @override
@@ -78,7 +80,7 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color defGrey_200 = const Color(0XFFEAECF0);
   @override
-  final Color defGreyAlt_200 = const Color(0XFF98A2B3);
+  final Color defGreyAlt_200 = const Color(0XFFE1ECF0);
   @override
   final Color defGrey_300 = const Color(0XFFD0D4DD);
   @override
@@ -92,7 +94,7 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color defGreyAlt_600 = const Color(0XFF667085);
   @override
-  final Color defGrey_700 = const Color(0XFF344053);
+  final Color defGrey_700 = const Color(0xFF5B768F);
   @override
   final Color defGrey_800 = const Color(0XFF1D2939);
   @override
@@ -136,9 +138,9 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color defPrimaryAlt_800 = const Color(0XFF0D1025);
   @override
-  final Color defPrimaryAltBtn_800 = const Color(0XFF3478CA);
+  final Color defPrimaryAltBtn_800 = const Color(0xFFDEB665);
   @override
-  final Color defPrimaryAltGuideBtn_800 = const Color(0xFF009fe3);
+  final Color defPrimaryAltGuideBtn_800 = const Color(0xFF001F26);
   @override
   final Color defPrimaryAltSwitchBtn_800 = const Color(0XFFFFFFFF);
   @override
@@ -164,7 +166,7 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color defSecondaryAlt_600 = const Color(0XFF667085);
   @override
-  final Color defSecondaryAltIconBtn_600 = const Color(0xFF009fe3);
+  final Color defSecondaryAltIconBtn_600 = const Color(0xFFDEB665);
   @override
   final Color defSecondary_700 = const Color(0XFFC51548);
   @override
@@ -190,7 +192,7 @@ class OpenSourceColorTemplate implements TemplateAppColors {
   @override
   final Color defBlue = const Color(0XFF316FF6);
   @override
-  final Color defHyperLink = const Color(0xFF009fe3);
+  final Color defHyperLink = const Color(0xFF475467);
   @override
   Color get defUnlimited => const Color(0xFFE41E4A);
 }

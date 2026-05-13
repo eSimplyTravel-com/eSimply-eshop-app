@@ -56,13 +56,13 @@ Color emptyStateTextColor({required BuildContext context}) =>
 
 //button text
 Color enabledMainButtonTextColor({required BuildContext context}) =>
-    context.appColors.baseWhite!;
+    context.appColors.baseBlack!;
 
 Color enabledSecondaryButtonTextColor({required BuildContext context}) =>
     context.appColors.secondary_600!;
 
 Color disabledMainButtonTextColor({required BuildContext context}) =>
-    context.appColors.greyAlt_500!;
+    context.appColors.baseWhite!;
 
 Color bubbleCountryTextColor({required BuildContext context}) =>
     context.appColors.baseBlack!;
@@ -97,7 +97,7 @@ Color myEsimIconButtonColor({required BuildContext context}) =>
     context.appColors.secondaryAltIconBtn_600!;
 
 Color userGuideButtonColor({required BuildContext context}) =>
-    context.appColors.primaryAltGuideBtn_800!;
+    context.appColors.secondaryAltIconBtn_600!;
 
 Color emptyStateButtonColor({required BuildContext context}) =>
     context.appColors.primaryAlt_800!;
@@ -114,10 +114,10 @@ Color mainBorderColor({required BuildContext context}) =>
 
 //background
 Color myEsimSecondaryBackGroundColor({required BuildContext context}) =>
-    context.appColors.secondary_600!;
+    context.appColors.secondaryAltIconBtn_600!;
 
 Color mainTabBackGroundColor({required BuildContext context}) =>
-    context.appColors.secondary_600!;
+    context.appColors.primaryAltBtn_800!;
 
 Color whiteBackGroundColor({required BuildContext context}) =>
     context.appColors.baseWhite!;
@@ -239,10 +239,11 @@ TextStyle headerOneBoldTextStyle({
   required BuildContext context,
   String? fontFamily,
   Color? fontColor,
+  double fontSize = 30,
   bool isItalic = false,
 }) =>
     TextStyle(
-      fontSize: 30,
+      fontSize: fontSize,
       fontWeight: FontWeight.w700,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,

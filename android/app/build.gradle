@@ -61,7 +61,6 @@ android {
     }
 
     defaultConfig {
-//        applicationId "com.luxe.esim"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24
@@ -88,15 +87,15 @@ android {
     productFlavors {
         OpenSourceDev {
             dimension "environment"
-            applicationId ""
+            applicationId "com.esimply.esim"
             versionNameSuffix "-dev"
-            resValue "string", "app_name", "White Label Dev"
-            resValue "string", "facebook_app_id", ""
-            resValue "string", "fb_login_protocol_scheme", ""
-            resValue "string", "fb_client_token", ""
+            resValue "string", "app_name", "eSimply Dev"
+            resValue "string", "facebook_app_id", "1724588091576653"
+            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
+            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
-                    scheme: "iosupabaseflutter",
-                    domain: "",
+                    scheme: "iosupabaseesimply",
+                    domain: "subscriber-open-source.onrender.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",
@@ -107,15 +106,15 @@ android {
         }
         OpenSourceStaging {
             dimension "environment"
-            applicationId ""
+            applicationId "com.esimply.esim"
             versionNameSuffix "-staging"
-            resValue "string", "app_name", "White Label Stg"
-            resValue "string", "facebook_app_id", ""
-            resValue "string", "fb_login_protocol_scheme", ""
-            resValue "string", "fb_client_token", ""
+            resValue "string", "app_name", "eSimply Stg"
+            resValue "string", "facebook_app_id", "1724588091576653"
+            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
+            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
-                    scheme: "iosupabaseflutter",
-                    domain: "",
+                    scheme: "iosupabaseesimply",
+                    domain: "sales-esim-shop-portal.onrender.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",
@@ -126,15 +125,15 @@ android {
         }
         OpenSourceProd {
             dimension "environment"
-            applicationId ""
+            applicationId "com.esimply.esim"
             versionNameSuffix ""
-            resValue "string", "app_name", "White Label"
-            resValue "string", "facebook_app_id", ""
-            resValue "string", "fb_login_protocol_scheme", ""
-            resValue "string", "fb_client_token", ""
+            resValue "string", "app_name", "eSimply"
+            resValue "string", "facebook_app_id", "1724588091576653"
+            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
+            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
-                    scheme: "iosupabaseflutter",
-                    domain: "",
+                    scheme: "iosupabaseesimply",
+                    domain: "sales-esim-shop-portal.onrender.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",

@@ -30,6 +30,7 @@ class AppColors extends ThemeExtension<AppColors> {
   AppColors({
     required this.baseBlack,
     required this.baseWhite,
+    required this.baseNavy,
     required this.error_50,
     required this.error_300,
     required this.error_500,
@@ -101,6 +102,7 @@ class AppColors extends ThemeExtension<AppColors> {
   //#region Variables
   final Color? baseBlack;
   final Color? baseWhite;
+  final Color? baseNavy;
   final Color? error_50;
   final Color? error_300;
   final Color? error_500;
@@ -171,6 +173,7 @@ class AppColors extends ThemeExtension<AppColors> {
   static AppColors get lightThemeColors => AppColors(
         baseBlack: templateAppColors.defBaseBlack,
         baseWhite: templateAppColors.defBaseWhite,
+        baseNavy: templateAppColors.defBaseNavy,
         error_50: templateAppColors.defError_50,
         error_300: templateAppColors.defError_300,
         error_500: templateAppColors.defError_500,
@@ -242,6 +245,7 @@ class AppColors extends ThemeExtension<AppColors> {
   static AppColors get darkThemeColors => AppColors(
         baseBlack: templateAppColors.defBaseBlack,
         baseWhite: templateAppColors.defBaseWhite,
+        baseNavy: templateAppColors.defBaseNavy,
         error_50: templateAppColors.defError_50,
         error_300: templateAppColors.defError_300,
         error_500: templateAppColors.defError_500,
@@ -315,6 +319,7 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(
       baseBlack: templateAppColors.defBaseBlack,
       baseWhite: templateAppColors.defBaseWhite,
+      baseNavy: templateAppColors.defBaseNavy,
       error_50: templateAppColors.defError_50,
       error_300: templateAppColors.defError_300,
       error_500: templateAppColors.defError_500,
@@ -395,6 +400,7 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(
       baseBlack: Color.lerp(baseBlack, other.baseBlack, t),
       baseWhite: Color.lerp(baseWhite, other.baseWhite, t),
+      baseNavy: Color.lerp(baseNavy, other.baseNavy, t),
       error_50: templateAppColors.defError_50,
       error_300: templateAppColors.defError_300,
       error_500: templateAppColors.defError_500,

@@ -32,6 +32,7 @@ abstract class TemplateAppColors {
 
   Color get defBaseBlack;
   Color get defBaseWhite;
+  Color get defBaseNavy;
   Color get defError_50;
   Color get defError_300;
   Color get defError_500;

@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -93,4 +94,15 @@ class PaddingWidget extends StatelessWidget {
       ..add(DoubleProperty("horizontal", horizontal))
       ..add(DiagnosticsProperty<bool>("isRtlSupported", isRtlSupported));
   }
+}
+
+@AppPreview(name: "Padding Widget")
+Widget paddingWidgetPreview() {
+  return Scaffold(
+    body: PaddingWidget.applySymmetricPadding(
+      vertical: 16,
+      horizontal: 16,
+      child: const Text("Padded content"),
+    ),
+  );
 }

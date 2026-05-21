@@ -1,4 +1,5 @@
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -91,4 +92,18 @@ class PaymentMethodCard extends StatelessWidget {
       ..add(DoubleProperty("circleSize", circleSize))
       ..add(DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
   }
+}
+
+@AppPreview(name: "Payment Method Card")
+Widget paymentMethodCardPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: PaymentMethodCard(
+        backgroundColor: Color(0xFFF5F5F5),
+        icon: Icons.credit_card,
+        text: "Credit / Debit Card",
+      ),
+    ),
+  );
 }

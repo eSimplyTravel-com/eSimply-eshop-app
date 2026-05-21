@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -51,4 +52,23 @@ class _TopIndicatorBox extends BoxPainter {
       paint,
     );
   }
+}
+
+@AppPreview(name: "Top Indicator")
+Widget topIndicatorPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: const TopIndicator(
+          color: Colors.blue,
+          strokeWidth: 4,
+        ),
+        height: 80,
+        child: const Center(
+          child: Text("Widget with top indicator"),
+        ),
+      ),
+    ),
+  );
 }

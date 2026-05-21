@@ -15,6 +15,7 @@ import "package:esim_open_source/presentation/models/payment_request_params.dart
 import "package:esim_open_source/presentation/reactive_service/user_authentication_service.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/e_sim_top_up/top_up_bottom_sheet_view_model.dart";
+import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/verify_purchase_view/verify_purchase_view.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/mockito.dart";
 import "package:stacked_services/stacked_services.dart";
@@ -1170,6 +1171,238 @@ Future<void> main() async {
           paymentType: anyNamed("paymentType"),
         ),
       ).called(1);
+    });
+
+    test("initiatePaymentRequest with DCB otpRequested navigates to verify",
+        () async {
+      // Arrange
+      bool completerCalled = false;
+      final SheetRequest<BundleTopUpBottomRequest> request =
+          SheetRequest<BundleTopUpBottomRequest>(
+        data: const BundleTopUpBottomRequest(
+          iccID: "test_iccid",
+          bundleCode: "TEST123",
+        ),
+      );
+
+      final MockNavigationService mockNavigationService =
+          locator<NavigationService>() as MockNavigationService;
+
+      when(
+        mockPaymentService.prepareCheckout(
+          paymentType: anyNamed("paymentType"),
+          publishableKey: anyNamed("publishableKey"),
+          merchantIdentifier: anyNamed("merchantIdentifier"),
+        ),
+      ).thenAnswer((_) async {});
+
+      when(
+        mockPaymentService.processOrderPayment(
+          paymentType: anyNamed("paymentType"),
+          params: anyNamed("params"),
+        ),
+      ).thenAnswer((_) async => PaymentResult.otpRequested);
+
+      when(
+        mockNavigationService.navigateTo(
+          VerifyPurchaseView.routeName,
+          arguments: anyNamed("arguments"),
+          preventDuplicates: anyNamed("preventDuplicates"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      when(mockAnalyticsService.logEvent(event: anyNamed("event")))
+          .thenAnswer((_) async {});
+
+      viewModel = TopUpBottomSheetViewModel(
+        request: request,
+        completer: (SheetResponse<MainBottomSheetResponse> response) {
+          completerCalled = true;
+        },
+      );
+
+      // Act
+      await viewModel.initiatePaymentRequest(
+        params: PaymentRequestParams(
+          secretParams: PaymentRequestSecretParams(
+            paymentType: PaymentType.dcb,
+            publishableKey: "pk_test",
+            merchantIdentifier: "merchant_123",
+            paymentIntentClientSecret: "pi_secret",
+            customerEphemeralKeySecret: "ek_secret",
+            test: true,
+          ),
+          idParams: PaymentRequestIDParams(
+            orderID: "ORDER_DCB_OTP",
+            customerId: "cus_123",
+            billingCountryCode: "US",
+            bundleCode: "",
+            bundleName: "",
+          ),
+        ),
+        bundlePrice: r"$50.00",
+        bundleCurrency: "USD",
+      );
+
+      // Assert
+      verify(
+        mockNavigationService.navigateTo(
+          VerifyPurchaseView.routeName,
+          arguments: anyNamed("arguments"),
+          preventDuplicates: anyNamed("preventDuplicates"),
+        ),
+      ).called(1);
+
+      expect(completerCalled, true);
+    });
+
+    test("initiatePaymentRequest with otpRequested user cancels verification",
+        () async {
+      // Arrange
+      bool completerCalled = false;
+      final SheetRequest<BundleTopUpBottomRequest> request =
+          SheetRequest<BundleTopUpBottomRequest>(
+        data: const BundleTopUpBottomRequest(
+          iccID: "test_iccid",
+          bundleCode: "TEST123",
+        ),
+      );
+
+      final MockNavigationService mockNavigationService =
+          locator<NavigationService>() as MockNavigationService;
+
+      when(
+        mockPaymentService.prepareCheckout(
+          paymentType: anyNamed("paymentType"),
+          publishableKey: anyNamed("publishableKey"),
+          merchantIdentifier: anyNamed("merchantIdentifier"),
+        ),
+      ).thenAnswer((_) async {});
+
+      when(
+        mockPaymentService.processOrderPayment(
+          paymentType: anyNamed("paymentType"),
+          params: anyNamed("params"),
+        ),
+      ).thenAnswer((_) async => PaymentResult.otpRequested);
+
+      when(
+        mockNavigationService.navigateTo(
+          VerifyPurchaseView.routeName,
+          arguments: anyNamed("arguments"),
+          preventDuplicates: anyNamed("preventDuplicates"),
+        ),
+      ).thenAnswer((_) async => false);
+
+      when(mockApiUserRepository.cancelOrder(orderID: anyNamed("orderID")))
+          .thenAnswer(
+        (_) async =>
+            Resource<EmptyResponse?>.success(null, message: "Cancelled"),
+      );
+
+      viewModel = TopUpBottomSheetViewModel(
+        request: request,
+        completer: (SheetResponse<MainBottomSheetResponse> response) {
+          completerCalled = true;
+        },
+      );
+
+      // Act
+      await viewModel.initiatePaymentRequest(
+        params: PaymentRequestParams(
+          secretParams: PaymentRequestSecretParams(
+            paymentType: PaymentType.dcb,
+            publishableKey: "pk_test",
+            merchantIdentifier: "merchant_123",
+            paymentIntentClientSecret: "pi_secret",
+            customerEphemeralKeySecret: "ek_secret",
+            test: true,
+          ),
+          idParams: PaymentRequestIDParams(
+            orderID: "ORDER_DCB_CANCEL",
+            customerId: "cus_123",
+            billingCountryCode: "US",
+            bundleCode: "",
+            bundleName: "",
+          ),
+        ),
+        bundlePrice: r"$50.00",
+        bundleCurrency: "USD",
+      );
+
+      // Assert
+      verify(mockApiUserRepository.cancelOrder(orderID: "ORDER_DCB_CANCEL"))
+          .called(1);
+      expect(completerCalled, true);
+    });
+
+    test("initiatePaymentRequest with payment canceled closes sheet",
+        () async {
+      // Arrange
+      bool completerCalled = false;
+      final SheetRequest<BundleTopUpBottomRequest> request =
+          SheetRequest<BundleTopUpBottomRequest>(
+        data: const BundleTopUpBottomRequest(
+          iccID: "test_iccid",
+          bundleCode: "TEST123",
+        ),
+      );
+
+      when(
+        mockPaymentService.prepareCheckout(
+          paymentType: anyNamed("paymentType"),
+          publishableKey: anyNamed("publishableKey"),
+          merchantIdentifier: anyNamed("merchantIdentifier"),
+        ),
+      ).thenAnswer((_) async {});
+
+      when(
+        mockPaymentService.processOrderPayment(
+          paymentType: anyNamed("paymentType"),
+          params: anyNamed("params"),
+        ),
+      ).thenAnswer((_) async => PaymentResult.canceled);
+
+      when(mockApiUserRepository.cancelOrder(orderID: anyNamed("orderID")))
+          .thenAnswer(
+        (_) async =>
+            Resource<EmptyResponse?>.success(null, message: "Cancelled"),
+      );
+
+      viewModel = TopUpBottomSheetViewModel(
+        request: request,
+        completer: (SheetResponse<MainBottomSheetResponse> response) {
+          completerCalled = true;
+        },
+      );
+
+      // Act
+      await viewModel.initiatePaymentRequest(
+        params: PaymentRequestParams(
+          secretParams: PaymentRequestSecretParams(
+            paymentType: PaymentType.card,
+            publishableKey: "pk_test",
+            merchantIdentifier: "merchant_123",
+            paymentIntentClientSecret: "pi_secret",
+            customerEphemeralKeySecret: "ek_secret",
+            test: true,
+          ),
+          idParams: PaymentRequestIDParams(
+            orderID: "ORDER_CANCELED",
+            customerId: "cus_123",
+            billingCountryCode: "US",
+            bundleCode: "",
+            bundleName: "",
+          ),
+        ),
+        bundlePrice: r"$50.00",
+        bundleCurrency: "USD",
+      );
+
+      // Assert
+      verify(mockApiUserRepository.cancelOrder(orderID: "ORDER_CANCELED"))
+          .called(1);
+      expect(completerCalled, true);
     });
   });
 }

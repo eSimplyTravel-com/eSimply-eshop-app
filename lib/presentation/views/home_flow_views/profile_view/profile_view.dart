@@ -1,3 +1,4 @@
+import "package:adaptive_platform_ui/adaptive_platform_ui.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/app.locator.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
@@ -81,8 +82,11 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
               ),
-              PaddingWidget.applySymmetricPadding(
-                vertical: 5,
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 5,
+                  bottom: PlatformInfo.isIOS26OrHigher() ? 90 : 5,
+                ),
                 child: Text(
                   LocaleKeys.profile_version.tr(
                     namedArgs: <String, String>{

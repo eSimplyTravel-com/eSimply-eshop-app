@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/widgets/bottom_sheet_close_button.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
@@ -74,4 +75,20 @@ class BottomSheetContainer extends StatelessWidget {
       ..add(DoubleProperty("verticalPadding", verticalPadding))
       ..add(DoubleProperty("horizontalPadding", horizontalPadding));
   }
+}
+
+@AppPreview(name: "Bottom Sheet Container")
+Widget bottomSheetContainerPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: BottomSheetContainer(
+        onCloseTap: () {},
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 24),
+          child: Text("Sample bottom sheet content"),
+        ),
+      ),
+    ),
+  );
 }

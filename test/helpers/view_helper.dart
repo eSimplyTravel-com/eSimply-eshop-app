@@ -53,6 +53,8 @@ Future<void> prepareTest() async {
   SharedPreferences.setMockInitialValues(<String, Object>{});
   await EasyLocalization.ensureInitialized();
   await ThemeManager.initialise();
+  // Setup haptic feedback mock early to intercept calls
+  HapticHelperTest.implementHaptic();
 }
 
 Future<void> setupTest() async {

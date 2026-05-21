@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -111,4 +112,24 @@ class _AnimatedCircularProgressIndicatorState
       },
     );
   }
+}
+
+@AppPreview(name: "Animated Circular Progress Indicator")
+Widget animatedCircularProgressIndicatorPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: SizedBox(
+          width: 200,
+          height: 200,
+          child: AnimatedCircularProgressIndicator(
+            targetValue: 0.65,
+            valueColor: Colors.blue,
+            isLoading: false,
+          ),
+        ),
+      ),
+    ),
+  );
 }

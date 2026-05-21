@@ -1,18 +1,9 @@
-import "package:flutter/services.dart";
-import "package:flutter_test/flutter_test.dart";
-
+// HapticFeedback (from flutter/services.dart) routes through the
+// `flutter/platform` channel, which Flutter's test framework silently
+// handles for unmocked invocations. No setup is required — this helper
+// is retained as a no-op so existing test call sites stay valid.
 class HapticHelperTest {
-  static MethodChannel channel = const MethodChannel("vibrate");
+  static void implementHaptic() {}
 
-  static void implementHaptic() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-      return null;
-    });
-  }
-
-  static void deInitHaptic() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, null);
-  }
+  static void deInitHaptic() {}
 }

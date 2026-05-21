@@ -1,4 +1,5 @@
 import "package:easy_localization/easy_localization.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/widgets/main_button.dart";
@@ -149,4 +150,24 @@ class ApplyPromoCode extends StatelessWidget {
         ),
       );
   }
+}
+
+@AppPreview(name: "Apply Promo Code")
+Widget applyPromoCodePreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: ApplyPromoCode(
+        controller: TextEditingController(),
+        buttonText: "Apply",
+        message: "",
+        isFieldEnabled: true,
+        textFieldIcon: Icons.check_circle,
+        textFieldBorderColor: Colors.green,
+        isExpanded: true,
+        expandedCallBack: () {},
+        callback: (String _) {},
+      ),
+    ),
+  );
 }

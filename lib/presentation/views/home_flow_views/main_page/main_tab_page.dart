@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:adaptive_platform_ui/adaptive_platform_ui.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
@@ -13,6 +14,7 @@ import "package:esim_open_source/presentation/views/home_flow_views/data_plans_v
 import "package:esim_open_source/presentation/views/home_flow_views/main_page/home_pager_view_model.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/my_esim_view/my_esim_view.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view.dart";
+import "package:esim_open_source/presentation/widgets/customized_adaptive_bottom_navbar.dart";
 import "package:esim_open_source/presentation/widgets/customized_bottom_navbar.dart";
 import "package:esim_open_source/presentation/widgets/lockable_tab_bar.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
@@ -110,29 +112,62 @@ class _MainTabPageState extends State<MainTabPage>
   Widget build(BuildContext context) {
     final bool isKeyboardVisible =
         KeyboardVisibilityProvider.isKeyboardVisible(context);
-    return Scaffold(
-      floatingActionButton: tabController.index > 1
-          ? null
-          : GestureDetector(
-              onTap: () async {
-                openWhatsApp(
-                  phoneNumber: await locator<AppConfigurationService>()
-                      .getWhatsAppNumber,
-                  message: "",
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.only(
-                  bottom: _getFloatingActionButtonBottomPadding(),
-                ),
-                child: Lottie.asset(
-                  "assets/lottie/whatsappLottie.json",
-                  width: 90,
-                  height: 90,
-                ),
+    final Color background = whiteBackGroundColor(context: context);
+    final Widget? whatsAppFab = tabController.index > 1
+        ? null
+        : GestureDetector(
+            onTap: () async {
+              openWhatsApp(
+                phoneNumber:
+                    await locator<AppConfigurationService>().getWhatsAppNumber,
+                message: "",
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.only(
+                bottom: _getFloatingActionButtonBottomPadding(),
+              ),
+              child: Lottie.asset(
+                "assets/lottie/whatsappLottie.json",
+                width: 90,
+                height: 90,
               ),
             ),
-      backgroundColor: whiteBackGroundColor(context: context),
+          );
+
+    final bool useAdaptiveNav =
+        PlatformInfo.isIOS26OrHigher() && !AppEnvironment.isFromAppClip;
+
+    if (useAdaptiveNav) {
+      return wrapBodyWithState(
+        params: BodyStateWrapParams(
+          context: context,
+          model: widget.viewModel,
+          child: BaseAdaptiveBottomNavBar(
+            tabController: tabController,
+            isKeyboardVisible: isKeyboardVisible,
+            backgroundColor: background,
+            floatingActionButton: whatsAppFab,
+            tabsWidgets: generateTabWidgets(
+              context: context,
+              isLoggedIn: widget.viewModel.isUserLoggedIn,
+            ),
+            tabsIconData: generateTabIcons(
+              context: context,
+              isLoggedIn: widget.viewModel.isUserLoggedIn,
+            ),
+            tabsText: generateTabNames(
+              context: context,
+              isLoggedIn: widget.viewModel.isUserLoggedIn,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      floatingActionButton: whatsAppFab,
+      backgroundColor: background,
       body: wrapBodyWithState(
         params: BodyStateWrapParams(
           context: context,

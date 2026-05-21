@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -137,4 +138,17 @@ class MyCardWrap extends StatelessWidget {
       ..add(DiagnosticsProperty<bool>("withDelay", withDelay))
       ..add(ObjectFlagProperty<void Function()?>.has("onTap", onTap));
   }
+}
+
+@AppPreview(name: "My Card Wrap")
+Widget myCardWrapPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MyCardWrap(
+        padding: const EdgeInsets.all(16),
+        child: const Text("Card content"),
+      ),
+    ),
+  );
 }

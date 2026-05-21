@@ -1,5 +1,6 @@
 import "dart:math";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -102,4 +103,37 @@ class AnimationFlipHorizontallyState extends State<AnimationFlipHorizontally> {
   Widget _buildRear(Widget back) {
     return Container(key: const ValueKey<bool>(false), child: back);
   }
+}
+
+@AppPreview(name: "Animation Flip Horizontally")
+Widget animationFlipHorizontallyPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: AnimationFlipHorizontally(
+          front: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            color: Colors.blue,
+            child: const Text(
+              "Front",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+          back: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            color: Colors.deepPurple,
+            child: const Text(
+              "Back",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

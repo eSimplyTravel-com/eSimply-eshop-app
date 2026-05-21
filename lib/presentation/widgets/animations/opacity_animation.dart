@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -43,4 +44,35 @@ class OpacityAnimation extends HookWidget {
       ..add(IntProperty("delay", delay))
       ..add(DiagnosticsProperty<AnimationController>("controller", controller));
   }
+}
+
+@AppPreview(name: "Opacity Animation")
+Widget opacityAnimationPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: HookBuilder(
+          builder: (BuildContext context) {
+            final AnimationController controller = useAnimationController(
+              duration: const Duration(milliseconds: 1200),
+            );
+            return OpacityAnimation(
+              controller: controller,
+              child: Container(
+                width: 160,
+                height: 160,
+                alignment: Alignment.center,
+                color: Colors.indigo,
+                child: const Text(
+                  "Fade in",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ),
+  );
 }

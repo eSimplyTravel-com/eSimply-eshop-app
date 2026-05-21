@@ -1,5 +1,6 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
 import "package:flutter/foundation.dart";
@@ -55,3 +56,8 @@ class WarningWidget extends StatelessWidget {
     properties.add(StringProperty("warningTextContent", warningTextContent));
   }
 }
+
+@AppPreview(name: "Warning Widget")
+Widget warningWidgetPreview() => const WarningWidget(
+  warningTextContent: "This is a sample warning message.",
+);

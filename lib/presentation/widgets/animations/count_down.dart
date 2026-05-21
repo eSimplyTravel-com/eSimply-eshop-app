@@ -1,5 +1,6 @@
 import "dart:developer";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -105,4 +106,19 @@ class _Countdown extends AnimatedWidget {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Animation<int>>("animation", animation));
   }
+}
+
+@AppPreview(name: "Countdown")
+Widget countdownPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Countdown(
+          numberOfSeconds: 60,
+          onCounterCompleted: () {},
+        ),
+      ),
+    ),
+  );
 }

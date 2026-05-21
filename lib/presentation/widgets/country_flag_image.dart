@@ -1,8 +1,9 @@
 import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/widgets/network_image_cached.dart";
 import "package:flutter/foundation.dart";
-import "package:flutter/widgets.dart";
+import "package:flutter/material.dart";
 import "package:flutter_svg/flutter_svg.dart";
 
 class CountryFlagImage extends StatelessWidget {
@@ -85,4 +86,20 @@ class CountryFlagImage extends StatelessWidget {
       ..add(DoubleProperty("width", width))
       ..add(DoubleProperty("height", height));
   }
+}
+
+@AppPreview(name: "Country Flag Image")
+Widget countryFlagImagePreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: Center(
+        child: CountryFlagImage(
+          icon: "assets/images/shared/flags/globalFlag.svg",
+          width: 64,
+          height: 64,
+        ),
+      ),
+    ),
+  );
 }

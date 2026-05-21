@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -73,4 +74,22 @@ class EmptyStateListView<T> extends StatelessWidget {
       )
       ..add(ObjectFlagProperty<RefreshCallback?>.has("onRefresh", onRefresh));
   }
+}
+
+@AppPreview(name: "Empty State List View")
+Widget emptyStateListViewPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: EmptyStateListView<String>(
+        items: const <String>[],
+        emptyStateWidget: const SizedBox(
+          height: 200,
+          child: Center(child: Text("No items to display")),
+        ),
+        itemBuilder: (BuildContext context, int index) =>
+            const SizedBox.shrink(),
+      ),
+    ),
+  );
 }

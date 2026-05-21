@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -178,4 +179,18 @@ class ExpansionListItem extends StatelessWidget {
       ..add(DiagnosticsProperty<bool>("showArrow", showArrow))
       ..add(DiagnosticsProperty<bool>("smallVersion", smallVersion));
   }
+}
+
+@AppPreview(name: "Expansion List")
+Widget expansionListPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: ExpansionList<String>(
+        title: "Select an option",
+        items: const <String>["Option 1", "Option 2", "Option 3"],
+        onItemSelected: (_) {},
+      ),
+    ),
+  );
 }

@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
 import "package:flutter/foundation.dart";
@@ -34,4 +35,14 @@ class DividerLine extends StatelessWidget {
       ..add(ColorProperty("dividerColor", dividerColor))
       ..add(DoubleProperty("horizontalPadding", horizontalPadding));
   }
+}
+
+@AppPreview(name: "Divider Line")
+Widget dividerLinePreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: DividerLine(),
+    ),
+  );
 }

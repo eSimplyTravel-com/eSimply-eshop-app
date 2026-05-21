@@ -1,6 +1,7 @@
 import "package:easy_localization/easy_localization.dart" as localization;
 import "package:esim_open_source/presentation/enums/language_enum.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:flutter/foundation.dart";
@@ -73,4 +74,17 @@ class BundleTitleContentView extends StatelessWidget {
       )
       ..add(DiagnosticsProperty<bool>("showShimmer", showShimmer));
   }
+}
+
+@AppPreview(name: "Bundle Title Content View")
+Widget bundleTitleContentViewPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: BundleTitleContentView(
+        titleText: "Validity",
+        contentText: "30 Days",
+      ),
+    ),
+  );
 }

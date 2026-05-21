@@ -1,8 +1,8 @@
 // library flutter_otp_text_field; 1.1.3+2
 import "dart:developer" as dev;
-import "dart:io";
 import "dart:math";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/utils/extensions.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -438,7 +438,7 @@ class OtpTextFieldState extends State<OtpTextField> {
     if (_focusNodes[index] == null) {
       _focusNodes[index] = FocusNode();
 
-      if (Platform.isIOS) {
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
         _attachIOSFocusListener(index);
       }
     }
@@ -567,4 +567,17 @@ class OtpTextFieldState extends State<OtpTextField> {
     FocusScope.of(context).unfocus();
     setState(() {});
   }
+}
+
+@AppPreview(name: "OTP Text Field")
+Widget otpTextFieldPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: OtpTextField(
+        initialCode: const <String>["", "", "", ""],
+        showFieldAsBox: true,
+      ),
+    ),
+  );
 }

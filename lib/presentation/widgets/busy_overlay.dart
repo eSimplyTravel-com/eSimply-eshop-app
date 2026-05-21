@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -60,4 +61,20 @@ class BusyOverlay extends StatelessWidget {
       ..add(StringProperty("title", title))
       ..add(DiagnosticsProperty<bool>("show", show));
   }
+}
+
+@AppPreview(name: "Busy Overlay")
+Widget busyOverlayPreview() {
+  return const Scaffold(
+    body: BusyOverlay(
+      show: true,
+      title: "Please wait...",
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text("Underlying content"),
+        ),
+      ),
+    ),
+  );
 }

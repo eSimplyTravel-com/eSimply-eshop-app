@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -83,4 +84,21 @@ class MyGenericDropDown<T> extends StatelessWidget {
         ),
       );
   }
+}
+
+@AppPreview(name: "Customized Generic Dropdown")
+Widget myGenericDropDownPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MyGenericDropDown<String>(
+        valueList: const <String>["Apple", "Banana", "Cherry"],
+        selectedValueIndex: 0,
+        isExpanded: true,
+        onChanged: (int index, String? value) {},
+        buildItem: (BuildContext context, String? value) =>
+            Text(value ?? ""),
+      ),
+    ),
+  );
 }

@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -96,4 +97,17 @@ class EmptyStateWidget extends StatelessWidget {
       ..add(DoubleProperty("imageWidth", imageWidth))
       ..add(DoubleProperty("imageHeight", imageHeight));
   }
+}
+
+@AppPreview(name: "Empty State Widget")
+Widget emptyStateWidgetPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: EmptyStateWidget(
+        title: "Nothing here yet",
+        content: "Once you add items, they will appear in this list.",
+      ),
+    ),
+  );
 }

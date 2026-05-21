@@ -1,6 +1,9 @@
 import "dart:io";
 
 import "package:cached_network_image/cached_network_image.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
+import "package:esim_open_source/presentation/widgets/_svg_local_file_io.dart"
+    if (dart.library.js_interop) "package:esim_open_source/presentation/widgets/_svg_local_file_web.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_svg/flutter_svg.dart";
@@ -152,8 +155,8 @@ class CachedImage extends StatelessWidget {
         semanticsLabel: svgImage,
       );
     } else {
-      return SvgPicture.file(
-        File(imagePath),
+      return buildLocalFileSvg(
+        imagePath: imagePath,
         width: width,
         height: height,
         fit: fit ?? BoxFit.cover,
@@ -398,4 +401,17 @@ class CachedImage extends StatelessWidget {
       )
       ..add(ColorProperty("svgColor", svgColor));
   }
+}
+
+@AppPreview(name: "Cached Image")
+Widget cachedImagePreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: CachedImage.network(
+        imagePath: "https://picsum.photos/200",
+        dimensions: const ImageDimensions(width: 200, height: 200),
+      ),
+    ),
+  );
 }

@@ -2,7 +2,8 @@ import "dart:async";
 import "dart:developer";
 
 import "package:esim_open_source/domain/util/pagination/paginated_data.dart";
-import "package:esim_open_source/presentation/helpers/view_state_utils.dart";
+import "package:esim_open_source/presentation/helpers/native_indicator.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/widgets/empty_state_widget.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -204,4 +205,25 @@ class _EmptyPaginatedStateListViewState<T>
         ObjectFlagProperty<Function(T item)>.has("builder", widget.builder),
       );
   }
+}
+
+@AppPreview(name: "Empty Paginated State List View")
+Widget emptyPaginatedStateListViewPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: EmptyPaginatedStateListView<String>(
+        paginationService: PaginationService<String>(),
+        emptyStateWidget: const EmptyStateWidget(
+          title: "Nothing here yet",
+          content: "Pull to refresh once content is available.",
+        ),
+        builder: (String item) => ListTile(title: Text(item)),
+        onRefresh: () async {},
+        onLoadItems: () async {},
+        separatorBuilder: (BuildContext context, int index) =>
+            const SizedBox.shrink(),
+      ),
+    ),
+  );
 }

@@ -1,4 +1,5 @@
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/payment_methods_card.dart";
 import "package:flutter/foundation.dart";
@@ -93,4 +94,25 @@ class PaymentCardData {
   final double iconSize;
   final double circleSize;
   final EdgeInsetsGeometry padding;
+}
+
+@AppPreview(name: "Payment Methods List")
+Widget paymentMethodsListPreview() {
+  return const Scaffold(
+    body: PaymentMethodsList(
+      title: "Payment methods",
+      items: <PaymentCardData>[
+        PaymentCardData(
+          backgroundColor: Color(0xFFF5F5F5),
+          icon: Icons.credit_card,
+          text: "Credit / Debit Card",
+        ),
+        PaymentCardData(
+          backgroundColor: Color(0xFFF5F5F5),
+          icon: Icons.account_balance_wallet,
+          text: "Apple Pay",
+        ),
+      ],
+    ),
+  );
 }

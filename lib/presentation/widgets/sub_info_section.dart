@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -78,4 +79,19 @@ class SubInfoSection extends StatelessWidget {
       ..add(DiagnosticsProperty<bool>("showInfoIcon", showInfoIcon))
       ..add(ObjectFlagProperty<void Function()?>.has("onPressed", onPressed));
   }
+}
+
+@AppPreview(name: "Sub Info Section")
+Widget subInfoSectionPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: SubInfoSection(
+        title: "Information",
+        subTitle: "Sample subtitle text",
+        showInfoIcon: true,
+        onPressed: () {},
+      ),
+    ),
+  );
 }

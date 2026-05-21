@@ -392,10 +392,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
         promoCode: _promoCode ?? "",
         referralCode: "",
         affiliateCode: "",
-        paymentType: paymentType == PaymentType.wallet
-            ? paymentType.type
-            : AppEnvironment
-                .appEnvironmentHelper.defaultPaymentTypeList.first.type,
+        paymentType: paymentType.type,
         bearerToken: bearerToken,
         relatedSearch: (bundle?.isCruise ?? false)
             ? RelatedSearchRequestModel(

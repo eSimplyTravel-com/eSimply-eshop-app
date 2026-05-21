@@ -1,6 +1,7 @@
 import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/widgets/country_flag_image.dart";
@@ -172,4 +173,20 @@ class BundleHeaderView extends StatelessWidget {
       ..add(DiagnosticsProperty<bool>("isLoading", isLoading))
       ..add(DiagnosticsProperty<bool>("showUnlimitedData", showUnlimitedData));
   }
+}
+
+@AppPreview(name: "Bundle Header View")
+Widget bundleHeaderViewPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: BundleHeaderView(
+        title: "United States",
+        subTitle: "30 Days",
+        dataValue: "5 GB",
+        isLoading: false,
+        showUnlimitedData: false,
+      ),
+    ),
+  );
 }

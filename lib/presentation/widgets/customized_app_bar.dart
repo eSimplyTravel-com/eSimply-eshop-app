@@ -1,9 +1,9 @@
-import "dart:io";
-
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:flutter/cupertino.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
@@ -48,7 +48,7 @@ PreferredSizeWidget myAppBar(
   BuildContext context, {
   required AppBarParams params,
 }) {
-  if (Platform.isIOS) {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
     return _buildIOSAppBar(
       context: context,
       params: params,
@@ -287,4 +287,24 @@ void _handleBackPress({
   } else {
     Navigator.pop(context);
   }
+}
+
+@AppPreview(name: "Customized App Bar")
+Widget myAppBarPreview() {
+  return Builder(
+    builder: (BuildContext context) => Scaffold(
+      appBar: myAppBar(
+        context,
+        params: AppBarParams(
+          title: "Sample Title",
+          centerTitle: true,
+          showBorder: true,
+        ),
+      ),
+      body: const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text("App bar preview content"),
+      ),
+    ),
+  );
 }

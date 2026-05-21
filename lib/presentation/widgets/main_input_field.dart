@@ -1,6 +1,7 @@
 import "package:easy_localization/easy_localization.dart" as lc;
 import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/haptic_feedback.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
@@ -778,4 +779,18 @@ class MainInputFieldInteractionConfig {
   final void Function({required String text})? onChanged;
   final VoidCallback? onTap;
   final void Function({required bool value})? onObscureChange;
+}
+
+@AppPreview(name: "Main Input Field")
+Widget mainInputFieldPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MainInputField(
+        controller: TextEditingController(),
+        themeColor: Colors.blue,
+        hintText: "Enter value",
+      ),
+    ),
+  );
 }

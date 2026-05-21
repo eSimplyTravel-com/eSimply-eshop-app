@@ -1,4 +1,5 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/haptic_feedback.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
@@ -325,4 +326,18 @@ class MainButton extends StatelessWidget {
       ..add(EnumProperty<MainAxisSize?>("rowMainAxisSize", rowMainAxisSize))
       ..add(DoubleProperty("titleHorizontalPadding", titleHorizontalPadding));
   }
+}
+
+@AppPreview(name: "Main Button")
+Widget mainButtonPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MainButton(
+        title: "Continue",
+        onPressed: () {},
+        themeColor: Colors.blue,
+      ),
+    ),
+  );
 }

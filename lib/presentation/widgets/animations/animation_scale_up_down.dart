@@ -2,6 +2,7 @@ library flutter_bounce;
 
 import "dart:async";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -99,4 +100,29 @@ class AnimationScaleUpDownState extends State<AnimationScaleUpDown>
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Duration>("userDuration", userDuration));
   }
+}
+
+@AppPreview(name: "Animation Scale Up Down")
+Widget animationScaleUpDownPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: AnimationScaleUpDown(
+          duration: const Duration(milliseconds: 600),
+          autoStart: true,
+          child: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            color: Colors.orange,
+            child: const Text(
+              "Scale",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -2,6 +2,7 @@ import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/main_button.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
@@ -62,4 +63,14 @@ class TopUpButton extends StatelessWidget {
       ..add(ColorProperty("backgroundColor", backgroundColor))
       ..add(ColorProperty("textColor", textColor));
   }
+}
+
+@AppPreview(name: "Top Up Button")
+Widget topUpButtonPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: TopUpButton(onClick: () {}),
+    ),
+  );
 }

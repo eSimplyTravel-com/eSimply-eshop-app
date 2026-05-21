@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
@@ -54,4 +55,17 @@ class InfoRow extends StatelessWidget {
       ..add(StringProperty("title", title))
       ..add(StringProperty("message", message));
   }
+}
+
+@AppPreview(name: "Info Row")
+Widget infoRowPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: InfoRow(
+        title: "Sample title",
+        message: "Sample message",
+      ),
+    ),
+  );
 }

@@ -1,6 +1,7 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
 import "package:flutter/foundation.dart";
@@ -66,4 +67,24 @@ class UnlimitedDataWidget extends StatelessWidget {
       ..add(DoubleProperty("borderRadius", borderRadius))
       ..add(DiagnosticsProperty<bool>("isLoading", isLoading));
   }
+}
+
+@AppPreview(name: "Unlimited Data Widget")
+Widget unlimitedDataWidgetPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: UnlimitedDataWidget(),
+    ),
+  );
+}
+
+@AppPreview(name: "Unlimited Data Widget — Loading")
+Widget unlimitedDataWidgetLoadingPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: UnlimitedDataWidget(isLoading: true),
+    ),
+  );
 }

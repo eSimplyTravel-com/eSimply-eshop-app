@@ -75,7 +75,7 @@ class VerifyPurchaseViewModel extends BaseModel {
         navigationService.back(result: true);
       },
       onFailure: (Resource<EmptyResponse?> response) async {
-        _errorMessage = LocaleKeys.verifyLogin_wrongCode.tr();
+        _errorMessage = response.message ?? LocaleKeys.verifyLogin_wrongCode.tr();
         notifyListeners();
       },
     );

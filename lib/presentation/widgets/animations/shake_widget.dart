@@ -1,5 +1,6 @@
 import "dart:math";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -69,4 +70,31 @@ class _ShakeWidgetState extends State<ShakeWidget> {
     super.debugFillProperties(properties);
     properties.add(DoubleProperty("tweenEndValue", tweenEndValue));
   }
+}
+
+@AppPreview(name: "Shake Widget")
+Widget shakeWidgetPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: ShakeWidget(
+          startAnimation: true,
+          child: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Text(
+              "Shake",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

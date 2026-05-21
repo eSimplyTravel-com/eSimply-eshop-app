@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -24,4 +25,17 @@ class TextLink extends StatelessWidget {
       ..add(StringProperty("text", text))
       ..add(ObjectFlagProperty<void Function()?>.has("onPressed", onPressed));
   }
+}
+
+@AppPreview(name: "Text Link")
+Widget textLinkPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextLink(
+        "Click here",
+        onPressed: () {},
+      ),
+    ),
+  );
 }

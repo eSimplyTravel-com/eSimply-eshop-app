@@ -1,5 +1,4 @@
-import "dart:io";
-
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -21,7 +20,7 @@ class MySwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
       return CupertinoSwitch(
         value: value,
         onChanged: (bool value) => onChanged(value: value),
@@ -56,4 +55,20 @@ class MySwitch extends StatelessWidget {
       ..add(ColorProperty("trackColor", trackColor))
       ..add(ColorProperty("thumbColor", thumbColor));
   }
+}
+
+@AppPreview(name: "My Switch")
+Widget mySwitchPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MySwitch(
+        value: true,
+        onChanged: ({required bool value}) {},
+        activeColor: Colors.blue,
+        trackColor: Colors.grey,
+        thumbColor: Colors.white,
+      ),
+    ),
+  );
 }

@@ -37,12 +37,12 @@
 			<dict>
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
-				<key>CFBundleURLName</key>
-				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>luxesim</string>
 				</array>
+				<key>CFBundleURLName</key>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</dict>
 		</array>
 		<key>CFBundleVersion</key>
@@ -50,16 +50,16 @@
 		<key>FacebookAppID</key>
 		<string>$(FACEBOOK_SIGN_IN_APP_ID)</string>
 		<key>FacebookDisplayName</key>
-		<string>${PRODUCT_DISPLAY_NAME}</string>
-		<key>FACEBOOK_CLIENT_TOKEN</key>
+		<string>$(PRODUCT_DISPLAY_NAME)</string>
+		<key>FacebookClientToken</key>
 		<string>$(FACEBOOK_CLIENT_TOKEN)</string>
-		<key>FlutterDeepLinkingEnabled</key>
-		<false/>
 		<key>GIDClientID</key>
 		<string>$(GOOGLE_SIGN_IN_CLIENT_ID).apps.googleusercontent.com</string>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>fb</string>
+			<string>fbapi</string>
+			<string>fb-messenger-share-api</string>
 		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
@@ -73,8 +73,8 @@
 		<string>This app needs access to save QR codes to your photo library</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>This app needs access to save QR codes to your photo library</string>
-		<key>NSUserTrackingUsageDescription</key>
-		<string>This app would like to access IDFA to provide better ad experiences and measure ad performance.</string>
+		<key>io.flutter.embedded_views_preview</key>
+		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIBackgroundModes</key>
@@ -103,6 +103,31 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneClassName</key>
+						<string>UIWindowScene</string>
+						<key>UISceneDelegateClassName</key>
+						<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+						<key>UISceneConfigurationName</key>
+						<string>flutter</string>
+						<key>UISceneStoryboardFile</key>
+						<string>Main</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+		<key>FlutterDeepLinkingEnabled</key>
+		<false/>
+		<key>NSUserTrackingUsageDescription</key>
+		<string>This app would like to access IDFA to provide better ad experiences and measure ad performance.</string>
 		<key>branch_key</key>
 		<dict>
 			<key>live</key>

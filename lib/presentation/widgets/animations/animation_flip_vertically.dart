@@ -3,6 +3,7 @@ library flutter_bounce;
 import "dart:async";
 import "dart:math" as math;
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -107,4 +108,30 @@ class AnimationFlipVerticallyState extends State<AnimationFlipVertically>
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Duration>("userDuration", userDuration));
   }
+}
+
+@AppPreview(name: "Animation Flip Vertically")
+Widget animationFlipVerticallyPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: AnimationFlipVertically(
+          duration: const Duration(milliseconds: 800),
+          startAfter: 300,
+          autoStart: true,
+          child: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            color: Colors.teal,
+            child: const Text(
+              "Flip",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

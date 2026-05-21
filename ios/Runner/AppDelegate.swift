@@ -5,7 +5,7 @@ import BranchSDK
 import FBSDKCoreKit
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -18,15 +18,27 @@ import FBSDKCoreKit
         Settings.shared.enableLoggingBehavior(.appEvents)
         
         configureBranchTestMode()
+
+        FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
+            GeneratedPluginRegistrant.register(with: registry)
+        }
         
-        let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+        }
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+
+    func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+        GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
         let simProfilesChannel = FlutterMethodChannel(
             name: "com.luxe.esim/flutter_to_native",
-            binaryMessenger: controller.binaryMessenger
+            binaryMessenger: engineBridge.applicationRegistrar.messenger()
         )
         simProfilesChannel.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else { return }
-            
+
             if call.method == "openSimProfilesSettings" {
                 self.openSimProfilesSettings(result: result)
             } else if call.method == "openEsimSetup" {
@@ -37,24 +49,13 @@ import FBSDKCoreKit
                                         details: nil))
                     return
                 }
-                
+
                 AppDelegate.openURL(withCardData: cardData)
                 result(true)
             } else {
                 result(FlutterMethodNotImplemented)
             }
         }
-        
-        
-        FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
-            GeneratedPluginRegistrant.register(with: registry)
-        }
-        
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
-        }
-        GeneratedPluginRegistrant.register(with: self)
-        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
 //    override func application(_ application: UIApplication,

@@ -2,6 +2,7 @@ library flutter_bounce;
 
 import "dart:async";
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -98,4 +99,32 @@ class BounceState extends State<Bounce> with SingleTickerProviderStateMixin {
       ..add(ObjectFlagProperty<VoidCallback>.has("onPressed", onPressed))
       ..add(DiagnosticsProperty<Duration>("userDuration", userDuration));
   }
+}
+
+@AppPreview(name: "Bounce")
+Widget bouncePreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Bounce(
+          duration: const Duration(milliseconds: 150),
+          onPressed: () {},
+          child: Container(
+            width: 160,
+            height: 160,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.pink,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Text(
+              "Tap me",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

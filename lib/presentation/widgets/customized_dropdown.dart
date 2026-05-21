@@ -1,6 +1,5 @@
-import "dart:io";
-
 import "package:easy_localization/easy_localization.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
 import "package:flutter/cupertino.dart";
@@ -37,7 +36,7 @@ class MyDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) async {
           if (triggerActionSheet) {
@@ -219,4 +218,19 @@ class MyDropDown extends StatelessWidget {
         DiagnosticsProperty<bool>("triggerActionSheet", triggerActionSheet),
       );
   }
+}
+
+@AppPreview(name: "Customized Dropdown")
+Widget myDropDownPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: MyDropDown(
+        valueList: const <String>["Option A", "Option B", "Option C"],
+        selectedValueIndex: 0,
+        isExpanded: true,
+        onChanged: (int index, String? value) {},
+      ),
+    ),
+  );
 }

@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -28,4 +29,14 @@ class NoteText extends StatelessWidget {
       ..add(EnumProperty<TextAlign?>("textAlign", textAlign))
       ..add(ColorProperty("color", color));
   }
+}
+
+@AppPreview(name: "Note Text")
+Widget noteTextPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: NoteText("This is a sample note."),
+    ),
+  );
 }

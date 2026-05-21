@@ -1,4 +1,6 @@
+import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/lockable_tab_bar.dart";
 import "package:esim_open_source/presentation/widgets/top_indicator.dart";
@@ -245,4 +247,23 @@ class _BaseFlutterBottomNavBarState extends State<BaseFlutterBottomNavBar> {
         )
         .toList();
   }
+}
+
+@AppPreview(name: "Customized Bottom Navbar")
+Widget baseFlutterBottomNavBarPreview() {
+  return Scaffold(
+    body: BaseFlutterBottomNavBar(
+      tabsIconData: <String>[
+        EnvironmentImages.tabBarDataPlans.fullImagePath,
+        EnvironmentImages.tabBarMyEsim.fullImagePath,
+        EnvironmentImages.tabBarProfile.fullImagePath,
+      ],
+      tabsText: const <String>["Data Plans", "My eSIM", "Profile"],
+      tabsWidgets: const <Widget>[
+        Center(child: Text("Data Plans")),
+        Center(child: Text("My eSIM")),
+        Center(child: Text("Profile")),
+      ],
+    ),
+  );
 }

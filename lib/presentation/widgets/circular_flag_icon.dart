@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/widgets/country_flag_image.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -46,4 +47,19 @@ class CircularFlagIcon extends StatelessWidget {
       ..add(DoubleProperty("borderWidth", borderWidth))
       ..add(ColorProperty("borderColor", borderColor));
   }
+}
+
+@AppPreview(name: "Circular Flag Icon")
+Widget circularFlagIconPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: Center(
+        child: CircularFlagIcon(
+          icon: "assets/images/shared/flags/globalFlag.svg",
+          size: 64,
+        ),
+      ),
+    ),
+  );
 }

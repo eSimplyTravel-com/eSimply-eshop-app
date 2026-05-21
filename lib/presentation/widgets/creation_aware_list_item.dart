@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -33,4 +34,17 @@ class CreationAwareListItemState extends State<CreationAwareListItem> {
   Widget build(BuildContext context) {
     return widget.child;
   }
+}
+
+@AppPreview(name: "Creation Aware List Item")
+Widget creationAwareListItemPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: CreationAwareListItem(
+        itemCreated: () {},
+        child: const Text("Sample list item"),
+      ),
+    ),
+  );
 }

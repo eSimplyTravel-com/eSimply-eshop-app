@@ -1,6 +1,7 @@
 // empty_content.dart
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/main_button.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
@@ -158,4 +159,17 @@ class EmptyExpiredPlansContent extends StatelessWidget {
       ),
     );
   }
+}
+
+@AppPreview(name: "Empty Content UI")
+Widget emptyContentUIPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: EmptyContentUI(
+        title: "Nothing here yet",
+        description: "Once you have items, they'll appear in this area.",
+      ),
+    ),
+  );
 }

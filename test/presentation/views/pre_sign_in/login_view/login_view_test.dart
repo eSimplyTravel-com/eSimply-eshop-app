@@ -34,7 +34,6 @@ Future<void> main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   const MethodChannel toastChannel =
       MethodChannel("PonnamKarthik/fluttertoast");
-  const MethodChannel vibrateChannel = MethodChannel("vibrate");
 
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -42,21 +41,6 @@ Future<void> main() async {
     (MethodCall methodCall) async {
       if (methodCall.method == "showToast") {
         return null; // Mock successful toast
-      }
-      return null;
-    },
-  );
-
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
-    vibrateChannel,
-    (MethodCall methodCall) async {
-      if (methodCall.method == "impact" ||
-          methodCall.method == "selection" ||
-          methodCall.method == "medium" ||
-          methodCall.method == "light" ||
-          methodCall.method == "heavy") {
-        return null; // Mock successful vibration
       }
       return null;
     },

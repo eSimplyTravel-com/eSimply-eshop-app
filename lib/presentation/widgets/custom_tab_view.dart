@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/haptic_feedback.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
@@ -375,4 +376,26 @@ class _DataPlansTabViewState extends State<DataPlansTabView>
         ),
       );
   }
+}
+
+@AppPreview(name: "Data Plans Tab View")
+Widget dataPlansTabViewPreview() {
+  return const Scaffold(
+    body: Column(
+      children: <Widget>[
+        DataPlansTabView(
+          tabs: <Tab>[
+            Tab(text: "Local"),
+            Tab(text: "Regional"),
+            Tab(text: "Global"),
+          ],
+          tabViewsChildren: <Widget>[
+            Text("Local plans"),
+            Text("Regional plans"),
+            Text("Global plans"),
+          ],
+        ),
+      ],
+    ),
+  );
 }

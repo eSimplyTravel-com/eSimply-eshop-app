@@ -1,6 +1,7 @@
 import "dart:async";
 import "dart:math" as math;
 
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -178,4 +179,20 @@ class HalfCircleProgressPainter extends CustomPainter {
         oldDelegate.strokeWidth != strokeWidth ||
         oldDelegate.strokeCap != strokeCap;
   }
+}
+
+@AppPreview(name: "Animated Half Circular Progress Indicator")
+Widget animatedHalfCircularProgressIndicatorPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: AnimatedHalfCircularProgressIndicator(
+          targetValue: 0.6,
+          valueColor: Colors.blue,
+          isLoading: false,
+        ),
+      ),
+    ),
+  );
 }

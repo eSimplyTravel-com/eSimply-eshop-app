@@ -1,4 +1,5 @@
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/theme/theme_setup.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -136,4 +137,19 @@ class _MyStepperState extends State<MyStepper> {
         )
         .toList();
   }
+}
+
+@AppPreview(name: "My Stepper")
+Widget myStepperPreview() {
+  return const Scaffold(
+    body: MyStepper(
+      themeColor: Colors.blue,
+      initialValue: 1,
+      tabsWidgets: <Widget>[
+        Center(child: Text("Step 1")),
+        Center(child: Text("Step 2")),
+        Center(child: Text("Step 3")),
+      ],
+    ),
+  );
 }

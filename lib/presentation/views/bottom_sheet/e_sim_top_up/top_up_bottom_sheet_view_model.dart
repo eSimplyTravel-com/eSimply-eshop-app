@@ -21,6 +21,7 @@ import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";
 import "package:esim_open_source/presentation/shared/action_helpers.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/views/base/esim_base_model.dart";
+import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/verify_purchase_view/verify_purchase_view.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
 import "package:esim_open_source/utils/payment_helper.dart";
 import "package:stacked_services/stacked_services.dart";
@@ -250,7 +251,7 @@ class TopUpBottomSheetViewModel extends EsimBaseModel {
         merchantIdentifier: params.secretParams.merchantIdentifier,
       );
 
-      await paymentService.processOrderPayment(
+      PaymentResult paymentResult = await paymentService.processOrderPayment(
         paymentType: params.secretParams.paymentType,
         params: ProcessOrderPaymentParams(
           iccID: request.data?.iccID ?? "",
@@ -262,6 +263,70 @@ class TopUpBottomSheetViewModel extends EsimBaseModel {
           testEnv: params.secretParams.test,
         ),
       );
+
+      setViewState(ViewState.idle);
+
+      switch (paymentResult) {
+        case PaymentResult.completed:
+          hideKeyboard();
+          String utm = localStorageService.getString(LocalStorageKeys.utm) ?? "";
+          analyticsService.logEvent(
+            event: AnalyticEvent.buyTopUpSuccess(
+              utm: utm,
+              platform: Platform.isAndroid ? "Android" : "iOS",
+              amount: bundlePrice,
+              currency: bundleCurrency,
+            ),
+          );
+          completer(
+            SheetResponse<MainBottomSheetResponse>(
+              data: MainBottomSheetResponse(
+                canceled: false,
+                tag: params.idParams.orderID,
+              ),
+            ),
+          );
+
+        case PaymentResult.canceled:
+          hideKeyboard();
+          unawaited(cancelOrder(orderID: params.idParams.orderID));
+          closeBottomSheet();
+
+        case PaymentResult.otpRequested:
+          setViewState(ViewState.idle);
+          bool result = await navigationService.navigateTo(
+            VerifyPurchaseView.routeName,
+            arguments: VerifyPurchaseViewArgs(
+              iccid: request.data?.iccID ?? "",
+              orderID: params.idParams.orderID,
+            ),
+            preventDuplicates: false,
+          );
+          if (result) {
+            hideKeyboard();
+            String utm = localStorageService.getString(LocalStorageKeys.utm) ?? "";
+            analyticsService.logEvent(
+              event: AnalyticEvent.buyTopUpSuccess(
+                utm: utm,
+                platform: Platform.isAndroid ? "Android" : "iOS",
+                amount: bundlePrice,
+                currency: bundleCurrency,
+              ),
+            );
+            completer(
+              SheetResponse<MainBottomSheetResponse>(
+                data: MainBottomSheetResponse(
+                  canceled: false,
+                  tag: params.idParams.orderID,
+                ),
+              ),
+            );
+          } else {
+            hideKeyboard();
+            unawaited(cancelOrder(orderID: params.idParams.orderID));
+            closeBottomSheet();
+          }
+      }
     } on Exception catch (e) {
       unawaited(cancelOrder(orderID: params.idParams.orderID));
       closeBottomSheet();
@@ -271,24 +336,6 @@ class TopUpBottomSheetViewModel extends EsimBaseModel {
       hideKeyboard();
       return;
     }
-    hideKeyboard();
-    String utm = localStorageService.getString(LocalStorageKeys.utm) ?? "";
-    analyticsService.logEvent(
-      event: AnalyticEvent.buyTopUpSuccess(
-        utm: utm,
-        platform: Platform.isAndroid ? "Android" : "iOS",
-        amount: bundlePrice,
-        currency: bundleCurrency,
-      ),
-    );
-    completer(
-      SheetResponse<MainBottomSheetResponse>(
-        data: MainBottomSheetResponse(
-          canceled: false,
-          tag: params.idParams.orderID,
-        ),
-      ),
-    );
   }
 //#endregion
 }

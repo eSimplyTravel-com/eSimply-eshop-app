@@ -2,6 +2,7 @@ import "dart:math";
 
 import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/circular_flag_icon.dart";
 import "package:flutter/foundation.dart";
@@ -205,4 +206,18 @@ class SupportedCountriesWidget extends StatelessWidget {
       ..add(DiagnosticsProperty<bool>("showLabel", showLabel))
       ..add(DiagnosticsProperty<bool>("showOnlyFlags", showOnlyFlags));
   }
+}
+
+@AppPreview(name: "Supported Countries Widget")
+Widget supportedCountriesWidgetPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: SupportedCountriesWidget(
+        label: "Supported Countries",
+        countries: CountryResponseModel.getMockCountries().take(5).toList(),
+        backgroundColor: Colors.grey[200]!,
+      ),
+    ),
+  );
 }

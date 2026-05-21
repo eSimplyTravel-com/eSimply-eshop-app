@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/widgets/note_text.dart";
@@ -164,4 +165,17 @@ class InputFieldState extends State<InputField> {
       ..add(DiagnosticsProperty<bool>("isPassword", isPassword))
       ..add(DoubleProperty("fieldHeight", fieldHeight));
   }
+}
+
+@AppPreview(name: "Input Field")
+Widget inputFieldPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: InputField(
+        controller: TextEditingController(),
+        placeholder: "Enter your name",
+      ),
+    ),
+  );
 }

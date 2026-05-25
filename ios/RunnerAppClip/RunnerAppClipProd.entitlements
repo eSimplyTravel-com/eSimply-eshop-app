@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>appclips:esimply-esim-shop-portal.onrender.com</string>
+		<string>appclips:esimply-eshop-web.onrender.com</string>
 	</array>
 	<key>com.apple.developer.parent-application-identifiers</key>
 	<array>

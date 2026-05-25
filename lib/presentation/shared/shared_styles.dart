@@ -56,7 +56,7 @@ Color emptyStateTextColor({required BuildContext context}) =>
 
 //button text
 Color enabledMainButtonTextColor({required BuildContext context}) =>
-    context.appColors.baseBlack!;
+    context.appColors.baseWhite!;
 
 Color enabledSecondaryButtonTextColor({required BuildContext context}) =>
     context.appColors.secondary_600!;
@@ -69,7 +69,7 @@ Color bubbleCountryTextColor({required BuildContext context}) =>
 
 //button color
 Color enabledMainButtonColor({required BuildContext context}) =>
-    context.appColors.primaryAltBtn_800!;
+    context.appColors.baseBlack!;
 
 Color enabledMainDarkButtonColor({required BuildContext context}) =>
     context.appColors.secondary_600!;
@@ -103,7 +103,7 @@ Color emptyStateButtonColor({required BuildContext context}) =>
     context.appColors.primaryAlt_800!;
 
 Color promoCodeButtonColor({required BuildContext context}) =>
-    context.appColors.error_500!;
+    context.appColors.secondaryAltIconBtn_600!;
 
 //border color
 Color errorBorderColor({required BuildContext context}) =>

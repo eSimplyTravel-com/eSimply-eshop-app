@@ -129,22 +129,22 @@
 		<key>NSUserTrackingUsageDescription</key>
 		<string>This app would like to access IDFA to provide better ad experiences and measure ad performance.</string>
 		<key>branch_key</key>
-		<dict>
-			<key>live</key>
-			<string>$(BRANCH_KEY_LIVE)</string>
-			<key>test</key>
-			<string>$(BRANCH_KEY_TEST)</string>
-		</dict>
-		<key>branch_universal_link_domains</key>
-		<array>
-			<string>$(BRANCH_DOMAIN).app.link</string>
-			<string>$(BRANCH_DOMAIN)-alternate.app.link</string>
-			<string>$(BRANCH_DOMAIN).test-app.link</string>
-			<string>$(BRANCH_DOMAIN)-alternate.test-app.link</string>
-		</array>
-		<key>branch_use_test_instance</key>
-		<false/>
-		<key>io.flutter.embedded_views_preview</key>
-		<true/>
+	<dict>
+		<key>live</key>
+		<string>$(BRANCH_KEY_LIVE)</string>
+		<key>test</key>
+		<string>$(BRANCH_KEY_TEST)</string>
 	</dict>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>$(BRANCH_DOMAIN).app.link</string>
+		<string>$(BRANCH_DOMAIN)-alternate.app.link</string>
+		<string>$(BRANCH_DOMAIN).test-app.link</string>
+		<string>$(BRANCH_DOMAIN)-alternate.test-app.link</string>
+	</array>
+	<key>branch_use_test_instance</key>
+	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+</dict>
 </plist>

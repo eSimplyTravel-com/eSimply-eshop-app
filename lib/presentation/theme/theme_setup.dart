@@ -599,7 +599,7 @@ extension CustomColorSchemeX on ColorScheme {
 
   Color getColorForKey(BuildContext context, ThemeColorsTag tag) {
     AppColors color = Theme.of(context).extension<AppColors>()!;
-    return color.baseBlack!;
+    return color.baseWhite!;
   }
 }
 

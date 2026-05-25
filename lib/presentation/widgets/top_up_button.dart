@@ -1,6 +1,5 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
-import "package:esim_open_source/presentation/extensions/context_extension.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
 import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
@@ -33,10 +32,6 @@ class TopUpButton extends StatelessWidget {
         padding: const EdgeInsets.only(right: 8),
         child: SvgPicture.asset(
           EnvironmentImages.topUpIcon.fullImagePath,
-          colorFilter: ColorFilter.mode(
-            context.appColors.baseBlack!,
-            BlendMode.srcIn,
-          ),
         ),
       ),
       title: LocaleKeys.top_up.tr(),

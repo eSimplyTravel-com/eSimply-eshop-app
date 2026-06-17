@@ -89,7 +89,6 @@ import "package:esim_open_source/presentation/views/pre_sign_in/continue_with_em
 import "package:esim_open_source/presentation/views/pre_sign_in/device_compability_check_view/device_compability_check_view_model.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view_model.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view_model.dart";
-import "package:esim_open_source/presentation/views/skeleton_view/skeleton_view_model.dart";
 import "package:esim_open_source/presentation/views/start_up_view/startup_view_model.dart";
 import "package:get_it/get_it.dart";
 import "package:stacked_services/stacked_services.dart";
@@ -268,9 +267,6 @@ Future<void> viewModelInjectionModules() async {
     )
     ..registerFactory<VerifyLoginViewModel>(
       VerifyLoginViewModel.new,
-    )
-    ..registerFactory<SkeletonViewModel>(
-      SkeletonViewModel.new,
     )
     ..registerFactory<UserGuideDetailedViewModel>(
       UserGuideDetailedViewModel.new,

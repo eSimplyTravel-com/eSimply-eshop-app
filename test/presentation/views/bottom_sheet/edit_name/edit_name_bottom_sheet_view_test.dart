@@ -1,157 +1,108 @@
+import "package:esim_open_source/presentation/enums/view_state.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/edit_name/edit_name_bottom_sheet_view.dart";
+import "package:esim_open_source/presentation/views/bottom_sheet/edit_name/edit_name_bottom_sheet_view_model.dart";
+import "package:esim_open_source/presentation/widgets/bottom_sheet_close_button.dart";
+import "package:esim_open_source/presentation/widgets/main_button.dart";
+import "package:esim_open_source/presentation/widgets/main_input_field.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:mockito/mockito.dart";
 import "package:stacked_services/stacked_services.dart";
 
 import "../../../../helpers/view_helper.dart";
 import "../../../../helpers/view_model_helper.dart";
+import "../../../../locator_test.dart";
+import "../../../../locator_test.mocks.dart";
 
-void main() {
-  group("EditNameBottomSheetView Tests", () {
-    setUpAll(() async {
-      await prepareTest();
-    });
+Future<void> main() async {
+  late MockEditNameBottomSheetViewModel mockViewModel;
 
-    setUp(() async {
-      await setupTest();
-      onViewModelReadyMock(viewName: "EditNameBottomSheetView");
-    });
+  setUpAll(() async {
+    await prepareTest();
+  });
 
-    tearDown(() async {
-      await tearDownTest();
-    });
+  setUp(() async {
+    await setupTest();
+    onViewModelReadyMock(viewName: "EditNameBottomSheetView");
 
-    tearDownAll(() async {
-      await tearDownAllTest();
-    });
+    mockViewModel = MockEditNameBottomSheetViewModel();
+    if (locator.isRegistered<EditNameBottomSheetViewModel>()) {
+      await locator.unregister<EditNameBottomSheetViewModel>();
+    }
+    locator.registerSingleton<EditNameBottomSheetViewModel>(mockViewModel);
 
-    test("should execute build method for coverage", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
+    when(mockViewModel.isBusy).thenReturn(false);
+    when(mockViewModel.viewState).thenReturn(ViewState.idle);
+    when(mockViewModel.controller).thenReturn(TextEditingController());
+    when(mockViewModel.isButtonEnabled).thenReturn(false);
+    when(mockViewModel.request).thenReturn(
+      SheetRequest<BundleEditNameRequest>(
         data: BundleEditNameRequest(name: "Test Name"),
-      );
+      ),
+    );
+  });
 
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
+  tearDown(() async {
+    await tearDownTest();
+  });
 
-      expect(view.build, isNotNull);
-      expect(view.request.data?.name, equals("Test Name"));
-    });
+  tearDownAll(() async {
+    await tearDownAllTest();
+  });
 
-    test("should handle null name data correctly", () {
+  group("EditNameBottomSheetView Tests", () {
+    testWidgets("renders basic structure with all UI elements",
+        (WidgetTester tester) async {
       void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
 
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(),
+      await tester.pumpWidget(
+        createTestableWidget(
+          Scaffold(
+            body: EditNameBottomSheetView(
+              request: SheetRequest<BundleEditNameRequest>(
+                data: BundleEditNameRequest(name: "Test Name"),
+              ),
+              completer: mockCompleter,
+            ),
+          ),
+        ),
       );
+      await tester.pumpAndSettle();
 
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, isNull);
-      expect(view.build, isNotNull);
+      expect(find.byType(EditNameBottomSheetView), findsOneWidget);
+      expect(find.byType(Column), findsWidgets);
+      expect(find.byType(BottomSheetCloseButton), findsOneWidget);
+      expect(find.byType(MainInputField), findsOneWidget);
+      expect(find.byType(MainButton), findsOneWidget);
     });
 
-    test("should handle null request data correctly", () {
+    testWidgets("renders with button enabled when isButtonEnabled is true",
+        (WidgetTester tester) async {
+      when(mockViewModel.isButtonEnabled).thenReturn(true);
+
       void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
 
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
+      await tester.pumpWidget(
+        createTestableWidget(
+          Scaffold(
+            body: EditNameBottomSheetView(
+              request: SheetRequest<BundleEditNameRequest>(
+                data: BundleEditNameRequest(name: "John Doe"),
+              ),
+              completer: mockCompleter,
+            ),
+          ),
+        ),
       );
+      await tester.pumpAndSettle();
 
-      expect(view.request.data, isNull);
-      expect(view.build, isNotNull);
+      final MainButton button = tester.widget<MainButton>(find.byType(MainButton));
+      expect(button.isEnabled, isTrue);
     });
 
-    test("completer should be callable", () {
-      bool completerCalled = false;
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        completerCalled = true;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      view.completer(SheetResponse<MainBottomSheetResponse>());
-
-      expect(completerCalled, isTrue);
-    });
-
-    test("should render and completer should be callable", () {
-      bool completerCalled = false;
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        completerCalled = true;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "John Doe"),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      view.completer(SheetResponse<MainBottomSheetResponse>());
-      expect(completerCalled, isTrue);
-
-      expect(view.build, isNotNull);
-    });
-
-    test("view can be instantiated with name data", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "Test User"),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals("Test User"));
-      expect(view.build, isNotNull);
-    });
-
-    test("view can be instantiated with empty name", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: ""),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals(""));
-      expect(view.build, isNotNull);
-    });
-
-    test("debugFillProperties should add properties correctly", () {
+    test("debugFillProperties adds request and completer properties", () {
       void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
 
       final SheetRequest<BundleEditNameRequest> request =
@@ -178,12 +129,12 @@ void main() {
       );
     });
 
-    test("view should be created with required parameters", () {
+    test("view properties are set correctly", () {
       void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
 
       final SheetRequest<BundleEditNameRequest> request =
           SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "Required Test"),
+        data: BundleEditNameRequest(name: "Test User"),
       );
 
       final EditNameBottomSheetView view = EditNameBottomSheetView(
@@ -191,310 +142,25 @@ void main() {
         completer: mockCompleter,
       );
 
-      expect(view.completer, equals(mockCompleter));
       expect(view.request, equals(request));
-    });
-
-    test("view should handle name data correctly", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "John Smith"),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals("John Smith"));
-    });
-
-    test("completer callback with confirmed response", () {
-      bool completerCalled = false;
-      SheetResponse<MainBottomSheetResponse>? capturedResponse;
-
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        completerCalled = true;
-        capturedResponse = response;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      final SheetResponse<MainBottomSheetResponse> response =
-          SheetResponse<MainBottomSheetResponse>(confirmed: true);
-      view.completer(response);
-
-      expect(completerCalled, isTrue);
-      expect(capturedResponse?.confirmed, isTrue);
-    });
-
-    test("completer callback with unconfirmed response", () {
-      bool completerCalled = false;
-      SheetResponse<MainBottomSheetResponse>? capturedResponse;
-
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        completerCalled = true;
-        capturedResponse = response;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      final SheetResponse<MainBottomSheetResponse> response =
-          SheetResponse<MainBottomSheetResponse>();
-      view.completer(response);
-
-      expect(completerCalled, isTrue);
-      expect(capturedResponse?.confirmed, isFalse);
-    });
-
-    test("view properties are immutable after creation", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "Immutable Test"),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
       expect(view.completer, equals(mockCompleter));
-      expect(view.request, equals(request));
-      expect(view.key, isNull);
+      expect(view.request.data?.name, equals("Test User"));
     });
 
-    test("completer callback with response data", () {
+    test("completer is callable and receives response", () {
       SheetResponse<MainBottomSheetResponse>? capturedResponse;
 
       void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
         capturedResponse = response;
       }
 
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
       final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      const MainBottomSheetResponse responseData = MainBottomSheetResponse(
-        tag: "Updated Name",
-        canceled: false,
-      );
-
-      final SheetResponse<MainBottomSheetResponse> response =
-          SheetResponse<MainBottomSheetResponse>(data: responseData);
-      view.completer(response);
-
-      expect(capturedResponse?.data?.tag, equals("Updated Name"));
-      expect(capturedResponse?.data?.canceled, isFalse);
-    });
-
-    test("view should handle very long names", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final String longName = "A" * 500;
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: longName),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals(longName));
-      expect(view.request.data?.name?.length, equals(500));
-    });
-
-    test("view should handle special characters in name", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      const String specialName = r"Name with @#$ & symbols!";
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: specialName),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals(specialName));
-    });
-
-    test("view should handle unicode characters in name", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      const String unicodeName = "测试用户 🎉";
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: unicodeName),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals(unicodeName));
-    });
-
-    test("multiple completer calls work correctly", () {
-      int callCount = 0;
-
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        callCount++;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
+        request: SheetRequest<BundleEditNameRequest>(),
         completer: testCompleter,
       );
 
       view.completer(SheetResponse<MainBottomSheetResponse>());
-      expect(callCount, equals(1));
-
-      view.completer(SheetResponse<MainBottomSheetResponse>());
-      expect(callCount, equals(2));
-    });
-
-    test("view should preserve request data", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      const String originalName = "Original Name";
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: originalName),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      // Call completer shouldn't modify request
-      view.completer(SheetResponse<MainBottomSheetResponse>());
-
-      expect(view.request.data?.name, equals(originalName));
-    });
-
-    test("view should be created with custom key", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final Key customKey = const ValueKey<String>("edit_name_key");
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        key: customKey,
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.key, equals(customKey));
-    });
-
-    test("completer with canceled response", () {
-      SheetResponse<MainBottomSheetResponse>? capturedResponse;
-
-      void testCompleter(SheetResponse<MainBottomSheetResponse> response) {
-        capturedResponse = response;
-      }
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: testCompleter,
-      );
-
-      const MainBottomSheetResponse responseData = MainBottomSheetResponse();
-
-      final SheetResponse<MainBottomSheetResponse> response =
-          SheetResponse<MainBottomSheetResponse>(data: responseData);
-      view.completer(response);
-
-      expect(capturedResponse?.data?.canceled, isTrue);
-    });
-
-    test("view can be instantiated with null data", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>();
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data, isNull);
-      expect(view.build, isNotNull);
-    });
-
-    test("view should handle whitespace-only names", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      const String whitespaceName = "   ";
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: whitespaceName),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      expect(view.request.data?.name, equals(whitespaceName));
-    });
-
-    test("build method returns non-null widget", () {
-      void mockCompleter(SheetResponse<MainBottomSheetResponse> response) {}
-
-      final SheetRequest<BundleEditNameRequest> request =
-          SheetRequest<BundleEditNameRequest>(
-        data: BundleEditNameRequest(name: "Test"),
-      );
-
-      final EditNameBottomSheetView view = EditNameBottomSheetView(
-        request: request,
-        completer: mockCompleter,
-      );
-
-      // Verify the build method exists and can be called
-      expect(view.build, isNotNull);
-      expect(view, isA<Widget>());
+      expect(capturedResponse, isNotNull);
     });
   });
 }

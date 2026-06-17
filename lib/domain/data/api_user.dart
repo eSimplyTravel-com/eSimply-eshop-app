@@ -1,6 +1,6 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/request/related_search.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
 
 abstract interface class ApiUser {
   FutureOr<dynamic> getUserConsumption({required String iccID});

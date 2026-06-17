@@ -6,7 +6,7 @@ import "package:esim_open_source/data/remote/api_end_point.dart";
 import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/auth_apis/auth_apis.dart";
 import "package:esim_open_source/data/remote/http_methods.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";

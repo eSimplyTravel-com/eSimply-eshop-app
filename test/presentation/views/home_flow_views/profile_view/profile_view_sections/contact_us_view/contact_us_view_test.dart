@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/core/string_response.dart";
+import "package:esim_open_source/domain/data/response/core/string_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/use_case/app/contact_us_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -53,7 +53,7 @@ Future<void> main() async {
       ),
     ).thenAnswer(
       (_) async => Resource<StringResponse?>.success(
-        StringResponse.fromJson(json: "Success"),
+        StringResponse(stringValue: true),
         message: "Message sent successfully",
       ),
     );

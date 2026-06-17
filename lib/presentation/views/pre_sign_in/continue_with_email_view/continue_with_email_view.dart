@@ -206,89 +206,7 @@ class ContinueWithEmailView extends StatelessWidget {
                         ),
                       ),
                       verticalSpaceLarge,
-                      if (localLoginType == LoginType.emailAndPhoneAndBothVerification)
-                        Column(
-                          children: <Widget>[
-                            MainButton(
-                              title: LocaleKeys.continueWithEmail_signInViaEmail.tr(),
-                              onPressed: () async {
-                                viewModel.loginButtonTappedWithChannel("EMAIL");
-                              },
-                              themeColor: themeColor,
-                              height: 53,
-                              hideShadows: true,
-                              isEnabled: viewModel.state?.isLoginEnabled ?? false,
-                              enabledTextColor:
-                                  enabledMainButtonTextColor(context: context),
-                              disabledTextColor:
-                                  disabledMainButtonTextColor(context: context),
-                              disabledBackgroundColor:
-                                  disabledMainButtonColor(context: context),
-                              enabledBackgroundColor:
-                                  enabledMainButtonColor(context: context),
-                            ),
-                            verticalSpaceSmall,
-                            Center(
-                              child: Text(
-                                LocaleKeys.continueWithEmail_or.tr(),
-                                style: bodyNormalTextStyle(
-                                  context: context,
-                                  fontColor: secondaryTextColor(context: context),
-                                ),
-                              ),
-                            ),
-                            verticalSpaceSmall,
-                            MainButton(
-                              title: LocaleKeys.continueWithEmail_signInViaSms.tr(),
-                              onPressed: () async {
-                                viewModel.loginButtonTappedWithChannel("SMS");
-                              },
-                              themeColor: themeColor,
-                              height: 53,
-                              hideShadows: true,
-                              isEnabled: viewModel.state?.isLoginEnabled ?? false,
-                              enabledTextColor:
-                                  enabledMainButtonTextColor(context: context),
-                              disabledTextColor:
-                                  disabledMainButtonTextColor(context: context),
-                              disabledBackgroundColor:
-                                  disabledMainButtonColor(context: context),
-                              enabledBackgroundColor:
-                                  enabledMainButtonColor(context: context),
-                            ),
-                            if (viewModel.otpSendErrorMessage != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12),
-                                child: Text(
-                                  viewModel.otpSendErrorMessage!,
-                                  style: captionOneNormalTextStyle(
-                                    context: context,
-                                    fontColor: errorTextColor(context: context),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                          ],
-                        )
-                      else
-                        MainButton(
-                          title: LocaleKeys.continueWithEmailView_titleText.tr(),
-                          onPressed: () async {
-                            viewModel.loginButtonTapped();
-                          },
-                          themeColor: themeColor,
-                          height: 53,
-                          hideShadows: true,
-                          isEnabled: viewModel.state?.isLoginEnabled ?? false,
-                          enabledTextColor:
-                              enabledMainButtonTextColor(context: context),
-                          disabledTextColor:
-                              disabledMainButtonTextColor(context: context),
-                          disabledBackgroundColor:
-                              disabledMainButtonColor(context: context),
-                          enabledBackgroundColor:
-                              enabledMainButtonColor(context: context),
-                        ),
+                      _buildButtonSection(context, viewModel),
                     ],
                   ),
                 ],
@@ -328,6 +246,95 @@ class ContinueWithEmailView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildButtonSection(
+    BuildContext context,
+    ContinueWithEmailViewModel viewModel,
+  ) {
+    if (localLoginType == LoginType.emailAndPhoneAndBothVerification) {
+      return Column(
+        children: <Widget>[
+          MainButton(
+            title: LocaleKeys.continueWithEmail_signInViaEmail.tr(),
+            onPressed: () async {
+              viewModel.loginButtonTappedWithChannel("EMAIL");
+            },
+            themeColor: themeColor,
+            height: 53,
+            hideShadows: true,
+            isEnabled: viewModel.state?.isLoginEnabled ?? false,
+            enabledTextColor:
+                enabledMainButtonTextColor(context: context),
+            disabledTextColor:
+                disabledMainButtonTextColor(context: context),
+            disabledBackgroundColor:
+                disabledMainButtonColor(context: context),
+            enabledBackgroundColor:
+                enabledMainButtonColor(context: context),
+          ),
+          verticalSpaceSmall,
+          Center(
+            child: Text(
+              LocaleKeys.continueWithEmail_or.tr(),
+              style: bodyNormalTextStyle(
+                context: context,
+                fontColor: secondaryTextColor(context: context),
+              ),
+            ),
+          ),
+          verticalSpaceSmall,
+          MainButton(
+            title: LocaleKeys.continueWithEmail_signInViaSms.tr(),
+            onPressed: () async {
+              viewModel.loginButtonTappedWithChannel("SMS");
+            },
+            themeColor: themeColor,
+            height: 53,
+            hideShadows: true,
+            isEnabled: viewModel.state?.isLoginEnabled ?? false,
+            enabledTextColor:
+                enabledMainButtonTextColor(context: context),
+            disabledTextColor:
+                disabledMainButtonTextColor(context: context),
+            disabledBackgroundColor:
+                disabledMainButtonColor(context: context),
+            enabledBackgroundColor:
+                enabledMainButtonColor(context: context),
+          ),
+          if (viewModel.otpSendErrorMessage != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                viewModel.otpSendErrorMessage!,
+                style: captionOneNormalTextStyle(
+                  context: context,
+                  fontColor: errorTextColor(context: context),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+        ],
+      );
+    }
+    return MainButton(
+      title: LocaleKeys.continueWithEmailView_titleText.tr(),
+      onPressed: () async {
+        viewModel.loginButtonTapped();
+      },
+      themeColor: themeColor,
+      height: 53,
+      hideShadows: true,
+      isEnabled: viewModel.state?.isLoginEnabled ?? false,
+      enabledTextColor:
+          enabledMainButtonTextColor(context: context),
+      disabledTextColor:
+          disabledMainButtonTextColor(context: context),
+      disabledBackgroundColor:
+          disabledMainButtonColor(context: context),
+      enabledBackgroundColor:
+          enabledMainButtonColor(context: context),
     );
   }
 

@@ -2,11 +2,12 @@
 
 import "dart:async";
 
-import "package:esim_open_source/data/remote/request/device/device_info_request_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/device/device_info_response_model_dto.dart";
 import "package:esim_open_source/data/repository/api_device_repository_impl.dart";
 import "package:esim_open_source/domain/data/params/register_device_params.dart";
+import "package:esim_open_source/domain/data/request/device_info_request_model.dart";
+import "package:esim_open_source/domain/data/response/device/device_info_response_model.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -26,8 +27,6 @@ void main() {
   group("ApiDeviceRepositoryImpl", () {
     const String testFcmToken = "test-fcm-token-123";
     const String testDeviceId = "test-device-id-456";
-    const String testPlatformTag = "MOBILE_ANDROID";
-    const String testOsTag = "ANDROID";
     const String testAppGuid = "test-app-guid-789";
     const String testVersion = "1.0.0";
     const String testUserGuid = "test-user-guid-101";
@@ -47,8 +46,6 @@ void main() {
       testParams = RegisterDeviceParams(
         fcmToken: testFcmToken,
         deviceId: testDeviceId,
-        platformTag: testPlatformTag,
-        osTag: testOsTag,
         appGuid: testAppGuid,
         version: testVersion,
         userGuid: testUserGuid,
@@ -59,10 +56,10 @@ void main() {
     group("registerDevice", () {
       test("should return success resource when API call succeeds", () async {
         // Arrange
-        final DeviceInfoResponseModel expectedResponse =
-            DeviceInfoResponseModel();
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final DeviceInfoResponseModelDto expectedResponse =
+            DeviceInfoResponseModelDto();
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Device registered successfully",
           statusCode: 200,
@@ -82,7 +79,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isNotNull);
         expect(result.message, "Device registered successfully");
         expect(result.error, isNull);
 
@@ -96,8 +93,8 @@ void main() {
       test("should return error resource when API call returns non-200 status",
           () async {
         // Arrange
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Invalid device information provided",
           title: "Invalid device information provided",
@@ -131,8 +128,8 @@ void main() {
       test("should return error resource when API returns 500 status",
           () async {
         // Arrange
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           statusCode: 500,
           developerMessage: "Internal server error",
           title: "Internal server error",
@@ -166,8 +163,8 @@ void main() {
       test("should return error resource when API returns 401 status",
           () async {
         // Arrange
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           statusCode: 401,
           developerMessage: "Unauthorized access",
           title: "Unauthorized access",
@@ -202,8 +199,6 @@ void main() {
         // Arrange
         const String customFcmToken = "custom-token";
         const String customDeviceId = "custom-device-id";
-        const String customPlatformTag = "MOBILE_IOS";
-        const String customOsTag = "IOS";
         const String customAppGuid = "custom-app-guid";
         const String customVersion = "2.1.0";
         const String customUserGuid = "custom-user-guid";
@@ -219,18 +214,16 @@ void main() {
         final RegisterDeviceParams customParams = RegisterDeviceParams(
           fcmToken: customFcmToken,
           deviceId: customDeviceId,
-          platformTag: customPlatformTag,
-          osTag: customOsTag,
           appGuid: customAppGuid,
           version: customVersion,
           userGuid: customUserGuid,
           deviceInfo: customDeviceInfo,
         );
 
-        final DeviceInfoResponseModel expectedResponse =
-            DeviceInfoResponseModel();
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final DeviceInfoResponseModelDto expectedResponse =
+            DeviceInfoResponseModelDto();
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Success",
           statusCode: 200,
@@ -259,8 +252,8 @@ void main() {
     group("Edge cases and boundary conditions", () {
       test("should handle null response data gracefully", () async {
         // Arrange
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           message: "Success but no data",
           statusCode: 200,
         );
@@ -277,9 +270,9 @@ void main() {
           params: testParams,
         ) as Resource<DeviceInfoResponseModel?>;
 
-        // Assert - since statusCode is 200, responseToResource will try to call response.dataOfType
-        // which tries to cast null as DeviceInfoResponseModel and might cause issues
-        expect(result.resourceType, ResourceType.error);
+        // Assert - a 200 with null data is a valid success(null), not an error:
+        // the mapper is skipped and the nullable domain type carries the null.
+        expect(result.resourceType, ResourceType.success);
         expect(result.data, isNull);
       });
 
@@ -295,18 +288,16 @@ void main() {
         final RegisterDeviceParams emptyParams = RegisterDeviceParams(
           fcmToken: emptyString,
           deviceId: emptyString,
-          platformTag: emptyString,
-          osTag: emptyString,
           appGuid: emptyString,
           version: emptyString,
           userGuid: emptyString,
           deviceInfo: emptyDeviceInfo,
         );
 
-        final DeviceInfoResponseModel expectedResponse =
-            DeviceInfoResponseModel();
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
+        final DeviceInfoResponseModelDto expectedResponse =
+            DeviceInfoResponseModelDto();
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Success",
           statusCode: 200,
@@ -326,7 +317,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isNotNull);
 
         verify(
           mockApiDevice.registerDevice(
@@ -343,9 +334,9 @@ void main() {
 
       test("should return FutureOr<dynamic> as specified in interface", () {
         // Arrange
-        final ResponseMain<DeviceInfoResponseModel> responseMain =
-            ResponseMain<DeviceInfoResponseModel>.createErrorWithData(
-          data: DeviceInfoResponseModel(),
+        final ResponseMainDto<DeviceInfoResponseModelDto?> responseMain =
+            ResponseMainDto<DeviceInfoResponseModelDto?>.createErrorWithData(
+          data: DeviceInfoResponseModelDto(),
           message: "Success",
           statusCode: 200,
         );

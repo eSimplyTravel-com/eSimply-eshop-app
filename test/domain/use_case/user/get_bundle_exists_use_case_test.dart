@@ -1,3 +1,4 @@
+import "package:esim_open_source/domain/data/response/bundles/bundle_exists_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/use_case/user/get_bundle_exists_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -34,18 +35,22 @@ Future<void> main() async {
       const String bundleCode = "EUROPE_5GB";
       final BundleExistsParams params = BundleExistsParams(code: bundleCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.success(true, message: "Bundle exists");
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.success(
+        BundleExistsResponse(exists: true),
+        message: "Bundle exists",
+      );
 
       when(mockRepository.getBundleExists(code: bundleCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
-      expect(result.data, equals(true));
+      expect(result.data?.exists, equals(true));
       expect(result.message, equals("Bundle exists"));
 
       verify(mockRepository.getBundleExists(code: bundleCode)).called(1);
@@ -56,18 +61,22 @@ Future<void> main() async {
       const String bundleCode = "INVALID_BUNDLE";
       final BundleExistsParams params = BundleExistsParams(code: bundleCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.success(false, message: "Bundle does not exist");
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.success(
+        BundleExistsResponse(exists: false),
+        message: "Bundle does not exist",
+      );
 
       when(mockRepository.getBundleExists(code: bundleCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
-      expect(result.data, equals(false));
+      expect(result.data?.exists, equals(false));
 
       verify(mockRepository.getBundleExists(code: bundleCode)).called(1);
     });
@@ -77,14 +86,17 @@ Future<void> main() async {
       const String bundleCode = "ERROR_BUNDLE";
       final BundleExistsParams params = BundleExistsParams(code: bundleCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.error("Failed to check bundle existence");
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.error(
+        "Failed to check bundle existence",
+      );
 
       when(mockRepository.getBundleExists(code: bundleCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.error));
@@ -109,18 +121,22 @@ Future<void> main() async {
 
         final BundleExistsParams params = BundleExistsParams(code: code);
 
-        final Resource<bool?> expectedResponse =
-        Resource<bool?>.success(exists, message: null);
+        final Resource<BundleExistsResponse?> expectedResponse =
+            Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: exists),
+          message: null,
+        );
 
         when(mockRepository.getBundleExists(code: code))
             .thenAnswer((_) async => expectedResponse);
 
         // Act
-        final Resource<bool?> result = await useCase.execute(params);
+        final Resource<BundleExistsResponse?> result =
+            await useCase.execute(params);
 
         // Assert
         expect(result.resourceType, equals(ResourceType.success));
-        expect(result.data, equals(exists));
+        expect(result.data?.exists, equals(exists));
         verify(mockRepository.getBundleExists(code: code)).called(1);
       }
     });
@@ -147,14 +163,15 @@ Future<void> main() async {
       const String emptyCode = "";
       final BundleExistsParams params = BundleExistsParams(code: emptyCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.error("Invalid bundle code");
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.error("Invalid bundle code");
 
       when(mockRepository.getBundleExists(code: emptyCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.error));
@@ -166,14 +183,18 @@ Future<void> main() async {
       const String bundleCode = "NULL_DATA_BUNDLE";
       final BundleExistsParams params = BundleExistsParams(code: bundleCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.success(null, message: "No data available");
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.success(
+        null,
+        message: "No data available",
+      );
 
       when(mockRepository.getBundleExists(code: bundleCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
@@ -185,18 +206,22 @@ Future<void> main() async {
       const String specialCode = "BUNDLE_2024-Q1_SPECIAL";
       final BundleExistsParams params = BundleExistsParams(code: specialCode);
 
-      final Resource<bool?> expectedResponse =
-      Resource<bool?>.success(true, message: null);
+      final Resource<BundleExistsResponse?> expectedResponse =
+          Resource<BundleExistsResponse?>.success(
+        BundleExistsResponse(exists: true),
+        message: null,
+      );
 
       when(mockRepository.getBundleExists(code: specialCode))
           .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<bool?> result = await useCase.execute(params);
+      final Resource<BundleExistsResponse?> result =
+          await useCase.execute(params);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
-      expect(result.data, equals(true));
+      expect(result.data?.exists, equals(true));
     });
   });
 }

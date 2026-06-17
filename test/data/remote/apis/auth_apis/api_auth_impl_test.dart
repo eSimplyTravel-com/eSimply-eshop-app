@@ -1,10 +1,10 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
 import "package:esim_open_source/data/remote/apis/auth_apis/api_auth_impl.dart";
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/domain/data/api_auth.dart";
 import "package:esim_open_source/domain/data/params/update_user_info_params.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -29,7 +29,7 @@ class MockUnauthorizedAccessListener implements UnauthorizedAccessListener {
 class MockAuthReloadListener implements AuthReloadListener {
   @override
   void onAuthReloadListenerCallBackUseCase(
-    ResponseMain<dynamic>? response,
+      AuthResponseModel? authResponse,
   ) {
     // Mock implementation
   }

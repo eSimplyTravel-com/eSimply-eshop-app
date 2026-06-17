@@ -1,12 +1,14 @@
 import "package:esim_open_source/domain/data/api_app.dart";
 import "package:esim_open_source/domain/data/api_bundles.dart";
 import "package:esim_open_source/domain/data/api_device.dart";
+import "package:esim_open_source/domain/data/api_notifications.dart";
 import "package:esim_open_source/domain/data/api_promotion.dart";
 import "package:esim_open_source/domain/data/api_user.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/api_bundles_repository.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
+import "package:esim_open_source/domain/repository/api_notifications_repository.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
@@ -63,7 +65,6 @@ import "package:esim_open_source/presentation/views/pre_sign_in/device_compabili
 import "package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view_model.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view_model.dart";
 // import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/verify_purchase_view/verify_purchase_view_model.dart";
-import "package:esim_open_source/presentation/views/skeleton_view/skeleton_view_model.dart";
 import "package:esim_open_source/presentation/views/start_up_view/startup_view_model.dart";
 import "package:flutter_esim/flutter_esim.dart";
 import "package:get_it/get_it.dart";
@@ -133,7 +134,6 @@ import "locator_test.mocks.dart";
   LoginViewModel,
   VerifyLoginViewModel,
   VerifyPurchaseViewModel,
-  SkeletonViewModel,
   UserGuideDetailedViewModel,
   //Services
   UserService,
@@ -144,6 +144,8 @@ import "locator_test.mocks.dart";
   FlutterEsim,
   APIDevice,
   APIApp,
+  APINotifications,
+  ApiNotificationsRepository,
   http.Client,
 ])
 Future<void> main() async {}
@@ -251,7 +253,7 @@ Future<void> thirdPartyServicesModule() async {
 
 Future<void> viewModelModules() async {
   locator
-    ..registerFactory<OrderBottomSheetViewModel>(
+    ..registerLazySingleton<OrderBottomSheetViewModel>(
       MockOrderBottomSheetViewModel.new,
     )
     ..registerLazySingleton<OrderReceiptBottomSheetViewModel>(
@@ -310,9 +312,6 @@ Future<void> viewModelModules() async {
     )
     ..registerLazySingleton<VerifyPurchaseViewModel>(
       VerifyPurchaseViewModel.new,
-    )
-    ..registerLazySingleton<SkeletonViewModel>(
-      MockSkeletonViewModel.new,
     )
     ..registerLazySingleton<UserGuideDetailedViewModel>(
       UserGuideDetailedViewModel.new,

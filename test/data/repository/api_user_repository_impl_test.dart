@@ -1,17 +1,26 @@
 // api_user_repository_impl_test.dart
 
-
 import "package:esim_open_source/data/data_source/esims_local_data_source.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
-import "package:esim_open_source/data/remote/responses/user/order_history_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_exists_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/order_history_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/user_notification_response_dto.dart";
 import "package:esim_open_source/data/repository/api_user_repository_impl.dart";
 import "package:esim_open_source/domain/data/api_user.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_exists_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
+import "package:esim_open_source/domain/data/response/user/order_history_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/user_bundle_consumption_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -37,8 +46,8 @@ void main() {
   setUp(() {
     mockApiUser = MockApiUser();
     mockLocalDataSource = MockEsimsLocalDataSource();
-    mockConnectivityService = locator<ConnectivityService>()
-        as locator_mocks.MockConnectivityService;
+    mockConnectivityService =
+        locator<ConnectivityService>() as locator_mocks.MockConnectivityService;
 
     repository = ApiUserRepositoryImpl(
       apiUserBundles: mockApiUser,
@@ -54,18 +63,18 @@ void main() {
     group("getUserConsumption", () {
       const String testIccID = "89012345678901234567";
 
-      test(
-          "should return success resource when get user consumption succeeds",
+      test("should return success resource when get user consumption succeeds",
           () async {
         // Arrange
-        final UserBundleConsumptionResponse expectedResponse =
-            UserBundleConsumptionResponse(
+        final UserBundleConsumptionResponseDto expectedResponse =
+            UserBundleConsumptionResponseDto(
           dataRemaining: 3000000000, // 3GB
           dataAllocated: 5000000000, // 5GB
           dataUsed: 2000000000, // 2GB
         );
-        final ResponseMain<UserBundleConsumptionResponse> responseMain =
-            ResponseMain<UserBundleConsumptionResponse>.createErrorWithData(
+        final ResponseMainDto<UserBundleConsumptionResponseDto?> responseMain =
+            ResponseMainDto<
+                UserBundleConsumptionResponseDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Consumption retrieved",
           statusCode: 200,
@@ -79,11 +88,13 @@ void main() {
         final Resource<UserBundleConsumptionResponse?> result =
             await repository.getUserConsumption(
           iccID: testIccID,
-        ) as Resource<UserBundleConsumptionResponse?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.dataRemaining, expectedResponse.dataRemaining);
+        expect(result.data?.dataAllocated, expectedResponse.dataAllocated);
+        expect(result.data?.dataUsed, expectedResponse.dataUsed);
         expect(result.message, "Consumption retrieved");
         expect(result.error, isNull);
 
@@ -93,8 +104,9 @@ void main() {
       test("should return error resource when get user consumption fails",
           () async {
         // Arrange
-        final ResponseMain<UserBundleConsumptionResponse> responseMain =
-            ResponseMain<UserBundleConsumptionResponse>.createErrorWithData(
+        final ResponseMainDto<UserBundleConsumptionResponseDto?> responseMain =
+            ResponseMainDto<
+                UserBundleConsumptionResponseDto?>.createErrorWithData(
           statusCode: 404,
           developerMessage: "eSIM not found",
           title: "eSIM not found",
@@ -108,12 +120,41 @@ void main() {
         final Resource<UserBundleConsumptionResponse?> result =
             await repository.getUserConsumption(
           iccID: testIccID,
-        ) as Resource<UserBundleConsumptionResponse?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.error);
         expect(result.message, "eSIM not found");
         expect(result.data, isNull);
+
+        verify(mockApiUser.getUserConsumption(iccID: testIccID)).called(1);
+      });
+
+      test(
+          "should return success resource with null data when API returns 200 with data null",
+          () async {
+        // Arrange
+        final ResponseMainDto<UserBundleConsumptionResponseDto?> responseMain =
+            ResponseMainDto<
+                UserBundleConsumptionResponseDto?>.createErrorWithData(
+          message: "No consumption data available",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.getUserConsumption(iccID: testIccID),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<UserBundleConsumptionResponse?> result =
+            await repository.getUserConsumption(
+          iccID: testIccID,
+        );
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isNull);
+        expect(result.message, "No consumption data available");
 
         verify(mockApiUser.getUserConsumption(iccID: testIccID)).called(1);
       });
@@ -132,13 +173,13 @@ void main() {
       test("should return success resource when bundle assignment succeeds",
           () async {
         // Arrange
-        final BundleAssignResponseModel expectedResponse =
-            BundleAssignResponseModel(
+        final BundleAssignResponseModelDto expectedResponse =
+            BundleAssignResponseModelDto(
           orderId: "order-123",
           paymentIntentClientSecret: "secret-key",
         );
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Bundle assigned successfully",
           statusCode: 200,
@@ -166,11 +207,10 @@ void main() {
           paymentType: testPaymentType,
           bearerToken: testBearerToken,
           relatedSearch: testRelatedSearch,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.orderId, "order-123");
         expect(result.data?.paymentIntentClientSecret, "secret-key");
         expect(result.message, "Bundle assigned successfully");
@@ -192,8 +232,8 @@ void main() {
       test("should return error resource when bundle assignment fails",
           () async {
         // Arrange
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Invalid promo code",
           title: "Invalid promo code",
@@ -221,7 +261,7 @@ void main() {
           paymentType: testPaymentType,
           bearerToken: testBearerToken,
           relatedSearch: testRelatedSearch,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.error);
@@ -243,10 +283,10 @@ void main() {
 
       test("should handle assignment without bearer token", () async {
         // Arrange
-        final BundleAssignResponseModel expectedResponse =
-            BundleAssignResponseModel(orderId: "order-456");
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final BundleAssignResponseModelDto expectedResponse =
+            BundleAssignResponseModelDto(orderId: "order-456");
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Success",
           statusCode: 200,
@@ -272,7 +312,7 @@ void main() {
           affiliateCode: testAffiliateCode,
           paymentType: testPaymentType,
           relatedSearch: testRelatedSearch,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.success);
@@ -298,12 +338,12 @@ void main() {
 
       test("should return success resource when top-up succeeds", () async {
         // Arrange
-        final BundleAssignResponseModel expectedResponse =
-            BundleAssignResponseModel(
+        final BundleAssignResponseModelDto expectedResponse =
+            BundleAssignResponseModelDto(
           orderId: "topup-order-123",
         );
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Top-up successful",
           statusCode: 200,
@@ -323,11 +363,10 @@ void main() {
           iccID: testIccID,
           bundleCode: testBundleCode,
           paymentType: testPaymentType,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.orderId, "topup-order-123");
         expect(result.message, "Top-up successful");
 
@@ -342,8 +381,8 @@ void main() {
 
       test("should return error resource when top-up fails", () async {
         // Arrange
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           statusCode: 402,
           developerMessage: "Insufficient funds",
           title: "Insufficient funds",
@@ -363,7 +402,7 @@ void main() {
           iccID: testIccID,
           bundleCode: testBundleCode,
           paymentType: testPaymentType,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.error);
@@ -387,21 +426,21 @@ void main() {
       test("should return success resource when get notifications succeeds",
           () async {
         // Arrange
-        final List<UserNotificationModel> expectedNotifications =
-            <UserNotificationModel>[
-          UserNotificationModel(
+        final List<UserNotificationModelDto> expectedNotifications =
+            <UserNotificationModelDto>[
+          UserNotificationModelDto(
             title: "Welcome",
             content: "Welcome to eSIM app",
             status: false,
           ),
-          UserNotificationModel(
+          UserNotificationModelDto(
             title: "Update",
             content: "New bundles available",
             status: true,
           ),
         ];
-        final ResponseMain<List<UserNotificationModel>> responseMain =
-            ResponseMain<List<UserNotificationModel>>.createErrorWithData(
+        final ResponseMainDto<List<UserNotificationModelDto>> responseMain =
+            ResponseMainDto<List<UserNotificationModelDto>>.createErrorWithData(
           data: expectedNotifications,
           message: "Notifications retrieved",
           statusCode: 200,
@@ -423,7 +462,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedNotifications);
         expect(result.data?.length, 2);
         expect(result.data?[0].title, "Welcome");
         expect(result.data?[0].status, false);
@@ -442,8 +480,8 @@ void main() {
       test("should return error resource when get notifications fails",
           () async {
         // Arrange
-        final ResponseMain<List<UserNotificationModel>> responseMain =
-            ResponseMain<List<UserNotificationModel>>.createErrorWithData(
+        final ResponseMainDto<List<UserNotificationModelDto>> responseMain =
+            ResponseMainDto<List<UserNotificationModelDto>>.createErrorWithData(
           statusCode: 500,
           developerMessage: "Server error",
           title: "Server error",
@@ -478,10 +516,10 @@ void main() {
 
       test("should handle empty notifications list", () async {
         // Arrange
-        final List<UserNotificationModel> emptyList =
-            <UserNotificationModel>[];
-        final ResponseMain<List<UserNotificationModel>> responseMain =
-            ResponseMain<List<UserNotificationModel>>.createErrorWithData(
+        final List<UserNotificationModelDto> emptyList =
+            <UserNotificationModelDto>[];
+        final ResponseMainDto<List<UserNotificationModelDto>> responseMain =
+            ResponseMainDto<List<UserNotificationModelDto>>.createErrorWithData(
           data: emptyList,
           message: "No notifications",
           statusCode: 200,
@@ -518,9 +556,9 @@ void main() {
       test("should return success resource when marking notifications as read",
           () async {
         // Arrange
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "Notifications marked as read",
           statusCode: 200,
@@ -535,7 +573,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isA<EmptyResponse>());
         expect(result.message, "Notifications marked as read");
 
         verify(mockApiUser.setNotificationsRead()).called(1);
@@ -544,8 +582,8 @@ void main() {
       test("should return error resource when marking notifications fails",
           () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           statusCode: 500,
           developerMessage: "Failed to update",
           title: "Failed to update",
@@ -567,18 +605,17 @@ void main() {
     });
 
     group("getMyEsims", () {
-      test(
-          "should return success resource from API when internet is available",
+      test("should return success resource from API when internet is available",
           () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> expectedEsims =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(iccid: "iccid-1"),
-          PurchaseEsimBundleResponseModel(iccid: "iccid-2"),
+        final List<PurchaseEsimBundleResponseModelDto> expectedEsims =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(iccid: "iccid-1"),
+          PurchaseEsimBundleResponseModelDto(iccid: "iccid-2"),
         ];
-        final ResponseMain<List<PurchaseEsimBundleResponseModel>>
-            responseMain = ResponseMain<
-                List<PurchaseEsimBundleResponseModel>>.createErrorWithData(
+        final ResponseMainDto<List<PurchaseEsimBundleResponseModelDto>>
+            responseMain = ResponseMainDto<
+                List<PurchaseEsimBundleResponseModelDto>>.createErrorWithData(
           data: expectedEsims,
           message: "eSIMs retrieved",
           statusCode: 200,
@@ -597,23 +634,22 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedEsims);
         expect(result.data?.length, 2);
         expect(result.data?[0].iccid, "iccid-1");
 
         verify(mockConnectivityService.isConnected()).called(1);
         verify(mockApiUser.getMyEsims()).called(1);
-        verify(mockLocalDataSource.replacePurchasedEsims(expectedEsims))
-            .called(1);
+        // The repo converts domain -> DTO via fromDomain before caching, so the
+        // cached list is a fresh instance; verify the call happened, not equality.
+        verify(mockLocalDataSource.replacePurchasedEsims(any)).called(1);
       });
 
-      test(
-          "should return cached data when no internet and cache is available",
+      test("should return cached data when no internet and cache is available",
           () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> cachedEsims =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(iccid: "cached-iccid"),
+        final List<PurchaseEsimBundleResponseModelDto> cachedEsims =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(iccid: "cached-iccid"),
         ];
 
         when(mockConnectivityService.isConnected())
@@ -627,7 +663,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, cachedEsims);
         expect(result.data?.length, 1);
         expect(result.data?[0].iccid, "cached-iccid");
 
@@ -636,8 +671,7 @@ void main() {
         verifyNever(mockApiUser.getMyEsims());
       });
 
-      test(
-          "should return error when no internet and no cached data available",
+      test("should return error when no internet and no cached data available",
           () async {
         // Arrange
         when(mockConnectivityService.isConnected())
@@ -659,19 +693,17 @@ void main() {
         verifyNever(mockApiUser.getMyEsims());
       });
 
-      test(
-          "should fallback to cache when API fails and cache is available",
+      test("should fallback to cache when API fails and cache is available",
           () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> cachedEsims =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(iccid: "fallback-iccid"),
+        final List<PurchaseEsimBundleResponseModelDto> cachedEsims =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(iccid: "fallback-iccid"),
         ];
 
         when(mockConnectivityService.isConnected())
             .thenAnswer((_) async => true);
-        when(mockApiUser.getMyEsims())
-            .thenThrow(Exception("API Error"));
+        when(mockApiUser.getMyEsims()).thenThrow(Exception("API Error"));
         when(mockLocalDataSource.getPurchasedEsims()).thenReturn(cachedEsims);
 
         // Act
@@ -681,7 +713,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, cachedEsims);
         expect(result.data?[0].iccid, "fallback-iccid");
 
         verify(mockConnectivityService.isConnected()).called(1);
@@ -694,8 +725,7 @@ void main() {
         // Arrange
         when(mockConnectivityService.isConnected())
             .thenAnswer((_) async => true);
-        when(mockApiUser.getMyEsims())
-            .thenThrow(Exception("API Error"));
+        when(mockApiUser.getMyEsims()).thenThrow(Exception("API Error"));
         when(mockLocalDataSource.getPurchasedEsims()).thenReturn(null);
 
         // Act & Assert
@@ -711,13 +741,13 @@ void main() {
 
       test("should cache data after successful API call", () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> apiEsims =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(iccid: "new-iccid"),
+        final List<PurchaseEsimBundleResponseModelDto> apiEsims =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(iccid: "new-iccid"),
         ];
-        final ResponseMain<List<PurchaseEsimBundleResponseModel>>
-            responseMain = ResponseMain<
-                List<PurchaseEsimBundleResponseModel>>.createErrorWithData(
+        final ResponseMainDto<List<PurchaseEsimBundleResponseModelDto>>
+            responseMain = ResponseMainDto<
+                List<PurchaseEsimBundleResponseModelDto>>.createErrorWithData(
           data: apiEsims,
           statusCode: 200,
         );
@@ -732,7 +762,9 @@ void main() {
         await repository.getMyEsims();
 
         // Assert
-        verify(mockLocalDataSource.replacePurchasedEsims(apiEsims)).called(1);
+        // The repo converts domain -> DTO via fromDomain before caching, so the
+        // cached list is a fresh instance; verify the call happened, not equality.
+        verify(mockLocalDataSource.replacePurchasedEsims(any)).called(1);
       });
     });
 
@@ -743,19 +775,20 @@ void main() {
       test("should return success resource when get order history succeeds",
           () async {
         // Arrange
-        final List<OrderHistoryResponseModel> expectedOrders =
-            <OrderHistoryResponseModel>[
-          OrderHistoryResponseModel(
+        final List<OrderHistoryResponseModelDto> expectedOrders =
+            <OrderHistoryResponseModelDto>[
+          OrderHistoryResponseModelDto(
             orderNumber: "order-1",
             orderStatus: "completed",
           ),
-          OrderHistoryResponseModel(
+          OrderHistoryResponseModelDto(
             orderNumber: "order-2",
             orderStatus: "pending",
           ),
         ];
-        final ResponseMain<List<OrderHistoryResponseModel>> responseMain =
-            ResponseMain<List<OrderHistoryResponseModel>>.createErrorWithData(
+        final ResponseMainDto<List<OrderHistoryResponseModelDto>> responseMain =
+            ResponseMainDto<
+                List<OrderHistoryResponseModelDto>>.createErrorWithData(
           data: expectedOrders,
           message: "Order history retrieved",
           statusCode: 200,
@@ -777,7 +810,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedOrders);
         expect(result.data?.length, 2);
         expect(result.data?[0].orderNumber, "order-1");
         expect(result.data?[0].orderStatus, "completed");
@@ -793,8 +825,9 @@ void main() {
       test("should return error resource when get order history fails",
           () async {
         // Arrange
-        final ResponseMain<List<OrderHistoryResponseModel>> responseMain =
-            ResponseMain<List<OrderHistoryResponseModel>>.createErrorWithData(
+        final ResponseMainDto<List<OrderHistoryResponseModelDto>> responseMain =
+            ResponseMainDto<
+                List<OrderHistoryResponseModelDto>>.createErrorWithData(
           statusCode: 401,
           developerMessage: "Unauthorized",
           title: "Unauthorized",
@@ -833,9 +866,9 @@ void main() {
       test("should return success resource when order cancellation succeeds",
           () async {
         // Arrange
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "Order cancelled successfully",
           statusCode: 200,
@@ -852,7 +885,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isA<EmptyResponse>());
         expect(result.message, "Order cancelled successfully");
 
         verify(mockApiUser.cancelOrder(orderID: testOrderID)).called(1);
@@ -861,8 +894,8 @@ void main() {
       test("should return error resource when order cancellation fails",
           () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Order already processed",
           title: "Order already processed",
@@ -892,13 +925,13 @@ void main() {
       test("should return success resource when wallet top-up succeeds",
           () async {
         // Arrange
-        final BundleAssignResponseModel expectedResponse =
-            BundleAssignResponseModel(
+        final BundleAssignResponseModelDto expectedResponse =
+            BundleAssignResponseModelDto(
           orderId: "wallet-topup-order",
           paymentIntentClientSecret: "stripe-secret",
         );
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "Wallet topped up",
           statusCode: 200,
@@ -916,11 +949,10 @@ void main() {
             await repository.topUpWallet(
           amount: testAmount,
           currency: testCurrency,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.orderId, "wallet-topup-order");
 
         verify(
@@ -933,8 +965,8 @@ void main() {
 
       test("should return error resource when wallet top-up fails", () async {
         // Arrange
-        final ResponseMain<BundleAssignResponseModel> responseMain =
-            ResponseMain<BundleAssignResponseModel>.createErrorWithData(
+        final ResponseMainDto<BundleAssignResponseModelDto?> responseMain =
+            ResponseMainDto<BundleAssignResponseModelDto?>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Invalid amount",
           title: "Invalid amount",
@@ -952,7 +984,7 @@ void main() {
             await repository.topUpWallet(
           amount: testAmount,
           currency: testCurrency,
-        ) as Resource<BundleAssignResponseModel?>;
+        );
 
         // Assert
         expect(result.resourceType, ResourceType.error);
@@ -962,6 +994,607 @@ void main() {
           mockApiUser.topUpWallet(
             amount: testAmount,
             currency: testCurrency,
+          ),
+        ).called(1);
+      });
+    });
+
+    group("getBundleExists", () {
+      const String testCode = "bundle-code-123";
+
+      test("should return success resource when bundle exists", () async {
+        // Arrange
+        final BundleExistsResponseDto expectedResponse =
+            BundleExistsResponseDto(exists: true);
+        final ResponseMainDto<BundleExistsResponseDto?> responseMain =
+            ResponseMainDto<BundleExistsResponseDto?>.createErrorWithData(
+          data: expectedResponse,
+          message: "Bundle exists",
+          statusCode: 200,
+        );
+
+        when(mockApiUser.getBundleExists(code: testCode))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<BundleExistsResponse?> result = await repository
+            .getBundleExists(code: testCode) as Resource<BundleExistsResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.exists, true);
+        expect(result.message, "Bundle exists");
+
+        verify(mockApiUser.getBundleExists(code: testCode)).called(1);
+      });
+
+      test("should return error resource when bundle does not exist", () async {
+        // Arrange
+        final ResponseMainDto<BundleExistsResponseDto?> responseMain =
+            ResponseMainDto<BundleExistsResponseDto?>.createErrorWithData(
+          statusCode: 404,
+          developerMessage: "Bundle not found",
+          title: "Bundle not found",
+        );
+
+        when(mockApiUser.getBundleExists(code: testCode))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<BundleExistsResponse?> result = await repository
+            .getBundleExists(code: testCode) as Resource<BundleExistsResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Bundle not found");
+        expect(result.data, isNull);
+
+        verify(mockApiUser.getBundleExists(code: testCode)).called(1);
+      });
+    });
+
+    group("getBundleLabel", () {
+      const String testIccid = "89012345678901234567";
+      const String testLabel = "My Home eSIM";
+
+      test("should return success resource when label is set successfully",
+          () async {
+        // Arrange
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          data: expectedResponse,
+          message: "Label set successfully",
+          statusCode: 200,
+        );
+
+        when(mockApiUser.getBundleLabel(iccid: testIccid, label: testLabel))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.getBundleLabel(
+            iccid: testIccid, label: testLabel) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isA<EmptyResponse>());
+        expect(result.message, "Label set successfully");
+
+        verify(
+          mockApiUser.getBundleLabel(iccid: testIccid, label: testLabel),
+        ).called(1);
+      });
+
+      test("should return error resource when label update fails", () async {
+        // Arrange
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          statusCode: 400,
+          developerMessage: "Invalid label",
+          title: "Invalid label",
+        );
+
+        when(mockApiUser.getBundleLabel(iccid: testIccid, label: testLabel))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.getBundleLabel(
+            iccid: testIccid, label: testLabel) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Invalid label");
+
+        verify(
+          mockApiUser.getBundleLabel(iccid: testIccid, label: testLabel),
+        ).called(1);
+      });
+    });
+
+    group("getMyEsimByIccID", () {
+      const String testIccID = "89012345678901234567";
+
+      test("should return success resource when eSIM is found by ICCID",
+          () async {
+        // Arrange
+        final PurchaseEsimBundleResponseModelDto expectedResponse =
+            PurchaseEsimBundleResponseModelDto(iccid: testIccID);
+        final ResponseMainDto<PurchaseEsimBundleResponseModelDto?>
+            responseMain = ResponseMainDto<
+                PurchaseEsimBundleResponseModelDto?>.createErrorWithData(
+          data: expectedResponse,
+          message: "eSIM found",
+          statusCode: 200,
+        );
+
+        when(mockApiUser.getMyEsimByIccID(iccID: testIccID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<PurchaseEsimBundleResponseModel?> result =
+            await repository.getMyEsimByIccID(iccID: testIccID)
+                as Resource<PurchaseEsimBundleResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.iccid, testIccID);
+        expect(result.message, "eSIM found");
+
+        verify(mockApiUser.getMyEsimByIccID(iccID: testIccID)).called(1);
+      });
+
+      test("should return error resource when eSIM is not found by ICCID",
+          () async {
+        // Arrange
+        final ResponseMainDto<PurchaseEsimBundleResponseModelDto?>
+            responseMain = ResponseMainDto<
+                PurchaseEsimBundleResponseModelDto?>.createErrorWithData(
+          statusCode: 404,
+          developerMessage: "eSIM not found",
+          title: "eSIM not found",
+        );
+
+        when(mockApiUser.getMyEsimByIccID(iccID: testIccID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<PurchaseEsimBundleResponseModel?> result =
+            await repository.getMyEsimByIccID(iccID: testIccID)
+                as Resource<PurchaseEsimBundleResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "eSIM not found");
+        expect(result.data, isNull);
+
+        verify(mockApiUser.getMyEsimByIccID(iccID: testIccID)).called(1);
+      });
+    });
+
+    group("getMyEsimByOrder", () {
+      const String testOrderID = "order-123";
+      const String testBearerToken = "bearer-token-xyz";
+
+      test("should return success resource when eSIM is found by order ID",
+          () async {
+        // Arrange
+        final PurchaseEsimBundleResponseModelDto expectedResponse =
+            PurchaseEsimBundleResponseModelDto(iccid: "iccid-from-order");
+        final ResponseMainDto<PurchaseEsimBundleResponseModelDto?>
+            responseMain = ResponseMainDto<
+                PurchaseEsimBundleResponseModelDto?>.createErrorWithData(
+          data: expectedResponse,
+          message: "eSIM order found",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.getMyEsimByOrder(
+            orderID: testOrderID,
+            bearerToken: testBearerToken,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<PurchaseEsimBundleResponseModel?> result =
+            await repository.getMyEsimByOrder(
+          orderID: testOrderID,
+          bearerToken: testBearerToken,
+        ) as Resource<PurchaseEsimBundleResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.iccid, "iccid-from-order");
+        expect(result.message, "eSIM order found");
+
+        verify(
+          mockApiUser.getMyEsimByOrder(
+            orderID: testOrderID,
+            bearerToken: testBearerToken,
+          ),
+        ).called(1);
+      });
+
+      test("should handle getMyEsimByOrder without bearer token", () async {
+        // Arrange
+        final PurchaseEsimBundleResponseModelDto expectedResponse =
+            PurchaseEsimBundleResponseModelDto(iccid: "iccid-no-bearer");
+        final ResponseMainDto<PurchaseEsimBundleResponseModelDto?>
+            responseMain = ResponseMainDto<
+                PurchaseEsimBundleResponseModelDto?>.createErrorWithData(
+          data: expectedResponse,
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.getMyEsimByOrder(orderID: testOrderID),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<PurchaseEsimBundleResponseModel?> result =
+            await repository.getMyEsimByOrder(orderID: testOrderID)
+                as Resource<PurchaseEsimBundleResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.iccid, "iccid-no-bearer");
+
+        verify(mockApiUser.getMyEsimByOrder(orderID: testOrderID)).called(1);
+      });
+
+      test("should return error resource when order not found", () async {
+        // Arrange
+        final ResponseMainDto<PurchaseEsimBundleResponseModelDto?>
+            responseMain = ResponseMainDto<
+                PurchaseEsimBundleResponseModelDto?>.createErrorWithData(
+          statusCode: 404,
+          developerMessage: "Order not found",
+          title: "Order not found",
+        );
+
+        when(
+          mockApiUser.getMyEsimByOrder(
+            orderID: testOrderID,
+            bearerToken: testBearerToken,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<PurchaseEsimBundleResponseModel?> result =
+            await repository.getMyEsimByOrder(
+          orderID: testOrderID,
+          bearerToken: testBearerToken,
+        ) as Resource<PurchaseEsimBundleResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Order not found");
+        expect(result.data, isNull);
+
+        verify(
+          mockApiUser.getMyEsimByOrder(
+            orderID: testOrderID,
+            bearerToken: testBearerToken,
+          ),
+        ).called(1);
+      });
+    });
+
+    group("getRelatedTopUp", () {
+      const String testIccID = "89012345678901234567";
+      const String testBundleCode = "base-bundle-123";
+
+      test("should return success resource with related top-up bundles",
+          () async {
+        // Arrange
+        final List<BundleResponseModelDto> expectedBundles =
+            <BundleResponseModelDto>[
+          BundleResponseModelDto(bundleCode: "topup-1", bundleName: "1GB"),
+          BundleResponseModelDto(bundleCode: "topup-2", bundleName: "3GB"),
+        ];
+        final ResponseMainDto<List<BundleResponseModelDto>> responseMain =
+            ResponseMainDto<List<BundleResponseModelDto>>.createErrorWithData(
+          data: expectedBundles,
+          message: "Related top-ups retrieved",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<List<BundleResponseModel>?> result =
+            await repository.getRelatedTopUp(
+          iccID: testIccID,
+          bundleCode: testBundleCode,
+        ) as Resource<List<BundleResponseModel>?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.length, 2);
+        expect(result.data?[0].bundleCode, "topup-1");
+        expect(result.message, "Related top-ups retrieved");
+
+        verify(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).called(1);
+      });
+
+      test("should return error resource when related top-ups not available",
+          () async {
+        // Arrange
+        final ResponseMainDto<List<BundleResponseModelDto>> responseMain =
+            ResponseMainDto<List<BundleResponseModelDto>>.createErrorWithData(
+          statusCode: 404,
+          developerMessage: "No related bundles",
+          title: "No related bundles",
+        );
+
+        when(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<List<BundleResponseModel>?> result =
+            await repository.getRelatedTopUp(
+          iccID: testIccID,
+          bundleCode: testBundleCode,
+        ) as Resource<List<BundleResponseModel>?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "No related bundles");
+
+        verify(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).called(1);
+      });
+
+      test("should handle empty list of related top-up bundles", () async {
+        // Arrange
+        final List<BundleResponseModelDto> emptyBundles =
+            <BundleResponseModelDto>[];
+        final ResponseMainDto<List<BundleResponseModelDto>> responseMain =
+            ResponseMainDto<List<BundleResponseModelDto>>.createErrorWithData(
+          data: emptyBundles,
+          message: "No top-ups available",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<List<BundleResponseModel>?> result =
+            await repository.getRelatedTopUp(
+          iccID: testIccID,
+          bundleCode: testBundleCode,
+        ) as Resource<List<BundleResponseModel>?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isEmpty);
+
+        verify(
+          mockApiUser.getRelatedTopUp(
+            iccID: testIccID,
+            bundleCode: testBundleCode,
+          ),
+        ).called(1);
+      });
+    });
+
+    group("getOrderByID", () {
+      const String testOrderID = "order-detail-456";
+
+      test("should return success resource when order is found by ID",
+          () async {
+        // Arrange
+        final OrderHistoryResponseModelDto expectedOrder =
+            OrderHistoryResponseModelDto(
+          orderNumber: testOrderID,
+          orderStatus: "completed",
+          orderCurrency: "USD",
+        );
+        final ResponseMainDto<OrderHistoryResponseModelDto?> responseMain =
+            ResponseMainDto<OrderHistoryResponseModelDto?>.createErrorWithData(
+          data: expectedOrder,
+          message: "Order retrieved",
+          statusCode: 200,
+        );
+
+        when(mockApiUser.getOrderByID(orderID: testOrderID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<OrderHistoryResponseModel?> result =
+            await repository.getOrderByID(orderID: testOrderID)
+                as Resource<OrderHistoryResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.orderNumber, testOrderID);
+        expect(result.data?.orderStatus, "completed");
+
+        verify(mockApiUser.getOrderByID(orderID: testOrderID)).called(1);
+      });
+
+      test("should return error resource when order is not found", () async {
+        // Arrange
+        final ResponseMainDto<OrderHistoryResponseModelDto?> responseMain =
+            ResponseMainDto<OrderHistoryResponseModelDto?>.createErrorWithData(
+          statusCode: 404,
+          developerMessage: "Order not found",
+          title: "Order not found",
+        );
+
+        when(mockApiUser.getOrderByID(orderID: testOrderID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<OrderHistoryResponseModel?> result =
+            await repository.getOrderByID(orderID: testOrderID)
+                as Resource<OrderHistoryResponseModel?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Order not found");
+        expect(result.data, isNull);
+
+        verify(mockApiUser.getOrderByID(orderID: testOrderID)).called(1);
+      });
+    });
+
+    group("resendOrderOtp", () {
+      const String testOrderID = "order-otp-789";
+
+      test("should return success resource when OTP is resent successfully",
+          () async {
+        // Arrange
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          data: expectedResponse,
+          message: "OTP sent successfully",
+          statusCode: 200,
+        );
+
+        when(mockApiUser.resendOrderOtp(orderID: testOrderID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.resendOrderOtp(
+            orderID: testOrderID) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isA<EmptyResponse>());
+        expect(result.message, "OTP sent successfully");
+
+        verify(mockApiUser.resendOrderOtp(orderID: testOrderID)).called(1);
+      });
+
+      test("should return error resource when OTP resend fails", () async {
+        // Arrange
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          statusCode: 400,
+          developerMessage: "Invalid order ID",
+          title: "Invalid order ID",
+        );
+
+        when(mockApiUser.resendOrderOtp(orderID: testOrderID))
+            .thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.resendOrderOtp(
+            orderID: testOrderID) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Invalid order ID");
+
+        verify(mockApiUser.resendOrderOtp(orderID: testOrderID)).called(1);
+      });
+    });
+
+    group("verifyOrderOtp", () {
+      const String testOtp = "123456";
+      const String testIccid = "89012345678901234567";
+      const String testOrderID = "order-verify-101";
+
+      test("should return success resource when OTP is verified successfully",
+          () async {
+        // Arrange
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          data: expectedResponse,
+          message: "OTP verified",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiUser.verifyOrderOtp(
+            otp: testOtp,
+            iccid: testIccid,
+            orderID: testOrderID,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.verifyOrderOtp(
+          otp: testOtp,
+          iccid: testIccid,
+          orderID: testOrderID,
+        ) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isA<EmptyResponse>());
+        expect(result.message, "OTP verified");
+
+        verify(
+          mockApiUser.verifyOrderOtp(
+            otp: testOtp,
+            iccid: testIccid,
+            orderID: testOrderID,
+          ),
+        ).called(1);
+      });
+
+      test("should return error resource when OTP verification fails",
+          () async {
+        // Arrange
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+          statusCode: 401,
+          developerMessage: "Invalid OTP",
+          title: "Invalid OTP",
+        );
+
+        when(
+          mockApiUser.verifyOrderOtp(
+            otp: testOtp,
+            iccid: testIccid,
+            orderID: testOrderID,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<EmptyResponse?> result = await repository.verifyOrderOtp(
+          otp: testOtp,
+          iccid: testIccid,
+          orderID: testOrderID,
+        ) as Resource<EmptyResponse?>;
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Invalid OTP");
+        expect(result.data, isNull);
+
+        verify(
+          mockApiUser.verifyOrderOtp(
+            otp: testOtp,
+            iccid: testIccid,
+            orderID: testOrderID,
           ),
         ).called(1);
       });
@@ -977,9 +1610,9 @@ void main() {
         // Arrange & Act
         when(mockApiUser.getUserConsumption(iccID: anyNamed("iccID")))
             .thenAnswer(
-          (_) async =>
-              ResponseMain<UserBundleConsumptionResponse>.createErrorWithData(
-            data: UserBundleConsumptionResponse(),
+          (_) async => ResponseMainDto<
+              UserBundleConsumptionResponseDto?>.createErrorWithData(
+            data: UserBundleConsumptionResponseDto(),
             statusCode: 200,
           ),
         );
@@ -996,9 +1629,9 @@ void main() {
             pageSize: anyNamed("pageSize"),
           ),
         ).thenAnswer(
-          (_) async =>
-              ResponseMain<List<UserNotificationModel>>.createErrorWithData(
-            data: <UserNotificationModel>[],
+          (_) async => ResponseMainDto<
+              List<UserNotificationModelDto>>.createErrorWithData(
+            data: <UserNotificationModelDto>[],
             statusCode: 200,
           ),
         );
@@ -1015,7 +1648,11 @@ void main() {
     });
 
     group("Edge cases and error handling", () {
-      test("should handle timeout exceptions", () async {}, skip: "Edge case test - complex async exception handling");
+      test(
+        "should handle timeout exceptions",
+        () async {},
+        skip: "Edge case test - complex async exception handling",
+      );
 
       /*test("should handle timeout exceptions", () async {
         // Arrange
@@ -1031,8 +1668,8 @@ void main() {
 
       test("should handle null response data gracefully", () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           message: "Success but no data",
           statusCode: 200,
         );
@@ -1044,20 +1681,20 @@ void main() {
         final Resource<EmptyResponse?> result =
             await repository.setNotificationsRead() as Resource<EmptyResponse?>;
 
-        // Assert
-        expect(result.resourceType, ResourceType.error);
+        // Assert - null data on a 200 maps to a success resource with null data
+        expect(result.resourceType, ResourceType.success);
         expect(result.data, isNull);
       });
 
       test("should handle concurrent getMyEsims calls", () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> esims =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(iccid: "test"),
+        final List<PurchaseEsimBundleResponseModelDto> esims =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(iccid: "test"),
         ];
-        final ResponseMain<List<PurchaseEsimBundleResponseModel>>
-            responseMain = ResponseMain<
-                List<PurchaseEsimBundleResponseModel>>.createErrorWithData(
+        final ResponseMainDto<List<PurchaseEsimBundleResponseModelDto>>
+            responseMain = ResponseMainDto<
+                List<PurchaseEsimBundleResponseModelDto>>.createErrorWithData(
           data: esims,
           statusCode: 200,
         );

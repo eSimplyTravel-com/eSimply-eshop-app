@@ -2,8 +2,8 @@ import "dart:developer";
 
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/use_case/auth/update_user_info_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";

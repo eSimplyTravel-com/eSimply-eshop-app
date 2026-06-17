@@ -1,7 +1,7 @@
 import "dart:math";
 
 import "package:easy_localization/easy_localization.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/country_flag_image.dart";

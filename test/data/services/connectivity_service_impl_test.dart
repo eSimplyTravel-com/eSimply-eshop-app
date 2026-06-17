@@ -1,66 +1,8 @@
 import "package:esim_open_source/data/services/connectivity_service_impl.dart";
-import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
+import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 
-/// Unit tests for ConnectivityServiceImpl
-/// Tests listener pattern and interface implementation
-///
-/// Note: Some tests are skipped because ConnectivityServiceImpl relies on
-/// platform channels (connectivity_plus package) which are not available
-/// in unit tests without proper mocking or integration test environment.
-void main() {
-  group("ConnectivityServiceImpl Tests", () {
-    test("ConnectionListener interface can be implemented", () {
-      final TestConnectionListener listener = TestConnectionListener();
-
-      expect(listener, isA<ConnectionListener>());
-      expect(listener.callCount, 0);
-    });
-
-    test("ConnectionListener can receive connectivity changes", () {
-      final TestConnectionListener listener = TestConnectionListener()
-
-      ..onConnectivityChanged(connected: true);
-      expect(listener.lastConnectedStatus, true);
-      expect(listener.callCount, 1);
-
-      listener.onConnectivityChanged(connected: false);
-      expect(listener.lastConnectedStatus, false);
-      expect(listener.callCount, 2);
-    });
-
-    test("ConnectionListener tracks call count correctly", () {
-      final TestConnectionListener listener = TestConnectionListener();
-
-      for (int i = 0; i < 5; i++) {
-        listener.onConnectivityChanged(connected: i.isEven);
-      }
-
-      expect(listener.callCount, 5);
-    });
-
-    test("ConnectivityService interface is properly defined", () {
-      // Verify the interface exists and has the expected methods
-      expect(ConnectivityService, isNotNull);
-    });
-
-    // Note: The following tests are skipped because they require platform channels
-    // which are not available in unit tests. These would need to be tested via
-    // integration tests or with extensive mocking of the connectivity_plus package.
-    //
-    // - test("singleton instance is created")
-    // - test("isConnected returns a boolean value")
-    // - test("can add and remove connection listeners")
-    // - test("service can be disposed")
-    //
-    // To properly test these, consider:
-    // 1. Using integration tests with flutter_test/flutter_test.dart
-    // 2. Mocking the Connectivity class from connectivity_plus
-    // 3. Creating a wrapper interface that can be mocked
-  });
-}
-
-/// Test implementation of ConnectionListener for testing purposes
+/// Test implementation of ConnectionListener.
 class TestConnectionListener implements ConnectionListener {
   bool? lastConnectedStatus;
   int callCount = 0;
@@ -70,4 +12,119 @@ class TestConnectionListener implements ConnectionListener {
     lastConnectedStatus = connected;
     callCount++;
   }
+}
+
+/// Unit tests for ConnectivityServiceImpl.
+///
+/// connectivity_plus communicates over a method channel
+/// ("dev.fluttercommunity.plus/connectivity", `check`) and an event channel
+/// ("dev.fluttercommunity.plus/connectivity_status"). Both are mocked so the
+/// service's initialization, connectivity checks and listener notifications can
+/// be exercised.
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  const MethodChannel methodChannel =
+      MethodChannel("dev.fluttercommunity.plus/connectivity");
+  const EventChannel eventChannel =
+      EventChannel("dev.fluttercommunity.plus/connectivity_status");
+
+  List<String> checkResult = <String>["wifi"];
+  MockStreamHandlerEventSink? capturedSink;
+
+  setUp(() {
+    checkResult = <String>["wifi"];
+    capturedSink = null;
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(methodChannel, (MethodCall call) async {
+      if (call.method == "check") {
+        return checkResult;
+      }
+      return null;
+    });
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockStreamHandler(
+      eventChannel,
+      MockStreamHandler.inline(
+        onListen: (Object? arguments, MockStreamHandlerEventSink events) {
+          capturedSink = events;
+        },
+      ),
+    );
+  });
+
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      ..setMockMethodCallHandler(methodChannel, null)
+      ..setMockStreamHandler(eventChannel, null);
+  });
+
+  group("ConnectionListener", () {
+    test("can be implemented and tracks callbacks", () {
+      final TestConnectionListener listener = TestConnectionListener();
+
+      expect(listener, isA<ConnectionListener>());
+      expect(listener.callCount, 0);
+
+      listener.onConnectivityChanged(connected: true);
+      expect(listener.lastConnectedStatus, isTrue);
+      expect(listener.callCount, 1);
+    });
+  });
+
+  group("ConnectivityServiceImpl", () {
+    test("isConnected returns false for the default (none) status", () async {
+      final ConnectivityServiceImpl service = ConnectivityServiceImpl();
+
+      expect(await service.isConnected(), isFalse);
+    });
+
+    test("addListener registers a listener only once", () {
+      final ConnectivityServiceImpl service = ConnectivityServiceImpl();
+      final TestConnectionListener listener = TestConnectionListener();
+
+      service
+        ..addListener(listener)
+        ..addListener(listener)
+        ..removeListener(listener);
+
+      expect(true, isTrue);
+    });
+
+    test("dispose can be called and is idempotent", () async {
+      final ConnectivityServiceImpl service = ConnectivityServiceImpl();
+
+      await service.dispose();
+      await service.dispose();
+
+      expect(true, isTrue);
+    });
+
+    test("singleton initializes, reports connectivity and notifies listeners",
+        () async {
+      // First access to .instance triggers _initialise(), which subscribes to
+      // the event channel (capturing the sink) and runs the initial check.
+      final ConnectivityServiceImpl service = ConnectivityServiceImpl.instance;
+      final ConnectivityServiceImpl same = ConnectivityServiceImpl.instance;
+      expect(service, same);
+
+      // Initial check returns wifi -> connected.
+      expect(await service.isConnected(), isTrue);
+
+      // Add a listener and push a change through the event channel.
+      final TestConnectionListener listener = TestConnectionListener();
+      service.addListener(listener);
+
+      capturedSink?.success(<String>["none"]);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(listener.callCount, greaterThan(0));
+      expect(listener.lastConnectedStatus, isFalse);
+      expect(await service.isConnected(), isFalse);
+
+      service.removeListener(listener);
+    });
+  });
 }

@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/presentation/enums/view_state.dart";
 import "package:esim_open_source/presentation/reactive_service/user_authentication_service.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";

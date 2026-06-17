@@ -3,9 +3,9 @@
 import "dart:async";
 
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/enums/bottomsheet_type.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
 import "package:esim_open_source/presentation/extensions/navigation_service_extensions.dart";

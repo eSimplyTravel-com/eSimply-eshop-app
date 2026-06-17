@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/order_history_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/order_history_response_model.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/use_case/user/get_order_by_id.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -56,9 +56,10 @@ Future<void> main() async {
         companyName: "Test Co",
       );
 
-      final OrderBottomSheetViewModel testViewModel = OrderBottomSheetViewModel()
-      ..initBundleOrderModel = mockOrder
-      ..completer = mockCompleter;
+      final OrderBottomSheetViewModel testViewModel =
+          OrderBottomSheetViewModel()
+            ..initBundleOrderModel = mockOrder
+            ..completer = mockCompleter;
 
       expect(testViewModel.initBundleOrderModel, equals(mockOrder));
       expect(testViewModel.completer, equals(mockCompleter));
@@ -97,14 +98,16 @@ Future<void> main() async {
       expect(viewModel.completer, equals(mockCompleter));
     });
 
-    test("getOrderByID sets bundleOrderModel with mock data initially", () async {
+    test("getOrderByID sets bundleOrderModel with mock data initially",
+        () async {
       final OrderHistoryResponseModel successOrder = OrderHistoryResponseModel(
         orderNumber: "TEST123",
         companyName: "Test Company",
       );
 
       when(mockApiUserRepository.getOrderByID(orderID: "TEST123")).thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder, message: ""),
+        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder,
+            message: ""),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel(
@@ -124,7 +127,8 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "SHIMMER_TEST"))
           .thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder, message: ""),
+        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder,
+            message: ""),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel(
@@ -143,7 +147,8 @@ Future<void> main() async {
         orderNumber: "SUCCESS",
       );
       when(mockApiUserRepository.getOrderByID(orderID: "")).thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder, message: ""),
+        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder,
+            message: ""),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel();
@@ -174,7 +179,8 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "SUCCESS001"))
           .thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder, message: ""),
+        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder,
+            message: ""),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel(
@@ -200,10 +206,11 @@ Future<void> main() async {
         (_) async => Resource<OrderHistoryResponseModel?>.error("Error"),
       );
 
-      viewModel..completer = testCompleter
-      ..initBundleOrderModel = OrderHistoryResponseModel(
-        orderNumber: "FAIL001",
-      );
+      viewModel
+        ..completer = testCompleter
+        ..initBundleOrderModel = OrderHistoryResponseModel(
+          orderNumber: "FAIL001",
+        );
 
       await viewModel.getOrderByID();
 
@@ -224,11 +231,13 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "MULTI_TEST1"))
           .thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(order1, message: ""),
+        (_) async =>
+            Resource<OrderHistoryResponseModel?>.success(order1, message: ""),
       );
       when(mockApiUserRepository.getOrderByID(orderID: "MULTI_TEST2"))
           .thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(order2, message: ""),
+        (_) async =>
+            Resource<OrderHistoryResponseModel?>.success(order2, message: ""),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel(
@@ -243,7 +252,8 @@ Future<void> main() async {
       );
 
       await viewModel.getOrderByID();
-      final OrderHistoryResponseModel? secondResult = viewModel.bundleOrderModel;
+      final OrderHistoryResponseModel? secondResult =
+          viewModel.bundleOrderModel;
 
       expect(firstResult, isNotNull);
       expect(secondResult, isNotNull);
@@ -254,7 +264,8 @@ Future<void> main() async {
         orderNumber: "SUCCESS",
       );
       when(mockApiUserRepository.getOrderByID(orderID: "")).thenAnswer(
-        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder, message: ""),
+        (_) async => Resource<OrderHistoryResponseModel?>.success(successOrder,
+            message: ""),
       );
 
       viewModel.initBundleOrderModel = null;
@@ -337,8 +348,9 @@ Future<void> main() async {
         ),
       );
 
-      viewModel..initBundleOrderModel = mockOrder
-      ..onViewModelReady();
+      viewModel
+        ..initBundleOrderModel = mockOrder
+        ..onViewModelReady();
 
       // Give async operation time to complete
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -394,8 +406,7 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "FAIL_BUTTON"))
           .thenAnswer(
-        (_) async =>
-            Resource<OrderHistoryResponseModel?>.error("API Error"),
+        (_) async => Resource<OrderHistoryResponseModel?>.error("API Error"),
       );
 
       viewModel.initBundleOrderModel = OrderHistoryResponseModel(
@@ -419,14 +430,14 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "CLEAR_TEST"))
           .thenAnswer(
-        (_) async =>
-            Resource<OrderHistoryResponseModel?>.error("API Error"),
+        (_) async => Resource<OrderHistoryResponseModel?>.error("API Error"),
       );
 
-      viewModel..completer = testCompleter
-      ..initBundleOrderModel = OrderHistoryResponseModel(
-        orderNumber: "CLEAR_TEST",
-      );
+      viewModel
+        ..completer = testCompleter
+        ..initBundleOrderModel = OrderHistoryResponseModel(
+          orderNumber: "CLEAR_TEST",
+        );
 
       await viewModel.getOrderByID();
       await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -496,21 +507,22 @@ Future<void> main() async {
 
       when(mockApiUserRepository.getOrderByID(orderID: "COMPLETER_TEST"))
           .thenAnswer(
-        (_) async =>
-            Resource<OrderHistoryResponseModel?>.error("API Error"),
+        (_) async => Resource<OrderHistoryResponseModel?>.error("API Error"),
       );
 
-      viewModel..completer = testCompleter
-      ..initBundleOrderModel = OrderHistoryResponseModel(
-        orderNumber: "COMPLETER_TEST",
-      );
+      viewModel
+        ..completer = testCompleter
+        ..initBundleOrderModel = OrderHistoryResponseModel(
+          orderNumber: "COMPLETER_TEST",
+        );
 
       await viewModel.getOrderByID();
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
       expect(completerCalled, isTrue);
       if (capturedResponse != null) {
-        expect(capturedResponse, isA<SheetResponse<OrderHistoryResponseModel>>());
+        expect(
+            capturedResponse, isA<SheetResponse<OrderHistoryResponseModel>>());
       }
     });
 
@@ -534,8 +546,7 @@ Future<void> main() async {
     });
 
     test("getOrderByID handles API response with null data", () async {
-      when(mockApiUserRepository.getOrderByID(orderID: "NULL_DATA"))
-          .thenAnswer(
+      when(mockApiUserRepository.getOrderByID(orderID: "NULL_DATA")).thenAnswer(
         (_) async => Resource<OrderHistoryResponseModel?>.success(
           null,
           message: "",
@@ -563,8 +574,7 @@ Future<void> main() async {
         orderDisplayPrice: orderPrice,
       );
 
-      when(mockApiUserRepository.getOrderByID(orderID: orderNumber))
-          .thenAnswer(
+      when(mockApiUserRepository.getOrderByID(orderID: orderNumber)).thenAnswer(
         (_) async => Resource<OrderHistoryResponseModel?>.success(
           successOrder,
           message: "",
@@ -592,24 +602,21 @@ Future<void> main() async {
         completerCallCount++;
       }
 
-      when(mockApiUserRepository.getOrderByID(orderID: "FAIL1"))
-          .thenAnswer(
-        (_) async =>
-            Resource<OrderHistoryResponseModel?>.error("API Error"),
+      when(mockApiUserRepository.getOrderByID(orderID: "FAIL1")).thenAnswer(
+        (_) async => Resource<OrderHistoryResponseModel?>.error("API Error"),
       );
 
-      when(mockApiUserRepository.getOrderByID(orderID: "FAIL2"))
-          .thenAnswer(
-        (_) async =>
-            Resource<OrderHistoryResponseModel?>.error("API Error"),
+      when(mockApiUserRepository.getOrderByID(orderID: "FAIL2")).thenAnswer(
+        (_) async => Resource<OrderHistoryResponseModel?>.error("API Error"),
       );
 
-      viewModel..completer = testCompleter
+      viewModel
+        ..completer = testCompleter
 
-      // First failure
-      ..initBundleOrderModel = OrderHistoryResponseModel(
-        orderNumber: "FAIL1",
-      );
+        // First failure
+        ..initBundleOrderModel = OrderHistoryResponseModel(
+          orderNumber: "FAIL1",
+        );
       await viewModel.getOrderByID();
       await Future<void>.delayed(const Duration(milliseconds: 50));
       expect(completerCallCount, equals(1));

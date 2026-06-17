@@ -58,6 +58,13 @@ Future<void> prepareTest() async {
 }
 
 Future<void> setupTest() async {
+  // Newer mockito codegen emits dummyValue<IconData>(...) instead of a generated
+  // fake for non-nullable IconData getters, which throws MissingDummyValueError
+  // unless a dummy is registered. This must live in setUp (not prepareTest):
+  // tearDownTest() calls resetMockitoState(), which clears provideDummy
+  // registrations, so the dummy has to be re-registered before every test.
+  // Explicit when(...).thenReturn(...) stubs still take precedence over it.
+  provideDummy<IconData>(Icons.info);
   await setupTestLocator();
   HapticHelperTest.implementHaptic();
   FirebaseHelper.initFirebaseMock();

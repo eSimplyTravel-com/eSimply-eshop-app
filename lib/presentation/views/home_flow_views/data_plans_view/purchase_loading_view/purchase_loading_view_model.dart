@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
 import "package:esim_open_source/domain/use_case/user/get_user_purchased_esim_by_order_id_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/views/base/base_model.dart";

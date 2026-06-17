@@ -3,9 +3,9 @@
 import "dart:math";
 
 import "package:easy_localization/easy_localization.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/views/base/base_view.dart";

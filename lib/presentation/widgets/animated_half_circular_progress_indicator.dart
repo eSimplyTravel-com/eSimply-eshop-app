@@ -183,9 +183,9 @@ class HalfCircleProgressPainter extends CustomPainter {
 
 @AppPreview(name: "Animated Half Circular Progress Indicator")
 Widget animatedHalfCircularProgressIndicatorPreview() {
-  return Scaffold(
+  return const Scaffold(
     body: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Center(
         child: AnimatedHalfCircularProgressIndicator(
           targetValue: 0.6,

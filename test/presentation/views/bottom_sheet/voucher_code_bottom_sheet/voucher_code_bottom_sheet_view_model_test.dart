@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/use_case/promotion/redeem_voucher_use_case.dart";

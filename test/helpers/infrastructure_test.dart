@@ -1,7 +1,7 @@
 import "package:esim_open_source/data/remote/api_end_point.dart";
-import "package:esim_open_source/data/remote/responses/app/faq_response.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/device/device_info_response_model_dto.dart";
+import "package:esim_open_source/domain/data/response/app/faq_response.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/mockito.dart";
@@ -31,7 +31,7 @@ void main() {
 
     test("TestDataFactory should create valid test data", () {
       // Test device response creation
-      final DeviceInfoResponseModel deviceResponse =
+      final DeviceInfoResponseModelDto deviceResponse =
           TestDataFactory.createDeviceResponse();
       expect(
         deviceResponse.device,
@@ -50,13 +50,13 @@ void main() {
       expect(endpoint.hasAuthorization, isFalse);
 
       // Test success response creation
-      final ResponseMain<String> successResponse =
+      final ResponseMainDto<String> successResponse =
           TestDataFactory.createSuccessResponse<String>(data: "test");
       expect(successResponse.statusCode, equals(200));
       expect(successResponse.data, equals("test"));
 
       // Test error response creation
-      final ResponseMain<String> errorResponse =
+      final ResponseMainDto<String> errorResponse =
           TestDataFactory.createErrorResponse<String>(
         errorMessage: "Test error",
       );
@@ -141,7 +141,7 @@ void main() {
 
       test("HttpResponseTestMixin should provide HTTP validation methods", () {
         // Test ResponseMain success validation
-        final ResponseMain<String> successResponse =
+        final ResponseMainDto<String> successResponse =
             TestDataFactory.createSuccessResponse<String>(data: "test");
         expect(
           () => mixinContainer.expectResponseMainSuccess(successResponse),
@@ -149,7 +149,7 @@ void main() {
         );
 
         // Test ResponseMain error validation
-        final ResponseMain<String> errorResponse =
+        final ResponseMainDto<String> errorResponse =
             TestDataFactory.createErrorResponse<String>(errorMessage: "error");
         expect(
           () => mixinContainer.expectResponseMainError(errorResponse),

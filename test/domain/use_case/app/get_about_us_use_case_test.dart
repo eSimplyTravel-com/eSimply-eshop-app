@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart";
+import "package:esim_open_source/domain/data/response/app/dynamic_page_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/use_case/app/get_about_us_use_case.dart";

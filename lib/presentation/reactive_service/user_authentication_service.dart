@@ -1,5 +1,5 @@
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:stacked/stacked.dart";
 

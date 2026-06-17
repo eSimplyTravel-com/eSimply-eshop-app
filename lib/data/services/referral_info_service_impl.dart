@@ -2,7 +2,8 @@ import "dart:async";
 import "dart:developer";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/promotion/referral_info_response_model.dart";
+import "package:esim_open_source/data/remote/responses/promotion/referral_info_response_model_dto.dart";
+import "package:esim_open_source/domain/data/response/promotion/referral_info_response_model.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/repository/services/referral_info_service.dart";
 import "package:esim_open_source/domain/use_case/app/get_referral_info_use_case.dart";
@@ -36,7 +37,8 @@ class ReferralInfoServiceImpl extends ReferralInfoService {
     if (config != null) {
       try {
         _referralInfoData =
-            ReferralInfoResponseModel.referralInfoFromJsonString(config);
+            ReferralInfoResponseModelDto.referralInfoFromJsonString(config)
+                .toDomain();
       } on Object catch (e) {
         log(e.toString());
       }
@@ -53,7 +55,10 @@ class ReferralInfoServiceImpl extends ReferralInfoService {
 
       locator<LocalStorageService>().setString(
         LocalStorageKeys.referralInfo,
-        _referralInfoData?.toJsonString() ?? "",
+        _referralInfoData == null
+            ? ""
+            : ReferralInfoResponseModelDto.fromDomain(_referralInfoData!)
+                .toJsonString(),
       );
 
       if (!(_referralInfoCompleter?.isCompleted ?? true)) {

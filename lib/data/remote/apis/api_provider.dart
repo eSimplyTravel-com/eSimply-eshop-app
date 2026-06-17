@@ -8,8 +8,8 @@ import "package:esim_open_source/data/remote/apis/auth_apis/auth_apis.dart";
 import "package:esim_open_source/data/remote/apis/http_client_wrapper.dart";
 import "package:esim_open_source/data/remote/http_methods.dart";
 import "package:esim_open_source/data/remote/http_request.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
+import "package:esim_open_source/data/remote/responses/auth/auth_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";
@@ -100,7 +100,7 @@ class APIService {
   }
 
   //Helper Methods
-  Future<ResponseMain<T>> sendRequest<T>({
+  Future<ResponseMainDto<T>> sendRequest<T>({
     required APIEndPoint endPoint,
     T Function({dynamic json})? fromJson,
     int? timeoutSeconds,
@@ -179,7 +179,7 @@ class APIService {
       return request;
     } else {
       throw ResponseMainException(
-        ResponseMain<dynamic>.createError(
+        ResponseMainDto<dynamic>.createError(
           responseCode: 503,
           errorMessage: "No internet connection",
         ),
@@ -217,7 +217,7 @@ class APIService {
 
       if (refreshToken.isEmpty) {
         throw ResponseMainException(
-          ResponseMain<dynamic>.createError(
+          ResponseMainDto<dynamic>.createError(
             responseCode: 401,
             errorMessage: "unauthorized user",
           ),
@@ -288,17 +288,17 @@ class APIService {
     try {
       log("Refreshing token...");
 
-      ResponseMain<AuthResponseModel> authResponse = await sendRequest(
+      ResponseMainDto<AuthResponseModelDto> authResponse = await sendRequest(
         endPoint: createAPIEndpoint(
           endPoint: AuthApis.refreshToken,
         ),
-        fromJson: AuthResponseModel.fromAPIJson,
+        fromJson: AuthResponseModelDto.fromAPIJson,
       );
 
       await locator<UserAuthenticationService>()
-          .saveUserResponse(authResponse.dataOfType);
+          .saveUserResponse(authResponse.dataOfType.toDomain());
 
-      HttpRequest.notifyAuthReloadListeners(authResponse);
+      HttpRequest.notifyAuthReloadListeners(authResponse.dataOfType.toDomain());
 
       _refreshCompleter!.complete();
       _isRefreshing = false;

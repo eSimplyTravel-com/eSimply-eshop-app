@@ -5,14 +5,14 @@ import "dart:math";
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/app.locator.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/repository/services/payment_service.dart";
 import "package:esim_open_source/domain/use_case/user/get_related_topup_use_case.dart";
 import "package:esim_open_source/domain/use_case/user/top_up_user_bundle_use_case.dart";
+import "package:esim_open_source/domain/util/network_constants.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/enums/payment_type.dart";
 import "package:esim_open_source/presentation/enums/view_state.dart";
@@ -224,8 +224,7 @@ class TopUpBottomSheetViewModel extends EsimBaseModel {
         );
       },
       onFailure: (Resource<BundleAssignResponseModel?> result) async {
-        if (response.error?.errorCode ==
-            MainTimeoutException.timeoutErrorCode) {
+        if (response.error?.errorCode == timeoutErrorCode) {
           await showNativeErrorMessage(
             response.error?.message,
             LocaleKeys.processing.tr(),

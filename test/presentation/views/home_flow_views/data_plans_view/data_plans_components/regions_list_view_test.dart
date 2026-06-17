@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/regions_response_model.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/data_plans_components/regions_list_view.dart";
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";

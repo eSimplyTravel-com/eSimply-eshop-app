@@ -1,10 +1,9 @@
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:http/http.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 
-typedef AuthReloadListenerCallBack = void Function(BaseResponse?);
+typedef AuthReloadListenerCallBack = void Function(AuthResponseModel?);
 
 abstract interface class AuthReloadListener {
   void onAuthReloadListenerCallBackUseCase(
-    ResponseMain<dynamic>? response,
+      AuthResponseModel? authResponse,
   );
 }

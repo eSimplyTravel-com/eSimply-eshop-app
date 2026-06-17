@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:http/http.dart" as http;
 
@@ -11,7 +11,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate that a ResponseMain represents a successful operation
   void expectResponseMainSuccess<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     T? expectedData,
     int? expectedCode,
     String? expectedMessage,
@@ -22,7 +22,7 @@ mixin HttpResponseTestMixin {
 
     expect(
       response,
-      isA<ResponseMain<T>>(),
+      isA<ResponseMainDto<T>>(),
       reason: "$description - should be ResponseMain<$T>",
     );
     expect(
@@ -75,7 +75,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate success ResponseMain with custom data validation
   void expectResponseMainSuccessWithCustomValidation<T>(
-    ResponseMain<T> response,
+    ResponseMainDto<T> response,
     void Function(T data) dataValidator, {
     int? expectedCode,
     String? expectedMessage,
@@ -95,7 +95,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate success ResponseMain with list data
   void expectResponseMainSuccessWithList<T>(
-    ResponseMain<List<T>> response, {
+    ResponseMainDto<List<T>> response, {
     int? expectedCount,
     bool allowEmpty = true,
     int? expectedCode,
@@ -133,7 +133,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate that a ResponseMain represents an error operation
   void expectResponseMainError<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
     int? expectedCode,
     T? expectedData,
@@ -144,7 +144,7 @@ mixin HttpResponseTestMixin {
 
     expect(
       response,
-      isA<ResponseMain<T>>(),
+      isA<ResponseMainDto<T>>(),
       reason: "$description - should be ResponseMain<$T>",
     );
     expect(
@@ -191,7 +191,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate error ResponseMain with specific error codes
   void expectResponseMainErrorWithCode<T>(
-    ResponseMain<T> response,
+    ResponseMainDto<T> response,
     int expectedCode, {
     String? expectedMessage,
     String? testDescription,
@@ -206,7 +206,7 @@ mixin HttpResponseTestMixin {
 
   /// Validate error ResponseMain for common HTTP error codes
   void expectResponseMainBadRequest<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
   }) {
     expectResponseMainErrorWithCode<T>(
@@ -218,7 +218,7 @@ mixin HttpResponseTestMixin {
   }
 
   void expectResponseMainUnauthorized<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
   }) {
     expectResponseMainErrorWithCode<T>(
@@ -230,7 +230,7 @@ mixin HttpResponseTestMixin {
   }
 
   void expectResponseMainForbidden<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
   }) {
     expectResponseMainErrorWithCode<T>(
@@ -242,7 +242,7 @@ mixin HttpResponseTestMixin {
   }
 
   void expectResponseMainNotFound<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
   }) {
     expectResponseMainErrorWithCode<T>(
@@ -254,7 +254,7 @@ mixin HttpResponseTestMixin {
   }
 
   void expectResponseMainServerError<T>(
-    ResponseMain<T> response, {
+    ResponseMainDto<T> response, {
     String? expectedMessage,
   }) {
     expectResponseMainErrorWithCode<T>(
@@ -606,7 +606,7 @@ mixin HttpResponseTestMixin {
   // MARK: - Batch Response Validations
 
   /// Validate multiple ResponseMain objects have success status
-  void expectAllResponseMainSuccessful<T>(List<ResponseMain<T>> responses) {
+  void expectAllResponseMainSuccessful<T>(List<ResponseMainDto<T>> responses) {
     expect(
       responses.isNotEmpty,
       isTrue,
@@ -623,7 +623,7 @@ mixin HttpResponseTestMixin {
   }
 
   /// Validate multiple ResponseMain objects have error status
-  void expectAllResponseMainErrors<T>(List<ResponseMain<T>> responses) {
+  void expectAllResponseMainErrors<T>(List<ResponseMainDto<T>> responses) {
     expect(
       responses.isNotEmpty,
       isTrue,
@@ -648,13 +648,13 @@ mixin HttpResponseTestMixin {
 
   /// Create a custom ResponseMain assertion
   void expectResponseMainCustom<T>(
-    ResponseMain<T> response,
-    bool Function(ResponseMain<T>) customValidator,
+    ResponseMainDto<T> response,
+    bool Function(ResponseMainDto<T>) customValidator,
     String failureMessage,
   ) {
     expect(
       response,
-      isA<ResponseMain<T>>(),
+      isA<ResponseMainDto<T>>(),
       reason: "Should be valid ResponseMain",
     );
     expect(customValidator(response), isTrue, reason: failureMessage);
@@ -678,8 +678,8 @@ mixin HttpResponseTestMixin {
 
   /// Compare two ResponseMain objects for equality
   void expectResponseMainEqual<T>(
-    ResponseMain<T> response1,
-    ResponseMain<T> response2,
+    ResponseMainDto<T> response1,
+    ResponseMainDto<T> response2,
   ) {
     expect(
       response1.statusCode,
@@ -705,8 +705,8 @@ mixin HttpResponseTestMixin {
 
   /// Validate that ResponseMain has changed from previous state
   void expectResponseMainChanged<T>(
-    ResponseMain<T> oldResponse,
-    ResponseMain<T> newResponse,
+    ResponseMainDto<T> oldResponse,
+    ResponseMainDto<T> newResponse,
   ) {
     final bool hasChanged = oldResponse.statusCode != newResponse.statusCode ||
         oldResponse.data != newResponse.data ||

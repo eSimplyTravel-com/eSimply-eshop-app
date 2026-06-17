@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_bundle_consumption_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/use_case/user/get_user_consumption_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";

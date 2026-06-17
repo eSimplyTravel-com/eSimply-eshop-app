@@ -142,12 +142,12 @@ class MyCardWrap extends StatelessWidget {
 
 @AppPreview(name: "My Card Wrap")
 Widget myCardWrapPreview() {
-  return Scaffold(
+  return const Scaffold(
     body: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: MyCardWrap(
-        padding: const EdgeInsets.all(16),
-        child: const Text("Card content"),
+        padding: EdgeInsets.all(16),
+        child: Text("Card content"),
       ),
     ),
   );

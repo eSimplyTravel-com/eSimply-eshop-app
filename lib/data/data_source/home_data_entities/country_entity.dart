@@ -1,6 +1,6 @@
 // entities/country_entity.dart
 import "package:esim_open_source/data/data_source/home_data_entities/bundle_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/country_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -16,7 +16,7 @@ class CountryEntity {
     required this.operatorList,
   });
 
-  factory CountryEntity.fromModel(CountryResponseModel model) {
+  factory CountryEntity.fromModel(CountryResponseModelDto model) {
     return CountryEntity(
       countryID: model.id,
       country: model.country,
@@ -43,8 +43,8 @@ class CountryEntity {
 
   final ToMany<BundleEntity> bundles = ToMany<BundleEntity>();
 
-  CountryResponseModel toModel() {
-    return CountryResponseModel(
+  CountryResponseModelDto toModel() {
+    return CountryResponseModelDto(
       id: countryID,
       country: country,
       iso3Code: iso3Code,

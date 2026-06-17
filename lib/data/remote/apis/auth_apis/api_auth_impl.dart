@@ -4,11 +4,12 @@ import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/auth_apis/auth_apis.dart";
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
 import "package:esim_open_source/data/remote/http_request.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/data/remote/request/auth/update_user_info_params_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/auth_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/domain/data/api_auth.dart";
 import "package:esim_open_source/domain/data/params/update_user_info_params.dart";
@@ -29,7 +30,7 @@ class APIAuthImpl extends APIService implements APIAuth {
   void _initialise() {}
 
   @override
-  FutureOr<ResponseMain<OtpResponseModel?>> login({
+  FutureOr<ResponseMainDto<OtpResponseModelDto?>> login({
     required String? email,
     required String? phoneNumber,
     String? otpChannel,
@@ -40,50 +41,50 @@ class APIAuthImpl extends APIService implements APIAuth {
       if (otpChannel != null) "otp_channel": otpChannel,
     };
 
-    ResponseMain<OtpResponseModel?> loginResponse = await sendRequest(
+    ResponseMainDto<OtpResponseModelDto?> loginResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.login,
         parameters: params,
       ),
-      fromJson: OtpResponseModel.fromJson,
+      fromJson: OtpResponseModelDto.fromJson,
     );
 
     return loginResponse;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse>> logout() async {
-    ResponseMain<EmptyResponse> emptyResponse = await sendRequest(
+  FutureOr<ResponseMainDto<EmptyResponseDto>> logout() async {
+    ResponseMainDto<EmptyResponseDto> emptyResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.logout,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return emptyResponse;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> resendOtp({
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> resendOtp({
     required String email,
   }) async {
     Map<String, String> params = <String, String>{
       "email": email,
     };
 
-    ResponseMain<EmptyResponse?> resendOtpResponse = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> resendOtpResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.resendOtp,
         parameters: params,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return resendOtpResponse;
   }
 
   @override
-  FutureOr<ResponseMain<ResendOtpResponseModel?>> resendOtpNewChannel({
+  FutureOr<ResponseMainDto<ResendOtpResponseModelDto?>> resendOtpNewChannel({
     required String? email,
     required String? phone,
     required String otpChannel,
@@ -94,19 +95,19 @@ class APIAuthImpl extends APIService implements APIAuth {
       "otp_channel": otpChannel,
     };
 
-    ResponseMain<ResendOtpResponseModel?> resendOtpResponse = await sendRequest(
+    ResponseMainDto<ResendOtpResponseModelDto?> resendOtpResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.resendOtpNewChannel,
         parameters: params,
       ),
-      fromJson: ResendOtpResponseModel.fromJson,
+      fromJson: ResendOtpResponseModelDto.fromJson,
     );
 
     return resendOtpResponse;
   }
 
   @override
-  FutureOr<ResponseMain<AuthResponseModel>> verifyOtp({
+  FutureOr<ResponseMainDto<AuthResponseModelDto>> verifyOtp({
     String? email,
     String? phoneNumber,
     String pinCode = "",
@@ -121,74 +122,68 @@ class APIAuthImpl extends APIService implements APIAuth {
       "provider_type": providerType,
     };
 
-    ResponseMain<AuthResponseModel> authResponse = await sendRequest(
+    ResponseMainDto<AuthResponseModelDto> authResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.verifyOtp,
         parameters: params,
       ),
-      fromJson: AuthResponseModel.fromAPIJson,
+      fromJson: AuthResponseModelDto.fromAPIJson,
     );
 
     return authResponse;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse>> deleteAccount() async {
-    ResponseMain<EmptyResponse> emptyResponse = await sendRequest(
+  FutureOr<ResponseMainDto<EmptyResponseDto>> deleteAccount() async {
+    ResponseMainDto<EmptyResponseDto> emptyResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.deleteAccount,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return emptyResponse;
   }
 
   @override
-  FutureOr<ResponseMain<AuthResponseModel>> updateUserInfo({
+  FutureOr<ResponseMainDto<AuthResponseModelDto>> updateUserInfo({
     required UpdateUserInfoRequest request,
   }) async {
+    UpdateUserInfoRequestDto requestDto =
+        UpdateUserInfoRequestDto.fromDomain(request);
+
     Map<String, String> headers = <String, String>{
-      "Authorization": "Bearer ${request.bearerToken}",
+      "Authorization": "Bearer ${requestDto.bearerToken}",
     };
 
-    Map<String, dynamic> params = <String, dynamic>{
-      if (request.email != null) "email": request.email,
-      if (request.msisdn != null) "msisdn": request.msisdn,
-      if (request.firstName != null) "first_name": request.firstName,
-      if (request.lastName != null) "last_name": request.lastName,
-      if (request.currencyCode != null) "currency": request.currencyCode, //?? getSelectedCurrencyCode(),
-      if (request.languageCode != null) "language": request.languageCode , //?? LanguageEnum.fromCode(locator<LocalStorageService>().languageCode).languageText,
-    };
-
-    ResponseMain<AuthResponseModel> authResponse = await sendRequest(
+    ResponseMainDto<AuthResponseModelDto> authResponse = await sendRequest(
       endPoint: createAPIEndpoint(
-        parameters: params,
+        parameters: requestDto.toJson(),
         endPoint: AuthApis.updateUserInfo,
         additionalHeaders:
-            (request.bearerToken?.isNotEmpty ?? false) ? headers : <String, String>{},
+            (requestDto.bearerToken?.isNotEmpty ?? false) ? headers : <String, String>{},
       ),
-      fromJson: AuthResponseModel.fromAPIJson,
+      fromJson: AuthResponseModelDto.fromAPIJson,
     );
 
     return authResponse;
   }
 
   @override
-  FutureOr<ResponseMain<AuthResponseModel>> getUserInfo({
+  FutureOr<ResponseMainDto<AuthResponseModelDto>> getUserInfo({
     String? bearerToken,
   }) async {
     Map<String, String> headers = <String, String>{
       "Authorization": "Bearer $bearerToken",
     };
 
-    ResponseMain<AuthResponseModel> response = await sendRequest(
+    ResponseMainDto<AuthResponseModelDto> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.userInfo,
         additionalHeaders:
             (bearerToken?.isNotEmpty ?? false) ? headers : <String, String>{},
       ),
-      fromJson: AuthResponseModel.fromAPIJson,
+      fromJson: AuthResponseModelDto.fromAPIJson,
     );
 
     return response;
@@ -236,7 +231,7 @@ class APIAuthImpl extends APIService implements APIAuth {
   }
 
   @override
-  FutureOr<ResponseMain<AuthResponseModel?>> tmpLogin({
+  FutureOr<ResponseMainDto<AuthResponseModelDto?>> tmpLogin({
     required String? email,
     required String? phone,
   }) async {
@@ -245,12 +240,12 @@ class APIAuthImpl extends APIService implements APIAuth {
       if (phone != null) "phone": phone,
     };
 
-    ResponseMain<AuthResponseModel?> tmpLoginResponse = await sendRequest(
+    ResponseMainDto<AuthResponseModelDto?> tmpLoginResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AuthApis.tmpLogin,
         parameters: params,
       ),
-      fromJson: AuthResponseModel.fromAPIJson,
+      fromJson: AuthResponseModelDto.fromAPIJson,
     );
 
     return tmpLoginResponse;

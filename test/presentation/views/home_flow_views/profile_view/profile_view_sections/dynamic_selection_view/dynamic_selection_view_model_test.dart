@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/responses/app/currencies_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/app/currencies_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
@@ -306,8 +306,7 @@ Future<void> main() async {
     test("currency setNewSelection executes", () async {
       // Mock getString to return a different currency (so change is detected)
       when(
-        locator<LocalStorageService>()
-            .currencyCode,
+        locator<LocalStorageService>().currencyCode,
       ).thenReturn("EUR");
 
       when(

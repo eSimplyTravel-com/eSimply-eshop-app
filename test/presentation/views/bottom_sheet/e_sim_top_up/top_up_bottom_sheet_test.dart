@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";

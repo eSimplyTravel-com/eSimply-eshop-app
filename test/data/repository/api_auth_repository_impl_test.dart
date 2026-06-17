@@ -3,14 +3,19 @@
 import "dart:async";
 
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/data/remote/responses/auth/auth_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/data/repository/api_auth_repository_impl.dart";
 import "package:esim_open_source/domain/data/api_auth.dart";
 import "package:esim_open_source/domain/data/params/update_user_info_params.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/resend_otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -32,7 +37,7 @@ class TestUnauthorizedAccessListener implements UnauthorizedAccessListener {
 class TestAuthReloadListener implements AuthReloadListener {
   @override
   void onAuthReloadListenerCallBackUseCase(
-    ResponseMain<dynamic>? response,
+      AuthResponseModel? authResponse,
   ) {}
 }
 
@@ -54,11 +59,11 @@ void main() {
       test("should return success resource when login with email succeeds",
           () async {
         // Arrange
-        final OtpResponseModel expectedResponse = OtpResponseModel(
+        final OtpResponseModelDto expectedResponse = OtpResponseModelDto(
           otpExpiration: 300, // 5 minutes
         );
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "OTP sent successfully",
           statusCode: 200,
@@ -76,7 +81,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.otpExpiration, 300);
         expect(result.message, "OTP sent successfully");
         expect(result.error, isNull);
@@ -88,11 +92,11 @@ void main() {
       test("should return success resource when login with phone succeeds",
           () async {
         // Arrange
-        final OtpResponseModel expectedResponse = OtpResponseModel(
+        final OtpResponseModelDto expectedResponse = OtpResponseModelDto(
           otpExpiration: 300, // 5 minutes
         );
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
           data: expectedResponse,
           message: "OTP sent to phone",
           statusCode: 200,
@@ -110,7 +114,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.otpExpiration, 300);
         expect(result.message, "OTP sent to phone");
 
@@ -120,8 +123,8 @@ void main() {
 
       test("should return error resource when login fails", () async {
         // Arrange
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Invalid email format",
           title: "Invalid email format",
@@ -149,8 +152,8 @@ void main() {
 
       test("should handle both email and phone null", () async {
         // Arrange
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Email or phone required",
           title: "Email or phone required",
@@ -177,9 +180,9 @@ void main() {
     group("logout", () {
       test("should return success resource when logout succeeds", () async {
         // Arrange
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "Logged out successfully",
           statusCode: 200,
@@ -193,7 +196,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isA<EmptyResponse>());
         expect(result.message, "Logged out successfully");
         expect(result.error, isNull);
 
@@ -202,8 +205,8 @@ void main() {
 
       test("should return error resource when logout fails", () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           statusCode: 401,
           developerMessage: "Unauthorized",
           title: "Unauthorized",
@@ -230,9 +233,9 @@ void main() {
       test("should return success resource when resend OTP succeeds",
           () async {
         // Arrange
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "OTP resent successfully",
           statusCode: 200,
@@ -249,7 +252,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isA<EmptyResponse>());
         expect(result.message, "OTP resent successfully");
         expect(result.error, isNull);
 
@@ -258,8 +261,8 @@ void main() {
 
       test("should return error resource when resend OTP fails", () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           statusCode: 429,
           developerMessage: "Too many requests",
           title: "Too many requests",
@@ -285,9 +288,9 @@ void main() {
       test("should handle empty email parameter", () async {
         // Arrange
         const String emptyEmail = "";
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "Success",
           statusCode: 200,
@@ -308,6 +311,181 @@ void main() {
       });
     });
 
+    group("resendOtpNewChannel", () {
+      const String testEmail = "test@example.com";
+      const String testPhone = "+1234567890";
+      const String testChannel = "SMS";
+
+      test(
+          "should return success resource when resend via new channel with email succeeds",
+          () async {
+        // Arrange — mock the API contract (DTO) with the impl's nullable inner
+        final ResendOtpResponseModelDto expectedResponse =
+            ResendOtpResponseModelDto(
+          status: "success",
+          message: "OTP sent via SMS",
+          data: "otp-reference-123",
+          responseCode: 200,
+        );
+        final ResponseMainDto<ResendOtpResponseModelDto?> responseMain =
+            ResponseMainDto<ResendOtpResponseModelDto?>.createErrorWithData(
+          data: expectedResponse,
+          message: "OTP sent via SMS",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiAuth.resendOtpNewChannel(
+            email: testEmail,
+            phone: null,
+            otpChannel: testChannel,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act — repo converts to the domain model
+        final Resource<ResendOtpResponseModel?> result =
+            await repository.resendOtpNewChannel(
+          email: testEmail,
+          phone: null,
+          otpChannel: testChannel,
+        );
+
+        // Assert — field-level, since data is a fresh domain instance
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.status, "success");
+        expect(result.data?.message, "OTP sent via SMS");
+        expect(result.data?.data, "otp-reference-123");
+        expect(result.message, "OTP sent via SMS");
+        expect(result.error, isNull);
+
+        verify(
+          mockApiAuth.resendOtpNewChannel(
+            email: testEmail,
+            phone: null,
+            otpChannel: testChannel,
+          ),
+        ).called(1);
+      });
+
+      test(
+          "should return success resource when resend via new channel with phone succeeds",
+          () async {
+        // Arrange
+        final ResendOtpResponseModelDto expectedResponse =
+            ResendOtpResponseModelDto(
+          status: "success",
+          message: "OTP sent via SMS to phone",
+        );
+        final ResponseMainDto<ResendOtpResponseModelDto?> responseMain =
+            ResponseMainDto<ResendOtpResponseModelDto?>.createErrorWithData(
+          data: expectedResponse,
+          message: "OTP sent via SMS to phone",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiAuth.resendOtpNewChannel(
+            email: null,
+            phone: testPhone,
+            otpChannel: testChannel,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<ResendOtpResponseModel?> result =
+            await repository.resendOtpNewChannel(
+          email: null,
+          phone: testPhone,
+          otpChannel: testChannel,
+        );
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data?.message, "OTP sent via SMS to phone");
+
+        verify(
+          mockApiAuth.resendOtpNewChannel(
+            email: null,
+            phone: testPhone,
+            otpChannel: testChannel,
+          ),
+        ).called(1);
+      });
+
+      test(
+          "should return success resource with null data when API returns 200 with null data",
+          () async {
+        // Arrange — a 200 with data: null is a valid success, not an error
+        final ResponseMainDto<ResendOtpResponseModelDto?> responseMain =
+            ResponseMainDto<ResendOtpResponseModelDto?>.createErrorWithData(
+          message: "OTP sent",
+          statusCode: 200,
+        );
+
+        when(
+          mockApiAuth.resendOtpNewChannel(
+            email: testEmail,
+            phone: null,
+            otpChannel: testChannel,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<ResendOtpResponseModel?> result =
+            await repository.resendOtpNewChannel(
+          email: testEmail,
+          phone: null,
+          otpChannel: testChannel,
+        );
+
+        // Assert
+        expect(result.resourceType, ResourceType.success);
+        expect(result.data, isNull);
+        expect(result.error, isNull);
+      });
+
+      test("should return error resource when resend via new channel fails",
+          () async {
+        // Arrange
+        final ResponseMainDto<ResendOtpResponseModelDto?> responseMain =
+            ResponseMainDto<ResendOtpResponseModelDto?>.createErrorWithData(
+          statusCode: 429,
+          developerMessage: "Too many requests",
+          title: "Too many requests",
+        );
+
+        when(
+          mockApiAuth.resendOtpNewChannel(
+            email: testEmail,
+            phone: null,
+            otpChannel: testChannel,
+          ),
+        ).thenAnswer((_) async => responseMain);
+
+        // Act
+        final Resource<ResendOtpResponseModel?> result =
+            await repository.resendOtpNewChannel(
+          email: testEmail,
+          phone: null,
+          otpChannel: testChannel,
+        );
+
+        // Assert
+        expect(result.resourceType, ResourceType.error);
+        expect(result.message, "Too many requests");
+        expect(result.data, isNull);
+        expect(result.error, isNotNull);
+
+        verify(
+          mockApiAuth.resendOtpNewChannel(
+            email: testEmail,
+            phone: null,
+            otpChannel: testChannel,
+          ),
+        ).called(1);
+      });
+    });
+
     group("verifyOtp", () {
       const String testEmail = "test@example.com";
       const String testPhone = "+1234567890";
@@ -319,12 +497,12 @@ void main() {
           "should return success resource when OTP verification with email succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "access-token-123",
           refreshToken: "refresh-token-456",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "OTP verified successfully",
           statusCode: 200,
@@ -345,7 +523,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.accessToken, "access-token-123");
         expect(result.data?.refreshToken, "refresh-token-456");
         expect(result.message, "OTP verified successfully");
@@ -363,12 +540,12 @@ void main() {
           "should return success resource when OTP verification with phone succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "access-token-123",
           refreshToken: "refresh-token-456",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Phone verified",
           statusCode: 200,
@@ -389,7 +566,8 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
+        expect(result.data?.refreshToken, expectedResponse.refreshToken);
         expect(result.message, "Phone verified");
 
         verify(
@@ -404,12 +582,12 @@ void main() {
           "should return success resource when social login verification succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "access-token-social",
           refreshToken: "refresh-token-social",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Social login successful",
           statusCode: 200,
@@ -432,7 +610,8 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
+        expect(result.data?.refreshToken, expectedResponse.refreshToken);
         expect(result.message, "Social login successful");
 
         verify(
@@ -447,8 +626,8 @@ void main() {
       test("should return error resource when OTP verification fails",
           () async {
         // Arrange
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Invalid OTP",
           title: "Invalid OTP",
@@ -483,8 +662,8 @@ void main() {
       test("should handle incorrect OTP code", () async {
         // Arrange
         const String wrongPinCode = "000000";
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 401,
           developerMessage: "OTP does not match",
           title: "OTP does not match",
@@ -520,9 +699,9 @@ void main() {
       test("should return success resource when account deletion succeeds",
           () async {
         // Arrange
-        final EmptyResponse expectedResponse = EmptyResponse();
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final EmptyResponseDto expectedResponse = EmptyResponseDto();
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           data: expectedResponse,
           message: "Account deleted successfully",
           statusCode: 200,
@@ -537,7 +716,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data, isA<EmptyResponse>());
         expect(result.message, "Account deleted successfully");
         expect(result.error, isNull);
 
@@ -547,8 +726,8 @@ void main() {
       test("should return error resource when account deletion fails",
           () async {
         // Arrange
-        final ResponseMain<EmptyResponse> responseMain =
-            ResponseMain<EmptyResponse>.createErrorWithData(
+        final ResponseMainDto<EmptyResponseDto> responseMain =
+            ResponseMainDto<EmptyResponseDto>.createErrorWithData(
           statusCode: 403,
           developerMessage: "Cannot delete account with active orders",
           title: "Cannot delete account with active orders",
@@ -580,12 +759,12 @@ void main() {
 
       test("should return success resource when user info update succeeds", () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "updated-token",
           refreshToken: "updated-refresh",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-        ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+        ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "User info updated successfully",
           statusCode: 200,
@@ -611,7 +790,8 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
+        expect(result.data?.refreshToken, expectedResponse.refreshToken);
         expect(result.message, "User info updated successfully");
         expect(result.error, isNull);
 
@@ -620,8 +800,8 @@ void main() {
 
       test("should return error resource when user info update fails", () async {
         // Arrange
-        final ResponseMain<AuthResponseModel> responseMain =
-        ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+        ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 422,
           developerMessage: "Invalid email format",
           title: "Invalid email format",
@@ -654,11 +834,11 @@ void main() {
 
       test("should handle partial user info updates", () async {
         // Arrange - only updating first name and newsletter subscription
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "updated-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-        ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+        ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Partial update successful",
           statusCode: 200,
@@ -691,12 +871,12 @@ void main() {
       test("should return success resource when get user info succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "access-token",
           refreshToken: "refresh-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "User info retrieved",
           statusCode: 200,
@@ -713,7 +893,8 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
+        expect(result.data?.refreshToken, expectedResponse.refreshToken);
         expect(result.message, "User info retrieved");
         expect(result.error, isNull);
 
@@ -725,11 +906,11 @@ void main() {
           "should return success resource when get user info without token succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "access-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "User info retrieved",
           statusCode: 200,
@@ -746,15 +927,15 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
 
         verify(mockApiAuth.getUserInfo()).called(1);
       });
 
       test("should return error resource when get user info fails", () async {
         // Arrange
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 401,
           developerMessage: "Invalid or expired token",
           title: "Invalid or expired token",
@@ -783,12 +964,12 @@ void main() {
       test("should return success resource when token refresh succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "new-access-token",
           refreshToken: "new-refresh-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Token refreshed successfully",
           statusCode: 200,
@@ -803,7 +984,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.accessToken, "new-access-token");
         expect(result.data?.refreshToken, "new-refresh-token");
         expect(result.message, "Token refreshed successfully");
@@ -814,8 +994,8 @@ void main() {
 
       test("should return error resource when token refresh fails", () async {
         // Arrange
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 401,
           developerMessage: "Refresh token expired",
           title: "Refresh token expired",
@@ -845,12 +1025,12 @@ void main() {
           "should return success resource when temporary login with email succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "temp-access-token",
           refreshToken: "temp-refresh-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Temporary login successful",
           statusCode: 200,
@@ -868,7 +1048,6 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
         expect(result.data?.accessToken, "temp-access-token");
         expect(result.message, "Temporary login successful");
         expect(result.error, isNull);
@@ -880,11 +1059,11 @@ void main() {
           "should return success resource when temporary login with phone succeeds",
           () async {
         // Arrange
-        final AuthResponseModel expectedResponse = AuthResponseModel(
+        final AuthResponseModelDto expectedResponse = AuthResponseModelDto(
           accessToken: "temp-access-token",
         );
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           data: expectedResponse,
           message: "Temporary phone login successful",
           statusCode: 200,
@@ -902,7 +1081,7 @@ void main() {
 
         // Assert
         expect(result.resourceType, ResourceType.success);
-        expect(result.data, expectedResponse);
+        expect(result.data?.accessToken, expectedResponse.accessToken);
         expect(result.message, "Temporary phone login successful");
 
         verify(mockApiAuth.tmpLogin(email: null, phone: testPhone)).called(1);
@@ -911,8 +1090,8 @@ void main() {
       test("should return error resource when temporary login fails",
           () async {
         // Arrange
-        final ResponseMain<AuthResponseModel> responseMain =
-            ResponseMain<AuthResponseModel>.createErrorWithData(
+        final ResponseMainDto<AuthResponseModelDto> responseMain =
+            ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
           statusCode: 400,
           developerMessage: "Temporary login not allowed",
           title: "Temporary login not allowed",
@@ -1023,8 +1202,8 @@ void main() {
             phoneNumber: anyNamed("phoneNumber"),
           ),
         ).thenAnswer(
-          (_) async => ResponseMain<OtpResponseModel>.createErrorWithData(
-            data: OtpResponseModel(),
+          (_) async => ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
+            data: OtpResponseModelDto(),
             statusCode: 200,
           ),
         );
@@ -1036,8 +1215,8 @@ void main() {
 
         // Logout
         when(mockApiAuth.logout()).thenAnswer(
-          (_) async => ResponseMain<EmptyResponse>.createErrorWithData(
-            data: EmptyResponse(),
+          (_) async => ResponseMainDto<EmptyResponseDto>.createErrorWithData(
+            data: EmptyResponseDto(),
             statusCode: 200,
           ),
         );
@@ -1054,8 +1233,8 @@ void main() {
             providerType: anyNamed("providerType"),
           ),
         ).thenAnswer(
-          (_) async => ResponseMain<AuthResponseModel>.createErrorWithData(
-            data: AuthResponseModel(),
+          (_) async => ResponseMainDto<AuthResponseModelDto>.createErrorWithData(
+            data: AuthResponseModelDto(),
             statusCode: 200,
           ),
         );
@@ -1085,8 +1264,8 @@ void main() {
 
       test("should handle null response data", () async {
         // Arrange
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
           message: "Success but no data",
           statusCode: 200,
         );
@@ -1105,15 +1284,15 @@ void main() {
         ) as Resource<OtpResponseModel?>;
 
         // Assert
-        expect(result.resourceType, ResourceType.error);
+        expect(result.resourceType, ResourceType.success);
         expect(result.data, isNull);
       });
 
       test("should handle empty string parameters", () async {
         // Arrange
-        final ResponseMain<OtpResponseModel> responseMain =
-            ResponseMain<OtpResponseModel>.createErrorWithData(
-          data: OtpResponseModel(),
+        final ResponseMainDto<OtpResponseModelDto?> responseMain =
+            ResponseMainDto<OtpResponseModelDto?>.createErrorWithData(
+          data: OtpResponseModelDto(),
           statusCode: 200,
         );
 

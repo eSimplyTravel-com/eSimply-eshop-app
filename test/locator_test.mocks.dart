@@ -4,46 +4,21 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i22;
-import 'dart:convert' as _i116;
-import 'dart:typed_data' as _i117;
+import 'dart:convert' as _i117;
+import 'dart:typed_data' as _i118;
 import 'dart:ui' as _i17;
 
 import 'package:device_info_plus/device_info_plus.dart' as _i2;
 import 'package:esim_open_source/data/remote/auth_reload_interface.dart'
     as _i75;
-import 'package:esim_open_source/data/remote/request/related_search.dart'
-    as _i57;
-import 'package:esim_open_source/data/remote/responses/account/account_model.dart'
-    as _i110;
-import 'package:esim_open_source/data/remote/responses/app/banner_response_model.dart'
-    as _i90;
-import 'package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart'
-    as _i88;
-import 'package:esim_open_source/data/remote/responses/auth/auth_response_model.dart'
-    as _i53;
-import 'package:esim_open_source/data/remote/responses/auth/resend_otp_response_model.dart'
-    as _i72;
-import 'package:esim_open_source/data/remote/responses/base_response_model.dart'
-    as _i94;
-import 'package:esim_open_source/data/remote/responses/bundles/bundle_consumption_response.dart'
-    as _i80;
-import 'package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart'
-    as _i58;
-import 'package:esim_open_source/data/remote/responses/bundles/country_response_model.dart'
-    as _i97;
-import 'package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart'
-    as _i98;
-import 'package:esim_open_source/data/remote/responses/user/order_history_response_model.dart'
-    as _i64;
-import 'package:esim_open_source/data/remote/responses/user/user_notification_response.dart'
-    as _i82;
 import 'package:esim_open_source/data/remote/unauthorized_access_interface.dart'
     as _i74;
 import 'package:esim_open_source/data/services/connectivity_service_impl.dart'
     as _i70;
-import 'package:esim_open_source/domain/data/api_app.dart' as _i115;
+import 'package:esim_open_source/domain/data/api_app.dart' as _i113;
 import 'package:esim_open_source/domain/data/api_bundles.dart' as _i76;
-import 'package:esim_open_source/domain/data/api_device.dart' as _i114;
+import 'package:esim_open_source/domain/data/api_device.dart' as _i112;
+import 'package:esim_open_source/domain/data/api_notifications.dart' as _i114;
 import 'package:esim_open_source/domain/data/api_promotion.dart' as _i85;
 import 'package:esim_open_source/domain/data/api_user.dart' as _i77;
 import 'package:esim_open_source/domain/data/params/add_device_params.dart'
@@ -52,6 +27,32 @@ import 'package:esim_open_source/domain/data/params/register_device_params.dart'
     as _i84;
 import 'package:esim_open_source/domain/data/params/update_user_info_params.dart'
     as _i73;
+import 'package:esim_open_source/domain/data/request/related_search.dart'
+    as _i57;
+import 'package:esim_open_source/domain/data/response/account/account_model.dart'
+    as _i108;
+import 'package:esim_open_source/domain/data/response/app/banner_response_model.dart'
+    as _i90;
+import 'package:esim_open_source/domain/data/response/app/dynamic_page_response.dart'
+    as _i88;
+import 'package:esim_open_source/domain/data/response/auth/auth_response_model.dart'
+    as _i53;
+import 'package:esim_open_source/domain/data/response/auth/resend_otp_response_model.dart'
+    as _i72;
+import 'package:esim_open_source/domain/data/response/bundles/bundle_consumption_response.dart'
+    as _i80;
+import 'package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart'
+    as _i58;
+import 'package:esim_open_source/domain/data/response/bundles/country_response_model.dart'
+    as _i96;
+import 'package:esim_open_source/domain/data/response/bundles/regions_response_model.dart'
+    as _i97;
+import 'package:esim_open_source/domain/data/response/core/empty_response.dart'
+    as _i116;
+import 'package:esim_open_source/domain/data/response/user/order_history_response_model.dart'
+    as _i64;
+import 'package:esim_open_source/domain/data/response/user/user_notification_response.dart'
+    as _i82;
 import 'package:esim_open_source/domain/repository/api_app_repository.dart'
     as _i29;
 import 'package:esim_open_source/domain/repository/api_auth_repository.dart'
@@ -60,6 +61,8 @@ import 'package:esim_open_source/domain/repository/api_bundles_repository.dart'
     as _i78;
 import 'package:esim_open_source/domain/repository/api_device_repository.dart'
     as _i83;
+import 'package:esim_open_source/domain/repository/api_notifications_repository.dart'
+    as _i115;
 import 'package:esim_open_source/domain/repository/api_promotion_repository.dart'
     as _i86;
 import 'package:esim_open_source/domain/repository/api_user_repository.dart'
@@ -75,7 +78,7 @@ import 'package:esim_open_source/domain/repository/services/device_info_service.
 import 'package:esim_open_source/domain/repository/services/dynamic_linking_service.dart'
     as _i49;
 import 'package:esim_open_source/domain/repository/services/environment_service.dart'
-    as _i111;
+    as _i109;
 import 'package:esim_open_source/domain/repository/services/flutter_channel_handler_service.dart'
     as _i16;
 import 'package:esim_open_source/domain/repository/services/local_storage_service.dart'
@@ -134,7 +137,7 @@ import 'package:esim_open_source/domain/use_case/user/verify_order_otp_use_case.
 import 'package:esim_open_source/domain/util/resource.dart' as _i28;
 import 'package:esim_open_source/presentation/enums/dialog_icon_type.dart'
     as _i62;
-import 'package:esim_open_source/presentation/enums/login_type.dart' as _i106;
+import 'package:esim_open_source/presentation/enums/login_type.dart' as _i105;
 import 'package:esim_open_source/presentation/enums/payment_type.dart' as _i50;
 import 'package:esim_open_source/presentation/enums/view_state.dart' as _i60;
 import 'package:esim_open_source/presentation/extensions/stacked_services/custom_route_observer.dart'
@@ -169,45 +172,43 @@ import 'package:esim_open_source/presentation/views/bottom_sheet/order_bottom_sh
 import 'package:esim_open_source/presentation/views/bottom_sheet/order_receipt_bottom_sheet_view/order_receipt_bottom_sheet_view_model.dart'
     as _i65;
 import 'package:esim_open_source/presentation/views/home_flow_views/data_plans_view/data_plans_view_model.dart'
-    as _i96;
+    as _i95;
 import 'package:esim_open_source/presentation/views/home_flow_views/data_plans_view/purchase_loading_view/purchase_loading_view_model.dart'
-    as _i102;
+    as _i101;
 import 'package:esim_open_source/presentation/views/home_flow_views/data_plans_view/verify_purchase_view/verify_purchase_view_model.dart'
-    as _i107;
+    as _i106;
 import 'package:esim_open_source/presentation/views/home_flow_views/main_page/home_pager_view_model.dart'
-    as _i99;
+    as _i98;
 import 'package:esim_open_source/presentation/views/home_flow_views/my_esim_view/my_esim_view_model.dart'
     as _i33;
 import 'package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_model.dart'
-    as _i95;
+    as _i94;
 import 'package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_sections/user_guide_view/android_user_guide_view/android_user_guide_view_model.dart'
     as _i92;
 import 'package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_sections/user_guide_view/user_guide_data_source/user_guide_view_data_source.dart'
     as _i45;
 import 'package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_sections/user_guide_view/user_guide_detailed_view/user_guide_detailed_view_model.dart'
-    as _i109;
+    as _i107;
 import 'package:esim_open_source/presentation/views/pre_sign_in/continue_with_email_view/continue_with_email_view_model.dart'
-    as _i101;
-import 'package:esim_open_source/presentation/views/pre_sign_in/device_compability_check_view/device_compability_check_view_model.dart'
-    as _i103;
-import 'package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view_model.dart'
-    as _i104;
-import 'package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view_model.dart'
-    as _i105;
-import 'package:esim_open_source/presentation/views/skeleton_view/skeleton_view_model.dart'
-    as _i108;
-import 'package:esim_open_source/presentation/views/start_up_view/startup_view_model.dart'
     as _i100;
+import 'package:esim_open_source/presentation/views/pre_sign_in/device_compability_check_view/device_compability_check_view_model.dart'
+    as _i102;
+import 'package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view_model.dart'
+    as _i103;
+import 'package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view_model.dart'
+    as _i104;
+import 'package:esim_open_source/presentation/views/start_up_view/startup_view_model.dart'
+    as _i99;
 import 'package:esim_open_source/presentation/widgets/lockable_tab_bar.dart'
     as _i35;
 import 'package:esim_open_source/utils/value_stream.dart' as _i30;
 import 'package:flutter/material.dart' as _i8;
-import 'package:flutter_esim/flutter_esim.dart' as _i113;
+import 'package:flutter_esim/flutter_esim.dart' as _i111;
 import 'package:http/http.dart' as _i46;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i48;
 import 'package:phone_input/phone_input_package.dart' as _i7;
-import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i112;
+import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i110;
 import 'package:stacked/stacked.dart' as _i59;
 import 'package:stacked_services/stacked_services.dart' as _i18;
 import 'package:stacked_themes/stacked_themes.dart' as _i11;
@@ -304,19 +305,9 @@ class _FakeTextEditingController_6 extends _i1.SmartFake
         );
 }
 
-class _FakeIconData_7 extends _i1.SmartFake implements _i8.IconData {
-  _FakeIconData_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeLocalStorageService_8 extends _i1.SmartFake
+class _FakeLocalStorageService_7 extends _i1.SmartFake
     implements _i9.LocalStorageService {
-  _FakeLocalStorageService_8(
+  _FakeLocalStorageService_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -325,9 +316,9 @@ class _FakeLocalStorageService_8 extends _i1.SmartFake
         );
 }
 
-class _FakeAnalyticsService_9 extends _i1.SmartFake
+class _FakeAnalyticsService_8 extends _i1.SmartFake
     implements _i10.AnalyticsService {
-  _FakeAnalyticsService_9(
+  _FakeAnalyticsService_8(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -336,8 +327,8 @@ class _FakeAnalyticsService_9 extends _i1.SmartFake
         );
 }
 
-class _FakeThemeService_10 extends _i1.SmartFake implements _i11.ThemeService {
-  _FakeThemeService_10(
+class _FakeThemeService_9 extends _i1.SmartFake implements _i11.ThemeService {
+  _FakeThemeService_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -346,8 +337,8 @@ class _FakeThemeService_10 extends _i1.SmartFake implements _i11.ThemeService {
         );
 }
 
-class _FakeUserService_11 extends _i1.SmartFake implements _i12.UserService {
-  _FakeUserService_11(
+class _FakeUserService_10 extends _i1.SmartFake implements _i12.UserService {
+  _FakeUserService_10(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -356,9 +347,9 @@ class _FakeUserService_11 extends _i1.SmartFake implements _i12.UserService {
         );
 }
 
-class _FakePaymentService_12 extends _i1.SmartFake
+class _FakePaymentService_11 extends _i1.SmartFake
     implements _i13.PaymentService {
-  _FakePaymentService_12(
+  _FakePaymentService_11(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -367,9 +358,9 @@ class _FakePaymentService_12 extends _i1.SmartFake
         );
 }
 
-class _FakeRedirectionsHandlerService_13 extends _i1.SmartFake
+class _FakeRedirectionsHandlerService_12 extends _i1.SmartFake
     implements _i14.RedirectionsHandlerService {
-  _FakeRedirectionsHandlerService_13(
+  _FakeRedirectionsHandlerService_12(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -378,9 +369,9 @@ class _FakeRedirectionsHandlerService_13 extends _i1.SmartFake
         );
 }
 
-class _FakeAddDeviceUseCase_14 extends _i1.SmartFake
+class _FakeAddDeviceUseCase_13 extends _i1.SmartFake
     implements _i15.AddDeviceUseCase {
-  _FakeAddDeviceUseCase_14(
+  _FakeAddDeviceUseCase_13(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -389,9 +380,9 @@ class _FakeAddDeviceUseCase_14 extends _i1.SmartFake
         );
 }
 
-class _FakeFlutterChannelHandlerService_15 extends _i1.SmartFake
+class _FakeFlutterChannelHandlerService_14 extends _i1.SmartFake
     implements _i16.FlutterChannelHandlerService {
-  _FakeFlutterChannelHandlerService_15(
+  _FakeFlutterChannelHandlerService_14(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -400,8 +391,8 @@ class _FakeFlutterChannelHandlerService_15 extends _i1.SmartFake
         );
 }
 
-class _FakeColor_16 extends _i1.SmartFake implements _i17.Color {
-  _FakeColor_16(
+class _FakeColor_15 extends _i1.SmartFake implements _i17.Color {
+  _FakeColor_15(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -410,9 +401,9 @@ class _FakeColor_16 extends _i1.SmartFake implements _i17.Color {
         );
 }
 
-class _FakeDialogService_17 extends _i1.SmartFake
+class _FakeDialogService_16 extends _i1.SmartFake
     implements _i18.DialogService {
-  _FakeDialogService_17(
+  _FakeDialogService_16(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -421,9 +412,9 @@ class _FakeDialogService_17 extends _i1.SmartFake
         );
 }
 
-class _FakeSnackbarService_18 extends _i1.SmartFake
+class _FakeSnackbarService_17 extends _i1.SmartFake
     implements _i18.SnackbarService {
-  _FakeSnackbarService_18(
+  _FakeSnackbarService_17(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -432,9 +423,9 @@ class _FakeSnackbarService_18 extends _i1.SmartFake
         );
 }
 
-class _FakeBottomSheetService_19 extends _i1.SmartFake
+class _FakeBottomSheetService_18 extends _i1.SmartFake
     implements _i18.BottomSheetService {
-  _FakeBottomSheetService_19(
+  _FakeBottomSheetService_18(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -443,9 +434,9 @@ class _FakeBottomSheetService_19 extends _i1.SmartFake
         );
 }
 
-class _FakeNavigationService_20 extends _i1.SmartFake
+class _FakeNavigationService_19 extends _i1.SmartFake
     implements _i18.NavigationService {
-  _FakeNavigationService_20(
+  _FakeNavigationService_19(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -454,9 +445,9 @@ class _FakeNavigationService_20 extends _i1.SmartFake
         );
 }
 
-class _FakeConnectivityService_21 extends _i1.SmartFake
+class _FakeConnectivityService_20 extends _i1.SmartFake
     implements _i19.ConnectivityService {
-  _FakeConnectivityService_21(
+  _FakeConnectivityService_20(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -465,9 +456,9 @@ class _FakeConnectivityService_21 extends _i1.SmartFake
         );
 }
 
-class _FakeNavigationRouter_22 extends _i1.SmartFake
+class _FakeNavigationRouter_21 extends _i1.SmartFake
     implements _i20.NavigationRouter {
-  _FakeNavigationRouter_22(
+  _FakeNavigationRouter_21(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -476,9 +467,9 @@ class _FakeNavigationRouter_22 extends _i1.SmartFake
         );
 }
 
-class _FakeUserAuthenticationService_23 extends _i1.SmartFake
+class _FakeUserAuthenticationService_22 extends _i1.SmartFake
     implements _i21.UserAuthenticationService {
-  _FakeUserAuthenticationService_23(
+  _FakeUserAuthenticationService_22(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -487,8 +478,8 @@ class _FakeUserAuthenticationService_23 extends _i1.SmartFake
         );
 }
 
-class _FakeFuture_24<T1> extends _i1.SmartFake implements _i22.Future<T1> {
-  _FakeFuture_24(
+class _FakeFuture_23<T1> extends _i1.SmartFake implements _i22.Future<T1> {
+  _FakeFuture_23(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -497,9 +488,9 @@ class _FakeFuture_24<T1> extends _i1.SmartFake implements _i22.Future<T1> {
         );
 }
 
-class _FakeGetOrderByIdUseCase_25 extends _i1.SmartFake
+class _FakeGetOrderByIdUseCase_24 extends _i1.SmartFake
     implements _i23.GetOrderByIdUseCase {
-  _FakeGetOrderByIdUseCase_25(
+  _FakeGetOrderByIdUseCase_24(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -508,9 +499,9 @@ class _FakeGetOrderByIdUseCase_25 extends _i1.SmartFake
         );
 }
 
-class _FakeGlobalKey_26<T extends _i8.State<_i8.StatefulWidget>>
+class _FakeGlobalKey_25<T extends _i8.State<_i8.StatefulWidget>>
     extends _i1.SmartFake implements _i8.GlobalKey<T> {
-  _FakeGlobalKey_26(
+  _FakeGlobalKey_25(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -519,9 +510,9 @@ class _FakeGlobalKey_26<T extends _i8.State<_i8.StatefulWidget>>
         );
 }
 
-class _FakeSheetRequest_27<T> extends _i1.SmartFake
+class _FakeSheetRequest_26<T> extends _i1.SmartFake
     implements _i18.SheetRequest<T> {
-  _FakeSheetRequest_27(
+  _FakeSheetRequest_26(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -530,9 +521,9 @@ class _FakeSheetRequest_27<T> extends _i1.SmartFake
         );
 }
 
-class _FakeDeleteAccountUseCase_28 extends _i1.SmartFake
+class _FakeDeleteAccountUseCase_27 extends _i1.SmartFake
     implements _i24.DeleteAccountUseCase {
-  _FakeDeleteAccountUseCase_28(
+  _FakeDeleteAccountUseCase_27(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -541,9 +532,9 @@ class _FakeDeleteAccountUseCase_28 extends _i1.SmartFake
         );
 }
 
-class _FakeGetUserConsumptionUseCase_29 extends _i1.SmartFake
+class _FakeGetUserConsumptionUseCase_28 extends _i1.SmartFake
     implements _i25.GetUserConsumptionUseCase {
-  _FakeGetUserConsumptionUseCase_29(
+  _FakeGetUserConsumptionUseCase_28(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -552,9 +543,9 @@ class _FakeGetUserConsumptionUseCase_29 extends _i1.SmartFake
         );
 }
 
-class _FakeMyESimBundleBottomState_30 extends _i1.SmartFake
+class _FakeMyESimBundleBottomState_29 extends _i1.SmartFake
     implements _i26.MyESimBundleBottomState {
-  _FakeMyESimBundleBottomState_30(
+  _FakeMyESimBundleBottomState_29(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -563,9 +554,9 @@ class _FakeMyESimBundleBottomState_30 extends _i1.SmartFake
         );
 }
 
-class _FakeConsumptionState_31 extends _i1.SmartFake
+class _FakeConsumptionState_30 extends _i1.SmartFake
     implements _i27.ConsumptionState {
-  _FakeConsumptionState_31(
+  _FakeConsumptionState_30(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -574,8 +565,8 @@ class _FakeConsumptionState_31 extends _i1.SmartFake
         );
 }
 
-class _FakeResource_32<T> extends _i1.SmartFake implements _i28.Resource<T> {
-  _FakeResource_32(
+class _FakeResource_31<T> extends _i1.SmartFake implements _i28.Resource<T> {
+  _FakeResource_31(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -584,9 +575,9 @@ class _FakeResource_32<T> extends _i1.SmartFake implements _i28.Resource<T> {
         );
 }
 
-class _FakeApiAppRepository_33 extends _i1.SmartFake
+class _FakeApiAppRepository_32 extends _i1.SmartFake
     implements _i29.ApiAppRepository {
-  _FakeApiAppRepository_33(
+  _FakeApiAppRepository_32(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -595,9 +586,9 @@ class _FakeApiAppRepository_33 extends _i1.SmartFake
         );
 }
 
-class _FakeValueStream_34<T> extends _i1.SmartFake
+class _FakeValueStream_33<T> extends _i1.SmartFake
     implements _i30.ValueStream<T> {
-  _FakeValueStream_34(
+  _FakeValueStream_33(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -606,8 +597,8 @@ class _FakeValueStream_34<T> extends _i1.SmartFake
         );
 }
 
-class _FakeLocale_35 extends _i1.SmartFake implements _i17.Locale {
-  _FakeLocale_35(
+class _FakeLocale_34 extends _i1.SmartFake implements _i17.Locale {
+  _FakeLocale_34(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -616,9 +607,9 @@ class _FakeLocale_35 extends _i1.SmartFake implements _i17.Locale {
         );
 }
 
-class _FakeGetUserNotificationsUseCase_36 extends _i1.SmartFake
+class _FakeGetUserNotificationsUseCase_35 extends _i1.SmartFake
     implements _i31.GetUserNotificationsUseCase {
-  _FakeGetUserNotificationsUseCase_36(
+  _FakeGetUserNotificationsUseCase_35(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -627,9 +618,9 @@ class _FakeGetUserNotificationsUseCase_36 extends _i1.SmartFake
         );
 }
 
-class _FakeGetBundleLabelUseCase_37 extends _i1.SmartFake
+class _FakeGetBundleLabelUseCase_36 extends _i1.SmartFake
     implements _i32.GetBundleLabelUseCase {
-  _FakeGetBundleLabelUseCase_37(
+  _FakeGetBundleLabelUseCase_36(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -638,8 +629,8 @@ class _FakeGetBundleLabelUseCase_37 extends _i1.SmartFake
         );
 }
 
-class _FakeESimState_38 extends _i1.SmartFake implements _i33.ESimState {
-  _FakeESimState_38(
+class _FakeESimState_37 extends _i1.SmartFake implements _i33.ESimState {
+  _FakeESimState_37(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -648,9 +639,9 @@ class _FakeESimState_38 extends _i1.SmartFake implements _i33.ESimState {
         );
 }
 
-class _FakeGetBannerUseCase_39 extends _i1.SmartFake
+class _FakeGetBannerUseCase_38 extends _i1.SmartFake
     implements _i34.GetBannerUseCase {
-  _FakeGetBannerUseCase_39(
+  _FakeGetBannerUseCase_38(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -659,9 +650,9 @@ class _FakeGetBannerUseCase_39 extends _i1.SmartFake
         );
 }
 
-class _FakeLockableTabController_40 extends _i1.SmartFake
+class _FakeLockableTabController_39 extends _i1.SmartFake
     implements _i35.LockableTabController {
-  _FakeLockableTabController_40(
+  _FakeLockableTabController_39(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -670,9 +661,9 @@ class _FakeLockableTabController_40 extends _i1.SmartFake
         );
 }
 
-class _FakeRefreshTokenUseCase_41 extends _i1.SmartFake
+class _FakeRefreshTokenUseCase_40 extends _i1.SmartFake
     implements _i36.RefreshTokenUseCase {
-  _FakeRefreshTokenUseCase_41(
+  _FakeRefreshTokenUseCase_40(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -681,9 +672,9 @@ class _FakeRefreshTokenUseCase_41 extends _i1.SmartFake
         );
 }
 
-class _FakePushNotificationService_42 extends _i1.SmartFake
+class _FakePushNotificationService_41 extends _i1.SmartFake
     implements _i37.PushNotificationService {
-  _FakePushNotificationService_42(
+  _FakePushNotificationService_41(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -692,8 +683,8 @@ class _FakePushNotificationService_42 extends _i1.SmartFake
         );
 }
 
-class _FakeLoginUseCase_43 extends _i1.SmartFake implements _i38.LoginUseCase {
-  _FakeLoginUseCase_43(
+class _FakeLoginUseCase_42 extends _i1.SmartFake implements _i38.LoginUseCase {
+  _FakeLoginUseCase_42(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -702,9 +693,9 @@ class _FakeLoginUseCase_43 extends _i1.SmartFake implements _i38.LoginUseCase {
         );
 }
 
-class _FakeSocialLoginService_44 extends _i1.SmartFake
+class _FakeSocialLoginService_43 extends _i1.SmartFake
     implements _i39.SocialLoginService {
-  _FakeSocialLoginService_44(
+  _FakeSocialLoginService_43(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -713,9 +704,9 @@ class _FakeSocialLoginService_44 extends _i1.SmartFake
         );
 }
 
-class _FakeSocialMediaVerifyLoginUseCase_45 extends _i1.SmartFake
+class _FakeSocialMediaVerifyLoginUseCase_44 extends _i1.SmartFake
     implements _i40.SocialMediaVerifyLoginUseCase {
-  _FakeSocialMediaVerifyLoginUseCase_45(
+  _FakeSocialMediaVerifyLoginUseCase_44(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -724,9 +715,9 @@ class _FakeSocialMediaVerifyLoginUseCase_45 extends _i1.SmartFake
         );
 }
 
-class _FakeResendOtpUseCase_46 extends _i1.SmartFake
+class _FakeResendOtpUseCase_45 extends _i1.SmartFake
     implements _i41.ResendOtpUseCase {
-  _FakeResendOtpUseCase_46(
+  _FakeResendOtpUseCase_45(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -735,9 +726,9 @@ class _FakeResendOtpUseCase_46 extends _i1.SmartFake
         );
 }
 
-class _FakeResendOtpNewChannelUseCase_47 extends _i1.SmartFake
+class _FakeResendOtpNewChannelUseCase_46 extends _i1.SmartFake
     implements _i41.ResendOtpNewChannelUseCase {
-  _FakeResendOtpNewChannelUseCase_47(
+  _FakeResendOtpNewChannelUseCase_46(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -746,9 +737,9 @@ class _FakeResendOtpNewChannelUseCase_47 extends _i1.SmartFake
         );
 }
 
-class _FakeVerifyOtpUseCase_48 extends _i1.SmartFake
+class _FakeVerifyOtpUseCase_47 extends _i1.SmartFake
     implements _i42.VerifyOtpUseCase {
-  _FakeVerifyOtpUseCase_48(
+  _FakeVerifyOtpUseCase_47(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -757,9 +748,9 @@ class _FakeVerifyOtpUseCase_48 extends _i1.SmartFake
         );
 }
 
-class _FakeResendOrderOtpUseCase_49 extends _i1.SmartFake
+class _FakeResendOrderOtpUseCase_48 extends _i1.SmartFake
     implements _i43.ResendOrderOtpUseCase {
-  _FakeResendOrderOtpUseCase_49(
+  _FakeResendOrderOtpUseCase_48(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -768,9 +759,9 @@ class _FakeResendOrderOtpUseCase_49 extends _i1.SmartFake
         );
 }
 
-class _FakeVerifyOrderOtpUseCase_50 extends _i1.SmartFake
+class _FakeVerifyOrderOtpUseCase_49 extends _i1.SmartFake
     implements _i44.VerifyOrderOtpUseCase {
-  _FakeVerifyOrderOtpUseCase_50(
+  _FakeVerifyOrderOtpUseCase_49(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -779,9 +770,9 @@ class _FakeVerifyOrderOtpUseCase_50 extends _i1.SmartFake
         );
 }
 
-class _FakeUserGuideViewDataSource_51 extends _i1.SmartFake
+class _FakeUserGuideViewDataSource_50 extends _i1.SmartFake
     implements _i45.UserGuideViewDataSource {
-  _FakeUserGuideViewDataSource_51(
+  _FakeUserGuideViewDataSource_50(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -790,9 +781,9 @@ class _FakeUserGuideViewDataSource_51 extends _i1.SmartFake
         );
 }
 
-class _FakeScrollController_52 extends _i1.SmartFake
+class _FakeScrollController_51 extends _i1.SmartFake
     implements _i8.ScrollController {
-  _FakeScrollController_52(
+  _FakeScrollController_51(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -801,8 +792,8 @@ class _FakeScrollController_52 extends _i1.SmartFake
         );
 }
 
-class _FakeResponse_53 extends _i1.SmartFake implements _i46.Response {
-  _FakeResponse_53(
+class _FakeResponse_52 extends _i1.SmartFake implements _i46.Response {
+  _FakeResponse_52(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -811,9 +802,9 @@ class _FakeResponse_53 extends _i1.SmartFake implements _i46.Response {
         );
 }
 
-class _FakeStreamedResponse_54 extends _i1.SmartFake
+class _FakeStreamedResponse_53 extends _i1.SmartFake
     implements _i46.StreamedResponse {
-  _FakeStreamedResponse_54(
+  _FakeStreamedResponse_53(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -2178,7 +2169,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i8.IconData get promoCodeFieldIcon => (super.noSuchMethod(
         Invocation.getter(#promoCodeFieldIcon),
-        returnValue: _FakeIconData_7(
+        returnValue: _i48.dummyValue<_i8.IconData>(
           this,
           Invocation.getter(#promoCodeFieldIcon),
         ),
@@ -2284,7 +2275,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -2293,7 +2284,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -2302,7 +2293,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -2311,7 +2302,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -2320,7 +2311,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -2330,7 +2321,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -2339,7 +2330,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -2349,7 +2340,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -2418,7 +2409,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -2515,7 +2506,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -2524,7 +2515,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -2533,7 +2524,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -2542,7 +2533,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -2551,7 +2542,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -2560,7 +2551,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -2570,7 +2561,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -2893,7 +2884,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -2998,7 +2989,7 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -3243,7 +3234,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i23.GetOrderByIdUseCase get getOrderByIdUseCase => (super.noSuchMethod(
         Invocation.getter(#getOrderByIdUseCase),
-        returnValue: _FakeGetOrderByIdUseCase_25(
+        returnValue: _FakeGetOrderByIdUseCase_24(
           this,
           Invocation.getter(#getOrderByIdUseCase),
         ),
@@ -3294,7 +3285,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -3303,7 +3294,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -3312,7 +3303,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -3321,7 +3312,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -3330,7 +3321,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -3340,7 +3331,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -3349,7 +3340,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -3359,7 +3350,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -3428,7 +3419,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -3525,7 +3516,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -3534,7 +3525,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -3543,7 +3534,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -3552,7 +3543,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -3561,7 +3552,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -3570,7 +3561,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -3580,7 +3571,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -3821,7 +3812,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -3926,7 +3917,7 @@ class MockOrderBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -4166,7 +4157,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   _i8.GlobalKey<_i8.State<_i8.StatefulWidget>> get globalKey =>
       (super.noSuchMethod(
         Invocation.getter(#globalKey),
-        returnValue: _FakeGlobalKey_26<_i8.State<_i8.StatefulWidget>>(
+        returnValue: _FakeGlobalKey_25<_i8.State<_i8.StatefulWidget>>(
           this,
           Invocation.getter(#globalKey),
         ),
@@ -4185,7 +4176,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -4194,7 +4185,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -4203,7 +4194,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -4212,7 +4203,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -4221,7 +4212,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -4231,7 +4222,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -4240,7 +4231,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -4250,7 +4241,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -4319,7 +4310,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -4416,7 +4407,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -4425,7 +4416,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -4434,7 +4425,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -4443,7 +4434,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -4452,7 +4443,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -4461,7 +4452,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -4471,7 +4462,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -4703,7 +4694,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -4808,7 +4799,7 @@ class MockOrderReceiptBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -5072,7 +5063,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   _i18.SheetRequest<_i67.BundleEditNameRequest> get request =>
       (super.noSuchMethod(
         Invocation.getter(#request),
-        returnValue: _FakeSheetRequest_27<_i67.BundleEditNameRequest>(
+        returnValue: _FakeSheetRequest_26<_i67.BundleEditNameRequest>(
           this,
           Invocation.getter(#request),
         ),
@@ -5112,7 +5103,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -5121,7 +5112,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -5130,7 +5121,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -5139,7 +5130,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -5148,7 +5139,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -5158,7 +5149,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -5167,7 +5158,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -5177,7 +5168,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -5246,7 +5237,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -5343,7 +5334,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -5352,7 +5343,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -5361,7 +5352,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -5370,7 +5361,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -5379,7 +5370,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -5388,7 +5379,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -5398,7 +5389,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -5647,7 +5638,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -5752,7 +5743,7 @@ class MockEditNameBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -5992,7 +5983,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   _i18.SheetRequest<_i67.CashbackRewardBottomRequest> get request =>
       (super.noSuchMethod(
         Invocation.getter(#request),
-        returnValue: _FakeSheetRequest_27<_i67.CashbackRewardBottomRequest>(
+        returnValue: _FakeSheetRequest_26<_i67.CashbackRewardBottomRequest>(
           this,
           Invocation.getter(#request),
         ),
@@ -6033,7 +6024,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -6042,7 +6033,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -6051,7 +6042,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -6060,7 +6051,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -6069,7 +6060,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -6079,7 +6070,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -6088,7 +6079,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -6098,7 +6089,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -6167,7 +6158,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -6264,7 +6255,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -6273,7 +6264,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -6282,7 +6273,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -6291,7 +6282,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -6300,7 +6291,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -6309,7 +6300,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -6319,7 +6310,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -6541,7 +6532,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -6646,7 +6637,7 @@ class MockCashbackRewardBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -6909,7 +6900,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i24.DeleteAccountUseCase get deleteAccountUseCase => (super.noSuchMethod(
         Invocation.getter(#deleteAccountUseCase),
-        returnValue: _FakeDeleteAccountUseCase_28(
+        returnValue: _FakeDeleteAccountUseCase_27(
           this,
           Invocation.getter(#deleteAccountUseCase),
         ),
@@ -6951,7 +6942,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -6960,7 +6951,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -6969,7 +6960,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -6978,7 +6969,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -6987,7 +6978,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -6997,7 +6988,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -7006,7 +6997,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -7016,7 +7007,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -7085,7 +7076,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -7182,7 +7173,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -7191,7 +7182,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -7200,7 +7191,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -7209,7 +7200,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -7218,7 +7209,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -7227,7 +7218,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -7237,7 +7228,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -7512,7 +7503,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -7617,7 +7608,7 @@ class MockDeleteAccountBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -7857,7 +7848,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   _i25.GetUserConsumptionUseCase get getUserConsumptionUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#getUserConsumptionUseCase),
-        returnValue: _FakeGetUserConsumptionUseCase_29(
+        returnValue: _FakeGetUserConsumptionUseCase_28(
           this,
           Invocation.getter(#getUserConsumptionUseCase),
         ),
@@ -7866,7 +7857,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i26.MyESimBundleBottomState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeMyESimBundleBottomState_30(
+        returnValue: _FakeMyESimBundleBottomState_29(
           this,
           Invocation.getter(#state),
         ),
@@ -7876,7 +7867,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   _i18.SheetRequest<_i67.MyESimBundleRequest> get request =>
       (super.noSuchMethod(
         Invocation.getter(#request),
-        returnValue: _FakeSheetRequest_27<_i67.MyESimBundleRequest>(
+        returnValue: _FakeSheetRequest_26<_i67.MyESimBundleRequest>(
           this,
           Invocation.getter(#request),
         ),
@@ -7916,7 +7907,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -7925,7 +7916,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -7934,7 +7925,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -7943,7 +7934,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -7952,7 +7943,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -7962,7 +7953,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -7971,7 +7962,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -7981,7 +7972,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -8050,7 +8041,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -8147,7 +8138,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -8156,7 +8147,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -8165,7 +8156,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -8174,7 +8165,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -8183,7 +8174,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -8192,7 +8183,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -8202,7 +8193,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -8466,7 +8457,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -8571,7 +8562,7 @@ class MockMyESimBundleBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -8811,7 +8802,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   _i25.GetUserConsumptionUseCase get getUserConsumptionUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#getUserConsumptionUseCase),
-        returnValue: _FakeGetUserConsumptionUseCase_29(
+        returnValue: _FakeGetUserConsumptionUseCase_28(
           this,
           Invocation.getter(#getUserConsumptionUseCase),
         ),
@@ -8820,7 +8811,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i27.ConsumptionState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeConsumptionState_31(
+        returnValue: _FakeConsumptionState_30(
           this,
           Invocation.getter(#state),
         ),
@@ -8830,7 +8821,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   _i18.SheetRequest<_i67.BundleConsumptionBottomRequest> get request =>
       (super.noSuchMethod(
         Invocation.getter(#request),
-        returnValue: _FakeSheetRequest_27<_i67.BundleConsumptionBottomRequest>(
+        returnValue: _FakeSheetRequest_26<_i67.BundleConsumptionBottomRequest>(
           this,
           Invocation.getter(#request),
         ),
@@ -8870,7 +8861,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -8879,7 +8870,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -8888,7 +8879,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -8897,7 +8888,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -8906,7 +8897,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -8916,7 +8907,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -8925,7 +8916,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -8935,7 +8926,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -9004,7 +8995,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -9101,7 +9092,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -9110,7 +9101,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -9119,7 +9110,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -9128,7 +9119,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -9137,7 +9128,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -9146,7 +9137,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -9156,7 +9147,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -9405,7 +9396,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -9510,7 +9501,7 @@ class MockConsumptionBottomSheetViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -9809,7 +9800,7 @@ class MockApiAuthRepository extends _i1.Mock implements _i71.ApiAuthRepository {
             ),
             returnValue:
                 _i22.Future<_i28.Resource<_i72.ResendOtpResponseModel?>>.value(
-                    _FakeResource_32<_i72.ResendOtpResponseModel?>(
+                    _FakeResource_31<_i72.ResendOtpResponseModel?>(
               this,
               Invocation.method(
                 #resendOtpNewChannel,
@@ -9861,7 +9852,7 @@ class MockApiAuthRepository extends _i1.Mock implements _i71.ApiAuthRepository {
             ),
             returnValue:
                 _i22.Future<_i28.Resource<_i53.AuthResponseModel>>.value(
-                    _FakeResource_32<_i53.AuthResponseModel>(
+                    _FakeResource_31<_i53.AuthResponseModel>(
               this,
               Invocation.method(
                 #refreshTokenAPITrigger,
@@ -10220,7 +10211,7 @@ class MockApiBundlesRepository extends _i1.Mock
             ),
             returnValue: _i22
                 .Future<_i28.Resource<_i80.BundleConsumptionResponse?>>.value(
-                _FakeResource_32<_i80.BundleConsumptionResponse?>(
+                _FakeResource_31<_i80.BundleConsumptionResponse?>(
               this,
               Invocation.method(
                 #getBundleConsumption,
@@ -10370,7 +10361,7 @@ class MockApiUserRepository extends _i1.Mock implements _i81.ApiUserRepository {
         ),
         returnValue:
             _i22.Future<_i28.Resource<List<_i82.UserNotificationModel>>>.value(
-                _FakeResource_32<List<_i82.UserNotificationModel>>(
+                _FakeResource_31<List<_i82.UserNotificationModel>>(
           this,
           Invocation.method(
             #getUserNotifications,
@@ -10458,7 +10449,7 @@ class MockApiUserRepository extends _i1.Mock implements _i81.ApiUserRepository {
         ),
         returnValue: _i22
             .Future<_i28.Resource<List<_i64.OrderHistoryResponseModel>?>>.value(
-            _FakeResource_32<List<_i64.OrderHistoryResponseModel>?>(
+            _FakeResource_31<List<_i64.OrderHistoryResponseModel>?>(
           this,
           Invocation.method(
             #getOrderHistory,
@@ -10635,7 +10626,7 @@ class MockGetAboutUsUseCase extends _i1.Mock implements _i87.GetAboutUsUseCase {
   @override
   _i29.ApiAppRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeApiAppRepository_33(
+        returnValue: _FakeApiAppRepository_32(
           this,
           Invocation.getter(#repository),
         ),
@@ -10651,7 +10642,7 @@ class MockGetAboutUsUseCase extends _i1.Mock implements _i87.GetAboutUsUseCase {
         ),
         returnValue:
             _i22.Future<_i28.Resource<_i88.DynamicPageResponse?>>.value(
-                _FakeResource_32<_i88.DynamicPageResponse?>(
+                _FakeResource_31<_i88.DynamicPageResponse?>(
           this,
           Invocation.method(
             #execute,
@@ -10672,7 +10663,7 @@ class MockGetBannerUseCase extends _i1.Mock implements _i34.GetBannerUseCase {
   @override
   _i29.ApiAppRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeApiAppRepository_33(
+        returnValue: _FakeApiAppRepository_32(
           this,
           Invocation.getter(#repository),
         ),
@@ -10687,7 +10678,7 @@ class MockGetBannerUseCase extends _i1.Mock implements _i34.GetBannerUseCase {
           [params],
         ),
         returnValue:
-            _FakeValueStream_34<_i28.Resource<List<_i90.BannerResponseModel>?>>(
+            _FakeValueStream_33<_i28.Resource<List<_i90.BannerResponseModel>?>>(
           this,
           Invocation.method(
             #execute,
@@ -10719,7 +10710,7 @@ class MockGetTermsAndConditionUseCase extends _i1.Mock
   @override
   _i29.ApiAppRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeApiAppRepository_33(
+        returnValue: _FakeApiAppRepository_32(
           this,
           Invocation.getter(#repository),
         ),
@@ -10735,7 +10726,7 @@ class MockGetTermsAndConditionUseCase extends _i1.Mock
         ),
         returnValue:
             _i22.Future<_i28.Resource<_i88.DynamicPageResponse?>>.value(
-                _FakeResource_32<_i88.DynamicPageResponse?>(
+                _FakeResource_31<_i88.DynamicPageResponse?>(
           this,
           Invocation.method(
             #execute,
@@ -11589,7 +11580,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -11598,7 +11589,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -11607,7 +11598,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -11616,7 +11607,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -11625,7 +11616,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -11635,7 +11626,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -11644,7 +11635,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -11654,7 +11645,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -11723,7 +11714,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -11820,7 +11811,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -11829,7 +11820,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -11838,7 +11829,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -11847,7 +11838,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -11856,7 +11847,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -11865,7 +11856,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -11875,7 +11866,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -12117,7 +12108,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -12222,7 +12213,7 @@ class MockAndroidUserGuideViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -12469,7 +12460,7 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -12555,7 +12546,7 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
           #getDefaultLocale,
           [],
         ),
-        returnValue: _FakeLocale_35(
+        returnValue: _FakeLocale_34(
           this,
           Invocation.method(
             #getDefaultLocale,
@@ -12570,7 +12561,7 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
           #getLocale,
           [context],
         ),
-        returnValue: _FakeLocale_35(
+        returnValue: _FakeLocale_34(
           this,
           Invocation.method(
             #getLocale,
@@ -12608,11 +12599,11 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
 
   @override
   _i22.Future<void> onAuthReloadListenerCallBackUseCase(
-          _i94.ResponseMain<dynamic>? response) =>
+          _i53.AuthResponseModel? authResponse) =>
       (super.noSuchMethod(
         Invocation.method(
           #onAuthReloadListenerCallBackUseCase,
-          [response],
+          [authResponse],
         ),
         returnValue: _i22.Future<void>.value(),
         returnValueForMissingStub: _i22.Future<void>.value(),
@@ -12783,7 +12774,7 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -12888,7 +12879,7 @@ class MockMainViewModel extends _i1.Mock implements _i93.MainViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -12930,7 +12921,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   _i31.GetUserNotificationsUseCase get getUserNotificationsUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#getUserNotificationsUseCase),
-        returnValue: _FakeGetUserNotificationsUseCase_36(
+        returnValue: _FakeGetUserNotificationsUseCase_35(
           this,
           Invocation.getter(#getUserNotificationsUseCase),
         ),
@@ -12939,7 +12930,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i32.GetBundleLabelUseCase get getBundleLabelUseCase => (super.noSuchMethod(
         Invocation.getter(#getBundleLabelUseCase),
-        returnValue: _FakeGetBundleLabelUseCase_37(
+        returnValue: _FakeGetBundleLabelUseCase_36(
           this,
           Invocation.getter(#getBundleLabelUseCase),
         ),
@@ -12948,7 +12939,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i33.ESimState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeESimState_38(
+        returnValue: _FakeESimState_37(
           this,
           Invocation.getter(#state),
         ),
@@ -12981,7 +12972,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -12990,7 +12981,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -12999,7 +12990,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -13008,7 +12999,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -13017,7 +13008,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -13027,7 +13018,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -13036,7 +13027,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -13046,7 +13037,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -13115,7 +13106,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -13212,7 +13203,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -13221,7 +13212,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -13230,7 +13221,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -13239,7 +13230,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -13248,7 +13239,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -13257,7 +13248,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -13267,7 +13258,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -13654,7 +13645,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -13759,7 +13750,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -13989,7 +13980,7 @@ class MockMyESimViewModel extends _i1.Mock implements _i33.MyESimViewModel {
 /// A class which mocks [ProfileViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
+class MockProfileViewModel extends _i1.Mock implements _i94.ProfileViewModel {
   MockProfileViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -14015,7 +14006,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -14024,7 +14015,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -14033,7 +14024,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -14042,7 +14033,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -14051,7 +14042,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -14061,7 +14052,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -14070,7 +14061,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -14080,7 +14071,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -14149,7 +14140,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -14246,7 +14237,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -14255,7 +14246,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -14264,7 +14255,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -14273,7 +14264,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -14282,7 +14273,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -14291,7 +14282,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -14301,7 +14292,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -14567,7 +14558,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -14672,7 +14663,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -14903,7 +14894,7 @@ class MockProfileViewModel extends _i1.Mock implements _i95.ProfileViewModel {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDataPlansViewModel extends _i1.Mock
-    implements _i96.DataPlansViewModel {
+    implements _i95.DataPlansViewModel {
   MockDataPlansViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -14922,7 +14913,7 @@ class MockDataPlansViewModel extends _i1.Mock
   _i31.GetUserNotificationsUseCase get getUserNotificationsUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#getUserNotificationsUseCase),
-        returnValue: _FakeGetUserNotificationsUseCase_36(
+        returnValue: _FakeGetUserNotificationsUseCase_35(
           this,
           Invocation.getter(#getUserNotificationsUseCase),
         ),
@@ -14935,16 +14926,16 @@ class MockDataPlansViewModel extends _i1.Mock
       ) as bool);
 
   @override
-  List<_i97.CountryResponseModel> get filteredCountries => (super.noSuchMethod(
+  List<_i96.CountryResponseModel> get filteredCountries => (super.noSuchMethod(
         Invocation.getter(#filteredCountries),
-        returnValue: <_i97.CountryResponseModel>[],
-      ) as List<_i97.CountryResponseModel>);
+        returnValue: <_i96.CountryResponseModel>[],
+      ) as List<_i96.CountryResponseModel>);
 
   @override
-  List<_i98.RegionsResponseModel> get filteredRegions => (super.noSuchMethod(
+  List<_i97.RegionsResponseModel> get filteredRegions => (super.noSuchMethod(
         Invocation.getter(#filteredRegions),
-        returnValue: <_i98.RegionsResponseModel>[],
-      ) as List<_i98.RegionsResponseModel>);
+        returnValue: <_i97.RegionsResponseModel>[],
+      ) as List<_i97.RegionsResponseModel>);
 
   @override
   List<_i58.BundleResponseModel> get filteredBundles => (super.noSuchMethod(
@@ -14962,7 +14953,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i34.GetBannerUseCase get getBannerUseCase => (super.noSuchMethod(
         Invocation.getter(#getBannerUseCase),
-        returnValue: _FakeGetBannerUseCase_39(
+        returnValue: _FakeGetBannerUseCase_38(
           this,
           Invocation.getter(#getBannerUseCase),
         ),
@@ -14977,7 +14968,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -14986,7 +14977,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -14995,7 +14986,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -15004,7 +14995,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -15013,7 +15004,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -15023,7 +15014,7 @@ class MockDataPlansViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -15032,7 +15023,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -15042,7 +15033,7 @@ class MockDataPlansViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -15111,7 +15102,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -15208,7 +15199,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -15217,7 +15208,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -15226,7 +15217,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -15235,7 +15226,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -15244,7 +15235,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -15253,7 +15244,7 @@ class MockDataPlansViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -15263,7 +15254,7 @@ class MockDataPlansViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -15363,7 +15354,7 @@ class MockDataPlansViewModel extends _i1.Mock
 
   @override
   _i22.Future<void> navigateToCountryBundles(
-          _i97.CountryResponseModel? country) =>
+          _i96.CountryResponseModel? country) =>
       (super.noSuchMethod(
         Invocation.method(
           #navigateToCountryBundles,
@@ -15386,7 +15377,7 @@ class MockDataPlansViewModel extends _i1.Mock
 
   @override
   _i22.Future<void> navigateToRegionBundles(
-          _i98.RegionsResponseModel? region) =>
+          _i97.RegionsResponseModel? region) =>
       (super.noSuchMethod(
         Invocation.method(
           #navigateToRegionBundles,
@@ -15629,7 +15620,7 @@ class MockDataPlansViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -15734,7 +15725,7 @@ class MockDataPlansViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -15965,7 +15956,7 @@ class MockDataPlansViewModel extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockHomePagerViewModel extends _i1.Mock
-    implements _i99.HomePagerViewModel {
+    implements _i98.HomePagerViewModel {
   MockHomePagerViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -15973,7 +15964,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i35.LockableTabController get tabController => (super.noSuchMethod(
         Invocation.getter(#tabController),
-        returnValue: _FakeLockableTabController_40(
+        returnValue: _FakeLockableTabController_39(
           this,
           Invocation.getter(#tabController),
         ),
@@ -16010,7 +16001,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -16019,7 +16010,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -16028,7 +16019,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -16037,7 +16028,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -16046,7 +16037,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -16056,7 +16047,7 @@ class MockHomePagerViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -16065,7 +16056,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -16075,7 +16066,7 @@ class MockHomePagerViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -16144,7 +16135,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -16241,7 +16232,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -16250,7 +16241,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -16259,7 +16250,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -16268,7 +16259,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -16277,7 +16268,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -16286,7 +16277,7 @@ class MockHomePagerViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -16296,7 +16287,7 @@ class MockHomePagerViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -16557,7 +16548,7 @@ class MockHomePagerViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -16662,7 +16653,7 @@ class MockHomePagerViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -16883,7 +16874,7 @@ class MockHomePagerViewModel extends _i1.Mock
 /// A class which mocks [StartUpViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
+class MockStartUpViewModel extends _i1.Mock implements _i99.StartUpViewModel {
   MockStartUpViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -16891,7 +16882,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i36.RefreshTokenUseCase get refreshTokenUseCase => (super.noSuchMethod(
         Invocation.getter(#refreshTokenUseCase),
-        returnValue: _FakeRefreshTokenUseCase_41(
+        returnValue: _FakeRefreshTokenUseCase_40(
           this,
           Invocation.getter(#refreshTokenUseCase),
         ),
@@ -16901,7 +16892,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   _i37.PushNotificationService get pushNotificationService =>
       (super.noSuchMethod(
         Invocation.getter(#pushNotificationService),
-        returnValue: _FakePushNotificationService_42(
+        returnValue: _FakePushNotificationService_41(
           this,
           Invocation.getter(#pushNotificationService),
         ),
@@ -16910,7 +16901,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -16919,7 +16910,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -16928,7 +16919,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -16937,7 +16928,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -16946,7 +16937,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -16956,7 +16947,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -16965,7 +16956,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -16975,7 +16966,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -17044,7 +17035,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -17141,7 +17132,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -17150,7 +17141,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -17159,7 +17150,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -17168,7 +17159,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -17177,7 +17168,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -17186,7 +17177,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -17196,7 +17187,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -17470,7 +17461,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -17575,7 +17566,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -17815,7 +17806,7 @@ class MockStartUpViewModel extends _i1.Mock implements _i100.StartUpViewModel {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockContinueWithEmailViewModel extends _i1.Mock
-    implements _i101.ContinueWithEmailViewModel {
+    implements _i100.ContinueWithEmailViewModel {
   MockContinueWithEmailViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -17823,7 +17814,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i38.LoginUseCase get loginUseCase => (super.noSuchMethod(
         Invocation.getter(#loginUseCase),
-        returnValue: _FakeLoginUseCase_43(
+        returnValue: _FakeLoginUseCase_42(
           this,
           Invocation.getter(#loginUseCase),
         ),
@@ -17880,7 +17871,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -17889,7 +17880,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -17898,7 +17889,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -17907,7 +17898,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -17916,7 +17907,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -17926,7 +17917,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -17935,7 +17926,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -17945,7 +17936,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -18014,7 +18005,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -18111,7 +18102,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -18120,7 +18111,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -18129,7 +18120,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -18138,7 +18129,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -18147,7 +18138,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -18156,7 +18147,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -18166,7 +18157,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -18487,7 +18478,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -18592,7 +18583,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -18823,7 +18814,7 @@ class MockContinueWithEmailViewModel extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPurchaseLoadingViewModel extends _i1.Mock
-    implements _i102.PurchaseLoadingViewModel {
+    implements _i101.PurchaseLoadingViewModel {
   MockPurchaseLoadingViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -18864,7 +18855,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -18873,7 +18864,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -18882,7 +18873,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -18891,7 +18882,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -18900,7 +18891,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -18910,7 +18901,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -18919,7 +18910,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -18929,7 +18920,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -18998,7 +18989,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -19095,7 +19086,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -19104,7 +19095,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -19113,7 +19104,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -19122,7 +19113,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -19131,7 +19122,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -19140,7 +19131,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -19150,7 +19141,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -19401,7 +19392,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -19506,7 +19497,7 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -19737,19 +19728,19 @@ class MockPurchaseLoadingViewModel extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDeviceCompabilityCheckViewModel extends _i1.Mock
-    implements _i103.DeviceCompabilityCheckViewModel {
+    implements _i102.DeviceCompabilityCheckViewModel {
   MockDeviceCompabilityCheckViewModel() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i103.DeviceCompatibleType get deviceCompatibleType => (super.noSuchMethod(
+  _i102.DeviceCompatibleType get deviceCompatibleType => (super.noSuchMethod(
         Invocation.getter(#deviceCompatibleType),
-        returnValue: _i103.DeviceCompatibleType.loading,
-      ) as _i103.DeviceCompatibleType);
+        returnValue: _i102.DeviceCompatibleType.loading,
+      ) as _i102.DeviceCompatibleType);
 
   @override
-  set deviceCompatibleType(_i103.DeviceCompatibleType? value) =>
+  set deviceCompatibleType(_i102.DeviceCompatibleType? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #deviceCompatibleType,
@@ -19761,7 +19752,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -19770,7 +19761,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -19779,7 +19770,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -19788,7 +19779,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -19797,7 +19788,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -19807,7 +19798,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -19816,7 +19807,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -19826,7 +19817,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -19895,7 +19886,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -19992,7 +19983,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -20001,7 +19992,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -20010,7 +20001,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -20019,7 +20010,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -20028,7 +20019,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -20037,7 +20028,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -20047,7 +20038,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -20289,7 +20280,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -20394,7 +20385,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -20624,7 +20615,7 @@ class MockDeviceCompabilityCheckViewModel extends _i1.Mock
 /// A class which mocks [LoginViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
+class MockLoginViewModel extends _i1.Mock implements _i103.LoginViewModel {
   MockLoginViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -20632,7 +20623,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i39.SocialLoginService get socialLoginService => (super.noSuchMethod(
         Invocation.getter(#socialLoginService),
-        returnValue: _FakeSocialLoginService_44(
+        returnValue: _FakeSocialLoginService_43(
           this,
           Invocation.getter(#socialLoginService),
         ),
@@ -20642,7 +20633,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   _i40.SocialMediaVerifyLoginUseCase get socialMediaVerifyLoginUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#socialMediaVerifyLoginUseCase),
-        returnValue: _FakeSocialMediaVerifyLoginUseCase_45(
+        returnValue: _FakeSocialMediaVerifyLoginUseCase_44(
           this,
           Invocation.getter(#socialMediaVerifyLoginUseCase),
         ),
@@ -20660,7 +20651,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -20669,7 +20660,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -20678,7 +20669,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -20687,7 +20678,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -20696,7 +20687,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -20706,7 +20697,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -20715,7 +20706,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -20725,7 +20716,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -20794,7 +20785,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -20891,7 +20882,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -20900,7 +20891,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -20909,7 +20900,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -20918,7 +20909,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -20927,7 +20918,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -20936,7 +20927,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -20946,7 +20937,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -21277,7 +21268,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -21382,7 +21373,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -21595,7 +21586,7 @@ class MockLoginViewModel extends _i1.Mock implements _i104.LoginViewModel {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockVerifyLoginViewModel extends _i1.Mock
-    implements _i105.VerifyLoginViewModel {
+    implements _i104.VerifyLoginViewModel {
   MockVerifyLoginViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -21630,7 +21621,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i41.ResendOtpUseCase get resendOtpUseCase => (super.noSuchMethod(
         Invocation.getter(#resendOtpUseCase),
-        returnValue: _FakeResendOtpUseCase_46(
+        returnValue: _FakeResendOtpUseCase_45(
           this,
           Invocation.getter(#resendOtpUseCase),
         ),
@@ -21640,7 +21631,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   _i41.ResendOtpNewChannelUseCase get resendOtpNewChannelUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#resendOtpNewChannelUseCase),
-        returnValue: _FakeResendOtpNewChannelUseCase_47(
+        returnValue: _FakeResendOtpNewChannelUseCase_46(
           this,
           Invocation.getter(#resendOtpNewChannelUseCase),
         ),
@@ -21649,7 +21640,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i42.VerifyOtpUseCase get verifyOtpUseCase => (super.noSuchMethod(
         Invocation.getter(#verifyOtpUseCase),
-        returnValue: _FakeVerifyOtpUseCase_48(
+        returnValue: _FakeVerifyOtpUseCase_47(
           this,
           Invocation.getter(#verifyOtpUseCase),
         ),
@@ -21689,7 +21680,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
       );
 
   @override
-  set loginType(_i106.LoginType? value) => super.noSuchMethod(
+  set loginType(_i105.LoginType? value) => super.noSuchMethod(
         Invocation.setter(
           #loginType,
           value,
@@ -21718,7 +21709,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -21727,7 +21718,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -21736,7 +21727,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -21745,7 +21736,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -21754,7 +21745,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -21764,7 +21755,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -21773,7 +21764,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -21783,7 +21774,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -21852,7 +21843,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -21949,7 +21940,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -21958,7 +21949,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -21967,7 +21958,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -21976,7 +21967,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -21985,7 +21976,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -21994,7 +21985,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -22004,7 +21995,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -22345,7 +22336,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -22450,7 +22441,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -22681,7 +22672,7 @@ class MockVerifyLoginViewModel extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockVerifyPurchaseViewModel extends _i1.Mock
-    implements _i107.VerifyPurchaseViewModel {
+    implements _i106.VerifyPurchaseViewModel {
   MockVerifyPurchaseViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -22710,7 +22701,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i43.ResendOrderOtpUseCase get resendOrderOtpUseCase => (super.noSuchMethod(
         Invocation.getter(#resendOrderOtpUseCase),
-        returnValue: _FakeResendOrderOtpUseCase_49(
+        returnValue: _FakeResendOrderOtpUseCase_48(
           this,
           Invocation.getter(#resendOrderOtpUseCase),
         ),
@@ -22719,7 +22710,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i44.VerifyOrderOtpUseCase get verifyOrderOtpUseCase => (super.noSuchMethod(
         Invocation.getter(#verifyOrderOtpUseCase),
-        returnValue: _FakeVerifyOrderOtpUseCase_50(
+        returnValue: _FakeVerifyOrderOtpUseCase_49(
           this,
           Invocation.getter(#verifyOrderOtpUseCase),
         ),
@@ -22761,7 +22752,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -22770,7 +22761,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -22779,7 +22770,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -22788,7 +22779,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -22797,7 +22788,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -22807,7 +22798,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -22816,7 +22807,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -22826,7 +22817,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -22895,7 +22886,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -22992,7 +22983,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -23001,7 +22992,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -23010,7 +23001,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -23019,7 +23010,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -23028,7 +23019,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -23037,7 +23028,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -23047,7 +23038,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -23337,7 +23328,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -23442,7 +23433,7 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -23641,953 +23632,6 @@ class MockVerifyPurchaseViewModel extends _i1.Mock
   void onDispose() => super.noSuchMethod(
         Invocation.method(
           #onDispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i22.Future<void> onConnectivityChanged({required bool? connected}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #onConnectivityChanged,
-          [],
-          {#connected: connected},
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> onConnectivityChangedUpdate() => (super.noSuchMethod(
-        Invocation.method(
-          #onConnectivityChangedUpdate,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-}
-
-/// A class which mocks [SkeletonViewModel].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockSkeletonViewModel extends _i1.Mock
-    implements _i108.SkeletonViewModel {
-  MockSkeletonViewModel() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i38.LoginUseCase get loginUseCase => (super.noSuchMethod(
-        Invocation.getter(#loginUseCase),
-        returnValue: _FakeLoginUseCase_43(
-          this,
-          Invocation.getter(#loginUseCase),
-        ),
-      ) as _i38.LoginUseCase);
-
-  @override
-  String get projectID => (super.noSuchMethod(
-        Invocation.getter(#projectID),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#projectID),
-        ),
-      ) as String);
-
-  @override
-  set projectID(String? value) => super.noSuchMethod(
-        Invocation.setter(
-          #projectID,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
-        Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
-          this,
-          Invocation.getter(#localStorageService),
-        ),
-      ) as _i9.LocalStorageService);
-
-  @override
-  _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
-        Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
-          this,
-          Invocation.getter(#analyticsService),
-        ),
-      ) as _i10.AnalyticsService);
-
-  @override
-  _i11.ThemeService get themeService => (super.noSuchMethod(
-        Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
-          this,
-          Invocation.getter(#themeService),
-        ),
-      ) as _i11.ThemeService);
-
-  @override
-  _i12.UserService get userService => (super.noSuchMethod(
-        Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
-          this,
-          Invocation.getter(#userService),
-        ),
-      ) as _i12.UserService);
-
-  @override
-  _i13.PaymentService get paymentService => (super.noSuchMethod(
-        Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
-          this,
-          Invocation.getter(#paymentService),
-        ),
-      ) as _i13.PaymentService);
-
-  @override
-  _i14.RedirectionsHandlerService get redirectionsHandlerService =>
-      (super.noSuchMethod(
-        Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
-          this,
-          Invocation.getter(#redirectionsHandlerService),
-        ),
-      ) as _i14.RedirectionsHandlerService);
-
-  @override
-  _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
-        Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
-          this,
-          Invocation.getter(#addDeviceUseCase),
-        ),
-      ) as _i15.AddDeviceUseCase);
-
-  @override
-  _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
-      (super.noSuchMethod(
-        Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
-          this,
-          Invocation.getter(#flutterChannelHandlerService),
-        ),
-      ) as _i16.FlutterChannelHandlerService);
-
-  @override
-  bool get isBundleServicesLoading => (super.noSuchMethod(
-        Invocation.getter(#isBundleServicesLoading),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get hasError => (super.noSuchMethod(
-        Invocation.getter(#hasError),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showMainBanner => (super.noSuchMethod(
-        Invocation.getter(#showMainBanner),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get userFirstName => (super.noSuchMethod(
-        Invocation.getter(#userFirstName),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#userFirstName),
-        ),
-      ) as String);
-
-  @override
-  String get userLastName => (super.noSuchMethod(
-        Invocation.getter(#userLastName),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#userLastName),
-        ),
-      ) as String);
-
-  @override
-  String get userEmailAddress => (super.noSuchMethod(
-        Invocation.getter(#userEmailAddress),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#userEmailAddress),
-        ),
-      ) as String);
-
-  @override
-  String get userMsisdn => (super.noSuchMethod(
-        Invocation.getter(#userMsisdn),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#userMsisdn),
-        ),
-      ) as String);
-
-  @override
-  bool get isArabic => (super.noSuchMethod(
-        Invocation.getter(#isArabic),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i17.Color get themeColor => (super.noSuchMethod(
-        Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
-          this,
-          Invocation.getter(#themeColor),
-        ),
-      ) as _i17.Color);
-
-  @override
-  List<_i59.ListenableServiceMixin> get listenableServices =>
-      (super.noSuchMethod(
-        Invocation.getter(#listenableServices),
-        returnValue: <_i59.ListenableServiceMixin>[],
-      ) as List<_i59.ListenableServiceMixin>);
-
-  @override
-  List<_i59.ReactiveServiceMixin> get reactiveServices => (super.noSuchMethod(
-        Invocation.getter(#reactiveServices),
-        returnValue: <_i59.ReactiveServiceMixin>[],
-      ) as List<_i59.ReactiveServiceMixin>);
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get disposed => (super.noSuchMethod(
-        Invocation.getter(#disposed),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get initialised => (super.noSuchMethod(
-        Invocation.getter(#initialised),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get onModelReadyCalled => (super.noSuchMethod(
-        Invocation.getter(#onModelReadyCalled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  set disposed(bool? value) => super.noSuchMethod(
-        Invocation.setter(
-          #disposed,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  bool get isBusy => (super.noSuchMethod(
-        Invocation.getter(#isBusy),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get anyObjectsBusy => (super.noSuchMethod(
-        Invocation.getter(#anyObjectsBusy),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i60.ViewState get viewState => (super.noSuchMethod(
-        Invocation.getter(#viewState),
-        returnValue: _i60.ViewState.idle,
-      ) as _i60.ViewState);
-
-  @override
-  bool get applyShimmer => (super.noSuchMethod(
-        Invocation.getter(#applyShimmer),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  set shimmerHeight(double? value) => super.noSuchMethod(
-        Invocation.setter(
-          #shimmerHeight,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set applyShimmer(bool? value) => super.noSuchMethod(
-        Invocation.setter(
-          #applyShimmer,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i18.DialogService get dialogService => (super.noSuchMethod(
-        Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
-          this,
-          Invocation.getter(#dialogService),
-        ),
-      ) as _i18.DialogService);
-
-  @override
-  _i18.SnackbarService get snackBarService => (super.noSuchMethod(
-        Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
-          this,
-          Invocation.getter(#snackBarService),
-        ),
-      ) as _i18.SnackbarService);
-
-  @override
-  _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
-        Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
-          this,
-          Invocation.getter(#bottomSheetService),
-        ),
-      ) as _i18.BottomSheetService);
-
-  @override
-  _i18.NavigationService get navigationService => (super.noSuchMethod(
-        Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
-          this,
-          Invocation.getter(#navigationService),
-        ),
-      ) as _i18.NavigationService);
-
-  @override
-  _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
-        Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
-          this,
-          Invocation.getter(#connectivityService),
-        ),
-      ) as _i19.ConnectivityService);
-
-  @override
-  _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
-        Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
-          this,
-          Invocation.getter(#navigationRouter),
-        ),
-      ) as _i20.NavigationRouter);
-
-  @override
-  _i21.UserAuthenticationService get userAuthenticationService =>
-      (super.noSuchMethod(
-        Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
-          this,
-          Invocation.getter(#userAuthenticationService),
-        ),
-      ) as _i21.UserAuthenticationService);
-
-  @override
-  String get routeName => (super.noSuchMethod(
-        Invocation.getter(#routeName),
-        returnValue: _i48.dummyValue<String>(
-          this,
-          Invocation.getter(#routeName),
-        ),
-      ) as String);
-
-  @override
-  bool get isUserLoggedIn => (super.noSuchMethod(
-        Invocation.getter(#isUserLoggedIn),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  set routeName(String? value) => super.noSuchMethod(
-        Invocation.setter(
-          #routeName,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void onViewModelReady() => super.noSuchMethod(
-        Invocation.method(
-          #onViewModelReady,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void onDispose() => super.noSuchMethod(
-        Invocation.method(
-          #onDispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void getFirebaseID() => super.noSuchMethod(
-        Invocation.method(
-          #getFirebaseID,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i22.Future<void> getFacts() => (super.noSuchMethod(
-        Invocation.method(
-          #getFacts,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> getCoins() => (super.noSuchMethod(
-        Invocation.method(
-          #getCoins,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> loginUser() => (super.noSuchMethod(
-        Invocation.method(
-          #loginUser,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> registerUser() => (super.noSuchMethod(
-        Invocation.method(
-          #registerUser,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> showLoader() => (super.noSuchMethod(
-        Invocation.method(
-          #showLoader,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> refreshData() => (super.noSuchMethod(
-        Invocation.method(
-          #refreshData,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  List<_i58.BundleResponseModel>? getBundlesForCountry(String? countryCode) =>
-      (super.noSuchMethod(Invocation.method(
-        #getBundlesForCountry,
-        [countryCode],
-      )) as List<_i58.BundleResponseModel>?);
-
-  @override
-  _i22.Future<void> logoutUser() => (super.noSuchMethod(
-        Invocation.method(
-          #logoutUser,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  void hideKeyboard() => super.noSuchMethod(
-        Invocation.method(
-          #hideKeyboard,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void rebuildUi() => super.noSuchMethod(
-        Invocation.method(
-          #rebuildUi,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void addListener(_i17.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void removeListener(_i17.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setInitialised(bool? value) => super.noSuchMethod(
-        Invocation.method(
-          #setInitialised,
-          [value],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setOnModelReadyCalled(bool? value) => super.noSuchMethod(
-        Invocation.method(
-          #setOnModelReadyCalled,
-          [value],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  bool busy(Object? object) => (super.noSuchMethod(
-        Invocation.method(
-          #busy,
-          [object],
-        ),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  void setBusyForObject(
-    Object? object,
-    bool? value,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #setBusyForObject,
-          [
-            object,
-            value,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setBusy(bool? value) => super.noSuchMethod(
-        Invocation.method(
-          #setBusy,
-          [value],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  T skeletonData<T>({
-    required T? realData,
-    required T? busyData,
-    Object? busyKey,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #skeletonData,
-          [],
-          {
-            #realData: realData,
-            #busyData: busyData,
-            #busyKey: busyKey,
-          },
-        ),
-        returnValue: _i48.dummyValue<T>(
-          this,
-          Invocation.method(
-            #skeletonData,
-            [],
-            {
-              #realData: realData,
-              #busyData: busyData,
-              #busyKey: busyKey,
-            },
-          ),
-        ),
-      ) as T);
-
-  @override
-  _i22.Future<T> runBusyFuture<T>(
-    _i22.Future<T>? busyFuture, {
-    Object? busyObject,
-    bool? throwException = false,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #runBusyFuture,
-          [busyFuture],
-          {
-            #busyObject: busyObject,
-            #throwException: throwException,
-          },
-        ),
-        returnValue: _i48.ifNotNull(
-              _i48.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #runBusyFuture,
-                  [busyFuture],
-                  {
-                    #busyObject: busyObject,
-                    #throwException: throwException,
-                  },
-                ),
-              ),
-              (T v) => _i22.Future<T>.value(v),
-            ) ??
-            _FakeFuture_24<T>(
-              this,
-              Invocation.method(
-                #runBusyFuture,
-                [busyFuture],
-                {
-                  #busyObject: busyObject,
-                  #throwException: throwException,
-                },
-              ),
-            ),
-      ) as _i22.Future<T>);
-
-  @override
-  dynamic error(Object? object) => super.noSuchMethod(Invocation.method(
-        #error,
-        [object],
-      ));
-
-  @override
-  void clearErrors() => super.noSuchMethod(
-        Invocation.method(
-          #clearErrors,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  bool hasErrorForKey(Object? key) => (super.noSuchMethod(
-        Invocation.method(
-          #hasErrorForKey,
-          [key],
-        ),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  void setError(dynamic error) => super.noSuchMethod(
-        Invocation.method(
-          #setError,
-          [error],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setErrorForModelOrObject(
-    dynamic value, {
-    Object? key,
-  }) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #setErrorForModelOrObject,
-          [value],
-          {#key: key},
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setErrorForObject(
-    Object? object,
-    dynamic value,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #setErrorForObject,
-          [
-            object,
-            value,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i22.Future<T> runErrorFuture<T>(
-    _i22.Future<T>? future, {
-    Object? key,
-    bool? throwException = false,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #runErrorFuture,
-          [future],
-          {
-            #key: key,
-            #throwException: throwException,
-          },
-        ),
-        returnValue: _i48.ifNotNull(
-              _i48.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #runErrorFuture,
-                  [future],
-                  {
-                    #key: key,
-                    #throwException: throwException,
-                  },
-                ),
-              ),
-              (T v) => _i22.Future<T>.value(v),
-            ) ??
-            _FakeFuture_24<T>(
-              this,
-              Invocation.method(
-                #runErrorFuture,
-                [future],
-                {
-                  #key: key,
-                  #throwException: throwException,
-                },
-              ),
-            ),
-      ) as _i22.Future<T>);
-
-  @override
-  void onFutureError(
-    dynamic error,
-    Object? key,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #onFutureError,
-          [
-            error,
-            key,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setViewState(_i60.ViewState? state) => super.noSuchMethod(
-        Invocation.method(
-          #setViewState,
-          [state],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void handleLoading() => super.noSuchMethod(
-        Invocation.method(
-          #handleLoading,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void setIdleState() => super.noSuchMethod(
-        Invocation.method(
-          #setIdleState,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i22.Future<
-      _i18.DialogResponse<_i61.MainDialogResponse>?> showErrorMessageDialog(
-    String? message, {
-    _i8.TextStyle? descriptionTextStyle,
-    String? cancelText,
-    _i62.DialogIconType? iconType,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #showErrorMessageDialog,
-          [message],
-          {
-            #descriptionTextStyle: descriptionTextStyle,
-            #cancelText: cancelText,
-            #iconType: iconType,
-          },
-        ),
-        returnValue:
-            _i22.Future<_i18.DialogResponse<_i61.MainDialogResponse>?>.value(),
-      ) as _i22.Future<_i18.DialogResponse<_i61.MainDialogResponse>?>);
-
-  @override
-  _i22.Future<void> showNativeErrorMessage(
-    String? titleMessage,
-    String? contentMessage,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #showNativeErrorMessage,
-          [
-            titleMessage,
-            contentMessage,
-          ],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  bool isKeyboardVisible(_i8.BuildContext? context) => (super.noSuchMethod(
-        Invocation.method(
-          #isKeyboardVisible,
-          [context],
-        ),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i22.Future<String?> listenForSMS() => (super.noSuchMethod(
-        Invocation.method(
-          #listenForSMS,
-          [],
-        ),
-        returnValue: _i22.Future<String?>.value(),
-      ) as _i22.Future<String?>);
-
-  @override
-  _i22.Future<void> stopSmsListener() => (super.noSuchMethod(
-        Invocation.method(
-          #stopSmsListener,
-          [],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> showNoConnectionDialog(String? routeName) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #showNoConnectionDialog,
-          [routeName],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  void closeConnectionDialog() => super.noSuchMethod(
-        Invocation.method(
-          #closeConnectionDialog,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i22.Future<void> navigateToHomePager<T>(
-          {_i52.InAppRedirection? redirection}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #navigateToHomePager,
-          [],
-          {#redirection: redirection},
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> handleResponse<T>(
-    _i28.Resource<T>? response, {
-    required _i22.Future<void> Function(_i28.Resource<T>)? onSuccess,
-    _i22.Future<void> Function(_i28.Resource<T>)? onFailure,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #handleResponse,
-          [response],
-          {
-            #onSuccess: onSuccess,
-            #onFailure: onFailure,
-          },
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  _i22.Future<void> handleError(_i28.Resource<dynamic>? response) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #handleError,
-          [response],
-        ),
-        returnValue: _i22.Future<void>.value(),
-        returnValueForMissingStub: _i22.Future<void>.value(),
-      ) as _i22.Future<void>);
-
-  @override
-  void onViewDidAppear() => super.noSuchMethod(
-        Invocation.method(
-          #onViewDidAppear,
           [],
         ),
         returnValueForMissingStub: null,
@@ -24620,7 +23664,7 @@ class MockSkeletonViewModel extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserGuideDetailedViewModel extends _i1.Mock
-    implements _i109.UserGuideDetailedViewModel {
+    implements _i107.UserGuideDetailedViewModel {
   MockUserGuideDetailedViewModel() {
     _i1.throwOnMissingStub(this);
   }
@@ -24629,7 +23673,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   _i45.UserGuideViewDataSource get userGuideViewDataSource =>
       (super.noSuchMethod(
         Invocation.getter(#userGuideViewDataSource),
-        returnValue: _FakeUserGuideViewDataSource_51(
+        returnValue: _FakeUserGuideViewDataSource_50(
           this,
           Invocation.getter(#userGuideViewDataSource),
         ),
@@ -24638,7 +23682,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i8.ScrollController get scrollController => (super.noSuchMethod(
         Invocation.getter(#scrollController),
-        returnValue: _FakeScrollController_52(
+        returnValue: _FakeScrollController_51(
           this,
           Invocation.getter(#scrollController),
         ),
@@ -24681,7 +23725,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -24690,7 +23734,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i10.AnalyticsService get analyticsService => (super.noSuchMethod(
         Invocation.getter(#analyticsService),
-        returnValue: _FakeAnalyticsService_9(
+        returnValue: _FakeAnalyticsService_8(
           this,
           Invocation.getter(#analyticsService),
         ),
@@ -24699,7 +23743,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i11.ThemeService get themeService => (super.noSuchMethod(
         Invocation.getter(#themeService),
-        returnValue: _FakeThemeService_10(
+        returnValue: _FakeThemeService_9(
           this,
           Invocation.getter(#themeService),
         ),
@@ -24708,7 +23752,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i12.UserService get userService => (super.noSuchMethod(
         Invocation.getter(#userService),
-        returnValue: _FakeUserService_11(
+        returnValue: _FakeUserService_10(
           this,
           Invocation.getter(#userService),
         ),
@@ -24717,7 +23761,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i13.PaymentService get paymentService => (super.noSuchMethod(
         Invocation.getter(#paymentService),
-        returnValue: _FakePaymentService_12(
+        returnValue: _FakePaymentService_11(
           this,
           Invocation.getter(#paymentService),
         ),
@@ -24727,7 +23771,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   _i14.RedirectionsHandlerService get redirectionsHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#redirectionsHandlerService),
-        returnValue: _FakeRedirectionsHandlerService_13(
+        returnValue: _FakeRedirectionsHandlerService_12(
           this,
           Invocation.getter(#redirectionsHandlerService),
         ),
@@ -24736,7 +23780,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i15.AddDeviceUseCase get addDeviceUseCase => (super.noSuchMethod(
         Invocation.getter(#addDeviceUseCase),
-        returnValue: _FakeAddDeviceUseCase_14(
+        returnValue: _FakeAddDeviceUseCase_13(
           this,
           Invocation.getter(#addDeviceUseCase),
         ),
@@ -24746,7 +23790,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   _i16.FlutterChannelHandlerService get flutterChannelHandlerService =>
       (super.noSuchMethod(
         Invocation.getter(#flutterChannelHandlerService),
-        returnValue: _FakeFlutterChannelHandlerService_15(
+        returnValue: _FakeFlutterChannelHandlerService_14(
           this,
           Invocation.getter(#flutterChannelHandlerService),
         ),
@@ -24815,7 +23859,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i17.Color get themeColor => (super.noSuchMethod(
         Invocation.getter(#themeColor),
-        returnValue: _FakeColor_16(
+        returnValue: _FakeColor_15(
           this,
           Invocation.getter(#themeColor),
         ),
@@ -24912,7 +23956,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i18.DialogService get dialogService => (super.noSuchMethod(
         Invocation.getter(#dialogService),
-        returnValue: _FakeDialogService_17(
+        returnValue: _FakeDialogService_16(
           this,
           Invocation.getter(#dialogService),
         ),
@@ -24921,7 +23965,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i18.SnackbarService get snackBarService => (super.noSuchMethod(
         Invocation.getter(#snackBarService),
-        returnValue: _FakeSnackbarService_18(
+        returnValue: _FakeSnackbarService_17(
           this,
           Invocation.getter(#snackBarService),
         ),
@@ -24930,7 +23974,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i18.BottomSheetService get bottomSheetService => (super.noSuchMethod(
         Invocation.getter(#bottomSheetService),
-        returnValue: _FakeBottomSheetService_19(
+        returnValue: _FakeBottomSheetService_18(
           this,
           Invocation.getter(#bottomSheetService),
         ),
@@ -24939,7 +23983,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i18.NavigationService get navigationService => (super.noSuchMethod(
         Invocation.getter(#navigationService),
-        returnValue: _FakeNavigationService_20(
+        returnValue: _FakeNavigationService_19(
           this,
           Invocation.getter(#navigationService),
         ),
@@ -24948,7 +23992,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i19.ConnectivityService get connectivityService => (super.noSuchMethod(
         Invocation.getter(#connectivityService),
-        returnValue: _FakeConnectivityService_21(
+        returnValue: _FakeConnectivityService_20(
           this,
           Invocation.getter(#connectivityService),
         ),
@@ -24957,7 +24001,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   @override
   _i20.NavigationRouter get navigationRouter => (super.noSuchMethod(
         Invocation.getter(#navigationRouter),
-        returnValue: _FakeNavigationRouter_22(
+        returnValue: _FakeNavigationRouter_21(
           this,
           Invocation.getter(#navigationRouter),
         ),
@@ -24967,7 +24011,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
   _i21.UserAuthenticationService get userAuthenticationService =>
       (super.noSuchMethod(
         Invocation.getter(#userAuthenticationService),
-        returnValue: _FakeUserAuthenticationService_23(
+        returnValue: _FakeUserAuthenticationService_22(
           this,
           Invocation.getter(#userAuthenticationService),
         ),
@@ -25218,7 +24262,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runBusyFuture,
@@ -25323,7 +24367,7 @@ class MockUserGuideDetailedViewModel extends _i1.Mock
               ),
               (T v) => _i22.Future<T>.value(v),
             ) ??
-            _FakeFuture_24<T>(
+            _FakeFuture_23<T>(
               this,
               Invocation.method(
                 #runErrorFuture,
@@ -25559,7 +24603,7 @@ class MockUserService extends _i1.Mock implements _i12.UserService {
   }
 
   @override
-  set accountList(List<_i110.AccountModel>? value) => super.noSuchMethod(
+  set accountList(List<_i108.AccountModel>? value) => super.noSuchMethod(
         Invocation.setter(
           #accountList,
           value,
@@ -25623,7 +24667,7 @@ class MockUserAuthenticationService extends _i1.Mock
   @override
   _i9.LocalStorageService get localStorageService => (super.noSuchMethod(
         Invocation.getter(#localStorageService),
-        returnValue: _FakeLocalStorageService_8(
+        returnValue: _FakeLocalStorageService_7(
           this,
           Invocation.getter(#localStorageService),
         ),
@@ -25813,18 +24857,18 @@ class MockBundlesDataService extends _i1.Mock
       )) as List<_i58.BundleResponseModel>?);
 
   @override
-  _i97.CountryResponseModel? getCountryByCode(String? iso3Code) =>
+  _i96.CountryResponseModel? getCountryByCode(String? iso3Code) =>
       (super.noSuchMethod(Invocation.method(
         #getCountryByCode,
         [iso3Code],
-      )) as _i97.CountryResponseModel?);
+      )) as _i96.CountryResponseModel?);
 
   @override
-  _i98.RegionsResponseModel? getRegionByCode(String? regionCode) =>
+  _i97.RegionsResponseModel? getRegionByCode(String? regionCode) =>
       (super.noSuchMethod(Invocation.method(
         #getRegionByCode,
         [regionCode],
-      )) as _i98.RegionsResponseModel?);
+      )) as _i97.RegionsResponseModel?);
 
   @override
   _i22.Future<void> refreshData() => (super.noSuchMethod(
@@ -25888,7 +24932,7 @@ class MockBundlesDataService extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockEnvironmentService extends _i1.Mock
-    implements _i111.EnvironmentService {
+    implements _i109.EnvironmentService {
   MockEnvironmentService() {
     _i1.throwOnMissingStub(this);
   }
@@ -25904,7 +24948,7 @@ class MockEnvironmentService extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSharedPreferences extends _i1.Mock
-    implements _i112.SharedPreferences {
+    implements _i110.SharedPreferences {
   MockSharedPreferences() {
     _i1.throwOnMissingStub(this);
   }
@@ -26085,7 +25129,7 @@ class MockSharedPreferences extends _i1.Mock
 /// A class which mocks [FlutterEsim].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFlutterEsim extends _i1.Mock implements _i113.FlutterEsim {
+class MockFlutterEsim extends _i1.Mock implements _i111.FlutterEsim {
   MockFlutterEsim() {
     _i1.throwOnMissingStub(this);
   }
@@ -26140,7 +25184,7 @@ class MockFlutterEsim extends _i1.Mock implements _i113.FlutterEsim {
 /// A class which mocks [APIDevice].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAPIDevice extends _i1.Mock implements _i114.APIDevice {
+class MockAPIDevice extends _i1.Mock implements _i112.APIDevice {
   MockAPIDevice() {
     _i1.throwOnMissingStub(this);
   }
@@ -26158,7 +25202,7 @@ class MockAPIDevice extends _i1.Mock implements _i114.APIDevice {
 /// A class which mocks [APIApp].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAPIApp extends _i1.Mock implements _i115.APIApp {
+class MockAPIApp extends _i1.Mock implements _i113.APIApp {
   MockAPIApp() {
     _i1.throwOnMissingStub(this);
   }
@@ -26185,6 +25229,42 @@ class MockAPIApp extends _i1.Mock implements _i115.APIApp {
       )) as _i22.FutureOr<dynamic>);
 }
 
+/// A class which mocks [APINotifications].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAPINotifications extends _i1.Mock implements _i114.APINotifications {
+  MockAPINotifications() {
+    _i1.throwOnMissingStub(this);
+  }
+}
+
+/// A class which mocks [ApiNotificationsRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockApiNotificationsRepository extends _i1.Mock
+    implements _i115.ApiNotificationsRepository {
+  MockApiNotificationsRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i22.FutureOr<_i28.Resource<_i116.EmptyResponse?>> getConsumptionLimit() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getConsumptionLimit,
+          [],
+        ),
+        returnValue: _i22.Future<_i28.Resource<_i116.EmptyResponse?>>.value(
+            _FakeResource_31<_i116.EmptyResponse?>(
+          this,
+          Invocation.method(
+            #getConsumptionLimit,
+            [],
+          ),
+        )),
+      ) as _i22.FutureOr<_i28.Resource<_i116.EmptyResponse?>>);
+}
+
 /// A class which mocks [Client].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -26204,7 +25284,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #head,
@@ -26225,7 +25305,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #get,
@@ -26240,7 +25320,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i116.Encoding? encoding,
+    _i117.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -26252,7 +25332,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #post,
@@ -26271,7 +25351,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i116.Encoding? encoding,
+    _i117.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -26283,7 +25363,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #put,
@@ -26302,7 +25382,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i116.Encoding? encoding,
+    _i117.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -26314,7 +25394,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #patch,
@@ -26333,7 +25413,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i116.Encoding? encoding,
+    _i117.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -26345,7 +25425,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_53(
+        returnValue: _i22.Future<_i46.Response>.value(_FakeResponse_52(
           this,
           Invocation.method(
             #delete,
@@ -26381,7 +25461,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
       ) as _i22.Future<String>);
 
   @override
-  _i22.Future<_i117.Uint8List> readBytes(
+  _i22.Future<_i118.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -26391,8 +25471,8 @@ class MockClient extends _i1.Mock implements _i46.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i22.Future<_i117.Uint8List>.value(_i117.Uint8List(0)),
-      ) as _i22.Future<_i117.Uint8List>);
+        returnValue: _i22.Future<_i118.Uint8List>.value(_i118.Uint8List(0)),
+      ) as _i22.Future<_i118.Uint8List>);
 
   @override
   _i22.Future<_i46.StreamedResponse> send(_i46.BaseRequest? request) =>
@@ -26402,7 +25482,7 @@ class MockClient extends _i1.Mock implements _i46.Client {
           [request],
         ),
         returnValue:
-            _i22.Future<_i46.StreamedResponse>.value(_FakeStreamedResponse_54(
+            _i22.Future<_i46.StreamedResponse>.value(_FakeStreamedResponse_53(
           this,
           Invocation.method(
             #send,

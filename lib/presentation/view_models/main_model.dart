@@ -2,10 +2,9 @@ import "dart:async";
 import "dart:developer";
 
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
@@ -92,14 +91,12 @@ class MainViewModel extends ReactiveViewModel
 
   @override
   Future<void> onAuthReloadListenerCallBackUseCase(
-    ResponseMain<dynamic>? response,
-  ) async {
-    AuthResponseModel? authResponseModel = response?.dataOfType;
-    if (authResponseModel != null) {
-      // locator<UserAuthenticationService>().saveUserResponse(authResponseModel);
+      AuthResponseModel? authResponse,
+      ) async {
+    if (authResponse != null) {
       await syncLanguageAndCurrencyCode(
-        languageCode: authResponseModel.userInfo?.language,
-        currencyCode: authResponseModel.userInfo?.currencyCode,
+        languageCode: authResponse.userInfo?.language,
+        currencyCode: authResponse.userInfo?.currencyCode,
       );
     }
   }

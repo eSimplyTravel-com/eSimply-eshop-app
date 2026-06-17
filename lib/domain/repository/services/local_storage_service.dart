@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 
 enum LocalStorageKeys {
   loginResponseKey("LoginResponseKey"),

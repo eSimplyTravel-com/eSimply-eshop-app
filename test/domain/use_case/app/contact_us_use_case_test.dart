@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/core/string_response.dart";
+import "package:esim_open_source/domain/data/response/core/string_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/use_case/app/contact_us_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -40,7 +40,7 @@ Future<void> main() async {
 
       final Resource<StringResponse?> expectedResponse =
           TestDataFactory.createSuccessResource<StringResponse?>(
-        data: StringResponse.fromJson(json: true),
+        data: StringResponse(stringValue: true),
         message: "Success",
       );
 
@@ -114,7 +114,7 @@ Future<void> main() async {
 
       final Resource<StringResponse?> expectedResponse =
           TestDataFactory.createSuccessResource<StringResponse?>(
-        data: StringResponse.fromJson(json: true),
+        data: StringResponse(stringValue: true),
       );
 
       when(

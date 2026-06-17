@@ -1,6 +1,7 @@
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_category_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/user_bundle_consumption_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/enums/view_state.dart";
@@ -531,6 +532,30 @@ Future<void> main() async {
           ..request = testRequest
           ..completer = viewModel.completer;
       }, returnsNormally,);
+    });
+
+    test("isCruise returns false when state item is null", () {
+      expect(viewModel.isCruise(), isFalse);
+    });
+
+    test("isCruise returns true when bundle category type is CRUISE", () {
+      viewModel.state.item = PurchaseEsimBundleResponseModel(
+        bundleCategory: BundleCategoryResponseModel(type: "CRUISE"),
+      );
+      expect(viewModel.isCruise(), isTrue);
+    });
+
+    test("isCruise returns false when bundle category type is not CRUISE", () {
+      viewModel.state.item = PurchaseEsimBundleResponseModel(
+        bundleCategory: BundleCategoryResponseModel(type: "GLOBAL"),
+      );
+      expect(viewModel.isCruise(), isFalse);
+    });
+
+    test("getBundleTranslation returns translation for primaryBundle type", () {
+      final String result = viewModel.getBundleTranslation("Primary Bundle");
+      expect(result, isA<String>());
+      expect(result.isNotEmpty, isTrue);
     });
   });
 }

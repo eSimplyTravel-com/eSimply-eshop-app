@@ -1,4 +1,5 @@
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/resend_otp_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/use_case/auth/resend_otp_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -214,6 +215,120 @@ Future<void> main() async {
         email: "test@example.com",
         phoneNumber: "+1234567890",
       ),).called(1);
+    });
+  });
+
+  group("ResendOtpNewChannelUseCase Tests", () {
+    late ResendOtpNewChannelUseCase newChannelUseCase;
+
+    setUp(() {
+      newChannelUseCase = ResendOtpNewChannelUseCase(mockRepository);
+    });
+
+    test("execute returns success resource when repository succeeds", () async {
+      // Arrange
+      final ResendOtpNewChannelParams params = ResendOtpNewChannelParams(
+        email: "test@example.com",
+        phoneNumber: null,
+        otpChannel: "SMS",
+      );
+
+      final ResendOtpResponseModel response = ResendOtpResponseModel(
+        status: "success",
+        message: "OTP sent via SMS",
+      );
+
+      final Resource<ResendOtpResponseModel?> expectedResponse =
+          TestDataFactory.createSuccessResource<ResendOtpResponseModel?>(
+        data: response,
+        message: "OTP sent via SMS",
+      );
+
+      when(mockRepository.resendOtpNewChannel(
+        email: anyNamed("email"),
+        phone: anyNamed("phone"),
+        otpChannel: anyNamed("otpChannel"),
+      ),).thenAnswer((_) async => expectedResponse);
+
+      // Act
+      final Resource<ResendOtpResponseModel?> result =
+          await newChannelUseCase.execute(params);
+
+      // Assert
+      expect(result.resourceType, equals(ResourceType.success));
+      expect(result.data?.status, equals("success"));
+      expect(result.data?.message, equals("OTP sent via SMS"));
+
+      // execute maps params.phoneNumber -> phone
+      verify(mockRepository.resendOtpNewChannel(
+        email: "test@example.com",
+        phone: null,
+        otpChannel: "SMS",
+      ),).called(1);
+    });
+
+    test(
+        "execute returns success resource with null data when repository returns null data",
+        () async {
+      // Arrange
+      final ResendOtpNewChannelParams params = ResendOtpNewChannelParams(
+        email: "test@example.com",
+        phoneNumber: null,
+        otpChannel: "EMAIL",
+      );
+
+      final Resource<ResendOtpResponseModel?> expectedResponse =
+          TestDataFactory.createSuccessResource<ResendOtpResponseModel?>(
+        data: null,
+        message: "OTP sent",
+      );
+
+      when(mockRepository.resendOtpNewChannel(
+        email: anyNamed("email"),
+        phone: anyNamed("phone"),
+        otpChannel: anyNamed("otpChannel"),
+      ),).thenAnswer((_) async => expectedResponse);
+
+      // Act
+      final Resource<ResendOtpResponseModel?> result =
+          await newChannelUseCase.execute(params);
+
+      // Assert
+      expect(result.resourceType, equals(ResourceType.success));
+      expect(result.data, isNull);
+    });
+
+    test("execute returns error resource when repository fails", () async {
+      // Arrange
+      final ResendOtpNewChannelParams params = ResendOtpNewChannelParams(
+        email: "test@example.com",
+        phoneNumber: null,
+        otpChannel: "SMS",
+      );
+
+      final Resource<ResendOtpResponseModel?> expectedResponse =
+          TestDataFactory.createErrorResource<ResendOtpResponseModel?>(
+        message: "Too many requests. Please try again later",
+        code: 429,
+      );
+
+      when(mockRepository.resendOtpNewChannel(
+        email: anyNamed("email"),
+        phone: anyNamed("phone"),
+        otpChannel: anyNamed("otpChannel"),
+      ),).thenAnswer((_) async => expectedResponse);
+
+      // Act
+      final Resource<ResendOtpResponseModel?> result =
+          await newChannelUseCase.execute(params);
+
+      // Assert
+      expect(result.resourceType, equals(ResourceType.error));
+      expect(
+        result.message,
+        equals("Too many requests. Please try again later"),
+      );
+      expect(result.error?.errorCode, equals(429));
     });
   });
 }

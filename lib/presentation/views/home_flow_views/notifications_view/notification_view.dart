@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/presentation/extensions/context_extension.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";

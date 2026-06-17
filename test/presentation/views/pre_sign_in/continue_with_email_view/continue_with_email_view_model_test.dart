@@ -1,7 +1,7 @@
 // continue_with_email_view_model_test.dart
 
 import "package:easy_localization/easy_localization.dart";
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/otp_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -339,6 +339,489 @@ Future<void> main() async {
                 ),
             named: "arguments",
           ),
+        ),
+      ).called(1);
+    });
+
+    test("initialization - isNotNull and correct type", () {
+      // Assert
+      expect(viewModel, isNotNull);
+      expect(viewModel, isA<ContinueWithEmailViewModel>());
+    });
+
+    test("selectedOtpChannel returns SMS by default", () {
+      // Assert
+      expect(viewModel.selectedOtpChannel, "SMS");
+    });
+
+    test("otpSendErrorMessage returns null by default", () {
+      // Assert
+      expect(viewModel.otpSendErrorMessage, isNull);
+    });
+
+    test("selectOtpChannel updates channel and clears error message", () {
+      // Arrange
+      viewModel.state?.otpSendErrorMessage = "some error";
+
+      // Act
+      viewModel.selectOtpChannel("EMAIL");
+
+      // Assert
+      expect(viewModel.selectedOtpChannel, "EMAIL");
+      expect(viewModel.otpSendErrorMessage, isNull);
+    });
+
+    test(
+        "showEmailField returns true for LoginType.emailAndPhoneAndEmailVerification",
+        () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+
+      // Assert
+      expect(vm.showEmailField, true);
+    });
+
+    test(
+        "showEmailField returns true for LoginType.emailAndPhoneAndBothVerification",
+        () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+
+      // Assert
+      expect(vm.showEmailField, true);
+    });
+
+    test(
+        "showPhoneField returns true for LoginType.emailAndPhoneAndEmailVerification",
+        () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+
+      // Assert
+      expect(vm.showPhoneField, true);
+    });
+
+    test(
+        "showPhoneField returns true for LoginType.emailAndPhoneAndBothVerification",
+        () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+
+      // Assert
+      expect(vm.showPhoneField, true);
+    });
+
+    test("onViewModelReady for phoneNumber does not add email listener", () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.phoneNumber,
+      );
+      onViewModelReadyMock();
+
+      // Act — should not throw
+      vm.onViewModelReady();
+
+      // Assert — emailErrorMessage unchanged (no listener registered)
+      expect(vm.state?.emailErrorMessage, isNull);
+    });
+
+    test(
+        "onViewModelReady for emailAndPhoneAndEmailVerification adds email listener",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+
+      // Act
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Assert
+      expect(vm.state?.emailErrorMessage, "");
+    });
+
+    test(
+        "onViewModelReady for emailAndPhoneAndBothVerification adds email listener",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+
+      // Act
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Assert
+      expect(vm.state?.emailErrorMessage, "");
+    });
+
+    test(
+        "validateForm enables login for phoneNumber with valid phone and terms",
+        () {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.phoneNumber,
+      );
+      vm.state?.isValidPhoneNumber = true;
+      vm.state?.isTermsChecked = false;
+
+      // Act — toggles terms to true and runs _validateForm
+      vm.updateTermsSelections();
+
+      // Assert
+      expect(vm.state?.isLoginEnabled, true);
+    });
+
+    test(
+        "validateForm for emailAndPhoneAndEmailVerification checks email, phone, and terms",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+      vm.state?.isTermsChecked = true;
+      vm.state?.isValidPhoneNumber = true;
+
+      // Act
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Assert
+      expect(vm.state?.isLoginEnabled, true);
+    });
+
+    test(
+        "validateForm for emailAndPhoneAndBothVerification checks email, phone, and terms",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+      vm.state?.isTermsChecked = true;
+      vm.state?.isValidPhoneNumber = true;
+
+      // Act
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Assert
+      expect(vm.state?.isLoginEnabled, true);
+    });
+
+    test("validateNumber for emailAndPhoneAndEmailVerification enables login",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+      vm.state?.isTermsChecked = true;
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Act
+      vm.validateNumber(code: "+1", number: "1234567890", isValid: true);
+
+      // Assert
+      expect(vm.state?.isLoginEnabled, true);
+      expect(vm.state?.isValidPhoneNumber, true);
+    });
+
+    test("validateNumber for emailAndPhoneAndBothVerification enables login",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+      onViewModelReadyMock();
+      vm.onViewModelReady();
+      vm.state?.isTermsChecked = true;
+      vm.state?.emailController.text = "test@example.com";
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      // Act
+      vm.validateNumber(code: "+1", number: "1234567890", isValid: true);
+
+      // Assert
+      expect(vm.state?.isLoginEnabled, true);
+      expect(vm.state?.isValidPhoneNumber, true);
+    });
+
+    test(
+        "loginButtonTappedWithChannel with EMAIL sets channel and navigates on success",
+        () async {
+      // Arrange
+      when(locator<AppConfigurationService>().getLoginType)
+          .thenReturn(LoginType.email);
+      viewModel.state?.isTermsChecked = true;
+      viewModel.state?.emailController.text = "test@example.com";
+      viewModel.state?.emailErrorMessage = "";
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.success(
+          OtpResponseModel(),
+          message: "",
+        ),
+      );
+      when(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      // Act
+      await viewModel.loginButtonTappedWithChannel("EMAIL");
+
+      // Assert
+      expect(viewModel.selectedOtpChannel, "EMAIL");
+      verify(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).called(1);
+    });
+
+    test(
+        "loginButtonTappedWithChannel with SMS sets channel and navigates on success",
+        () async {
+      // Arrange
+      when(locator<AppConfigurationService>().getLoginType)
+          .thenReturn(LoginType.email);
+      viewModel.state?.isTermsChecked = true;
+      viewModel.state?.emailController.text = "test@example.com";
+      viewModel.state?.emailErrorMessage = "";
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.success(
+          OtpResponseModel(),
+          message: "",
+        ),
+      );
+      when(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      // Act
+      await viewModel.loginButtonTappedWithChannel("SMS");
+
+      // Assert
+      expect(viewModel.selectedOtpChannel, "SMS");
+      verify(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).called(1);
+    });
+
+    test(
+        "loginWithEmail for emailAndPhoneAndEmailVerification uses EMAIL otpChannel",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+      vm.state?.isTermsChecked = true;
+      vm.state?.emailController.text = "test@example.com";
+      vm.state?.emailErrorMessage = "";
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+          otpChannel: anyNamed("otpChannel"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.success(
+          OtpResponseModel(),
+          message: "",
+        ),
+      );
+      when(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      // Act
+      await vm.loginButtonTapped();
+
+      // Assert
+      verify(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).called(1);
+    });
+
+    test(
+        "loginWithEmail for emailAndPhoneAndBothVerification uses selected otpChannel",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+      vm.state?.isTermsChecked = true;
+      vm.state?.emailController.text = "test@example.com";
+      vm.state?.emailErrorMessage = "";
+      vm.selectOtpChannel("SMS");
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+          otpChannel: anyNamed("otpChannel"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.success(
+          OtpResponseModel(),
+          message: "",
+        ),
+      );
+      when(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      // Act
+      await vm.loginButtonTapped();
+
+      // Assert
+      verify(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).called(1);
+    });
+
+    test(
+        "loginWithEmail for emailAndPhoneAndBothVerification sets otpSendErrorMessage on error",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+      vm.state?.isTermsChecked = true;
+      vm.state?.emailController.text = "test@example.com";
+      vm.state?.emailErrorMessage = "";
+      vm.selectOtpChannel("EMAIL");
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+          otpChannel: anyNamed("otpChannel"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.error(
+          "OTP failed via email",
+          error: GeneralError(message: "OTP failed via email", errorCode: 500),
+        ),
+      );
+
+      // Act
+      await vm.loginButtonTapped();
+
+      // Assert
+      expect(vm.otpSendErrorMessage, isNotNull);
+    });
+
+    test("loginWithEmail non-429 error for email type calls handleError",
+        () async {
+      // Arrange
+      when(locator<AppConfigurationService>().getLoginType)
+          .thenReturn(LoginType.email);
+      viewModel.state?.isTermsChecked = true;
+      viewModel.state?.emailController.text = "test@example.com";
+      viewModel.state?.emailErrorMessage = "";
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.error(
+          "Server error",
+          error: GeneralError(message: "Server error", errorCode: 500),
+        ),
+      );
+      when(locator<DialogService>().showDialog(
+        title: anyNamed("title"),
+        description: anyNamed("description"),
+      )).thenAnswer((_) async => null);
+
+      // Act — should not throw
+      await viewModel.loginButtonTapped();
+    });
+
+    test("loginWithEmail with valid phone includes phone number in args",
+        () async {
+      // Arrange
+      final ContinueWithEmailViewModel vm = ContinueWithEmailViewModel(
+        localLoginType: LoginType.phoneNumber,
+      );
+      vm.state?.isTermsChecked = true;
+      vm.validateNumber(code: "1", number: "1234567890", isValid: true);
+      when(
+        locator<ApiAuthRepository>().login(
+          email: anyNamed("email"),
+          phoneNumber: anyNamed("phoneNumber"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<OtpResponseModel?>.success(
+          OtpResponseModel(),
+          message: "",
+        ),
+      );
+      when(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
+        ),
+      ).thenAnswer((_) async => true);
+
+      // Act
+      await vm.loginButtonTapped();
+
+      // Assert
+      verify(
+        locator<NavigationService>().navigateTo(
+          VerifyLoginView.routeName,
+          arguments: anyNamed("arguments"),
         ),
       ).called(1);
     });

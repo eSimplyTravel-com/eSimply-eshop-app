@@ -1,9 +1,9 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/home_data_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/regions_response_model.dart";
 import "package:esim_open_source/domain/repository/api_bundles_repository.dart";
 import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";

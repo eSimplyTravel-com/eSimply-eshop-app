@@ -7,7 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:esim_open_source/data/data_source/home_local_data_source.dart'
     as _i4;
-import 'package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart'
+import 'package:esim_open_source/data/remote/responses/bundles/home_data_response_model_dto.dart'
     as _i5;
 import 'package:esim_open_source/domain/data/api_bundles.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -79,7 +79,7 @@ class MockHomeLocalDataSource extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> saveHomeData(_i5.HomeDataResponseModel? data) =>
+  _i3.Future<void> saveHomeData(_i5.HomeDataResponseModelDto? data) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveHomeData,

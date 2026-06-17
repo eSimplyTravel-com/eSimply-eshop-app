@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/app/currencies_response_model.dart";
+import "package:esim_open_source/domain/data/response/app/currencies_response_model.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/use_case/app/get_currencies_use_case.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";
@@ -45,10 +45,12 @@ Future<void> main() async {
         message: "Success",
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => expectedResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<List<CurrenciesResponseModel>?> result = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
@@ -65,10 +67,12 @@ Future<void> main() async {
         message: "Failed to fetch currencies",
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => expectedResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<List<CurrenciesResponseModel>?> result = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result.resourceType, equals(ResourceType.error));
@@ -87,13 +91,16 @@ Future<void> main() async {
         data: currencies,
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => expectedResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => expectedResponse);
 
       // Act - First call
-      final Resource<List<CurrenciesResponseModel>?> result1 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result1 =
+          await useCase.execute(NoParams());
 
       // Act - Second call
-      final Resource<List<CurrenciesResponseModel>?> result2 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result2 =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result1.resourceType, equals(ResourceType.success));
@@ -111,13 +118,16 @@ Future<void> main() async {
         message: "Network error",
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => errorResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => errorResponse);
 
       // Act - First call
-      final Resource<List<CurrenciesResponseModel>?> result1 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result1 =
+          await useCase.execute(NoParams());
 
       // Act - Second call
-      final Resource<List<CurrenciesResponseModel>?> result2 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result2 =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result1.resourceType, equals(ResourceType.error));
@@ -130,15 +140,19 @@ Future<void> main() async {
     test("execute does not cache loading response", () async {
       // Arrange
       final Resource<List<CurrenciesResponseModel>?> loadingResponse =
-          TestDataFactory.createLoadingResource<List<CurrenciesResponseModel>?>();
+          TestDataFactory.createLoadingResource<
+              List<CurrenciesResponseModel>?>();
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => loadingResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => loadingResponse);
 
       // Act - First call
-      final Resource<List<CurrenciesResponseModel>?> result1 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result1 =
+          await useCase.execute(NoParams());
 
       // Act - Second call
-      final Resource<List<CurrenciesResponseModel>?> result2 = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result2 =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result1.resourceType, equals(ResourceType.loading));
@@ -155,10 +169,12 @@ Future<void> main() async {
         data: TestDataFactory.createCurrencyResponseList(),
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => expectedResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<List<CurrenciesResponseModel>?> result = await useCase.execute(null);
+      final Resource<List<CurrenciesResponseModel>?> result =
+          await useCase.execute(null);
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));
@@ -173,10 +189,12 @@ Future<void> main() async {
         data: <CurrenciesResponseModel>[],
       );
 
-      when(mockRepository.getCurrencies()).thenAnswer((_) async => expectedResponse);
+      when(mockRepository.getCurrencies())
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
-      final Resource<List<CurrenciesResponseModel>?> result = await useCase.execute(NoParams());
+      final Resource<List<CurrenciesResponseModel>?> result =
+          await useCase.execute(NoParams());
 
       // Assert
       expect(result.resourceType, equals(ResourceType.success));

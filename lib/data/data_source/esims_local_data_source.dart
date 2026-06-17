@@ -7,9 +7,9 @@ import "package:esim_open_source/data/data_source/my_esim_entities/esim_bundle_e
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_country_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/transaction_history_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/country_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model_dto.dart";
 import "package:esim_open_source/objectbox.g.dart";
 
 class EsimsLocalDataSource {
@@ -24,14 +24,14 @@ class EsimsLocalDataSource {
   final Box<EsimBundleCategoryEntity> _bundleCategoryBox;
 
   Future<void> replacePurchasedEsims(
-    List<PurchaseEsimBundleResponseModel>? dataList,
+    List<PurchaseEsimBundleResponseModelDto>? dataList,
   ) async {
     if (dataList == null) {
       return;
     }
     clearCache();
     _store.runInTransaction(TxMode.write, () {
-      for (final PurchaseEsimBundleResponseModel data in dataList) {
+      for (final PurchaseEsimBundleResponseModelDto data in dataList) {
         final EsimEntity esimData = _createEsimEntity(data);
         _esimBox.put(esimData);
       }
@@ -40,7 +40,7 @@ class EsimsLocalDataSource {
     log("Purchased Esim Saved to db");
   }
 
-  EsimEntity _createEsimEntity(PurchaseEsimBundleResponseModel data) {
+  EsimEntity _createEsimEntity(PurchaseEsimBundleResponseModelDto data) {
     final EsimEntity esimData = EsimEntity.fromModel(data);
     _attachBundleCategory(esimData, data.bundleCategory);
     _attachCountries(esimData, data.countries);
@@ -61,12 +61,12 @@ class EsimsLocalDataSource {
 
   void _attachCountries(
     EsimEntity esimData,
-    List<CountryResponseModel>? countries,
+    List<CountryResponseModelDto>? countries,
   ) {
     if (countries == null) {
       return;
     }
-    for (final CountryResponseModel country in countries) {
+    for (final CountryResponseModelDto country in countries) {
       final EsimCountryEntity countryEntity =
           EsimCountryEntity.fromModel(country);
       esimData.countries.add(countryEntity);
@@ -75,12 +75,12 @@ class EsimsLocalDataSource {
 
   void _attachTransactionHistory(
     EsimEntity esimData,
-    List<TransactionHistoryResponseModel>? transactionHistory,
+    List<TransactionHistoryResponseModelDto>? transactionHistory,
   ) {
     if (transactionHistory == null) {
       return;
     }
-    for (final TransactionHistoryResponseModel transaction
+    for (final TransactionHistoryResponseModelDto transaction
         in transactionHistory) {
       final TransactionHistoryEntity transactionEntity =
           _createTransactionEntity(transaction);
@@ -89,7 +89,7 @@ class EsimsLocalDataSource {
   }
 
   TransactionHistoryEntity _createTransactionEntity(
-    TransactionHistoryResponseModel transaction,
+    TransactionHistoryResponseModelDto transaction,
   ) {
     final TransactionHistoryEntity transactionEntity =
         TransactionHistoryEntity.fromModel(transaction);
@@ -130,18 +130,18 @@ class EsimsLocalDataSource {
 
   void _attachCountriesToBundle(
     EsimBundleEntity bundleEntity,
-    List<CountryResponseModel>? countries,
+    List<CountryResponseModelDto>? countries,
   ) {
     if (countries == null) {
       return;
     }
-    for (final CountryResponseModel country in countries) {
+    for (final CountryResponseModelDto country in countries) {
       final EsimCountryEntity countryEntity = _findOrCreateCountry(country);
       bundleEntity.countries.add(countryEntity);
     }
   }
 
-  EsimCountryEntity _findOrCreateCountry(CountryResponseModel country) {
+  EsimCountryEntity _findOrCreateCountry(CountryResponseModelDto country) {
     final EsimCountryEntity? existingCountry = _countryBox
         .query(EsimCountryEntity_.iso3Code.equals(country.iso3Code ?? ""))
         .build()
@@ -156,7 +156,7 @@ class EsimsLocalDataSource {
     return newCountry;
   }
 
-  List<PurchaseEsimBundleResponseModel>? getPurchasedEsims() {
+  List<PurchaseEsimBundleResponseModelDto>? getPurchasedEsims() {
     final List<EsimEntity> esimData = _esimBox.query().build().find();
     log("Purchased Esim from db count ${esimData.length}");
     return esimData.map((EsimEntity esim) => esim.toModel()).toList();

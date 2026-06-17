@@ -2,7 +2,8 @@ import "dart:async";
 import "dart:developer";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/app/configuration_response_model.dart";
+import "package:esim_open_source/data/remote/responses/app/configuration_response_model_dto.dart";
+import "package:esim_open_source/domain/data/response/app/configuration_response_model.dart";
 import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/use_case/app/get_configurations_use_case.dart";
@@ -38,7 +39,9 @@ class AppConfigurationServiceImpl extends AppConfigurationService {
 
     if (config != null) {
       try {
-        _configData = ConfigurationResponseModel.fromJsonListString(config);
+        _configData = ConfigurationResponseModelDto.fromJsonListString(config)
+            .map((ConfigurationResponseModelDto dto) => dto.toDomain())
+            .toList();
       } on Object catch (e) {
         log(e.toString());
       }
@@ -55,8 +58,10 @@ class AppConfigurationServiceImpl extends AppConfigurationService {
 
       locator<LocalStorageService>().setString(
         LocalStorageKeys.appConfigurations,
-        ConfigurationResponseModel.toJsonListString(
-          _configData ?? <ConfigurationResponseModel>[],
+        ConfigurationResponseModelDto.toJsonListString(
+          (_configData ?? <ConfigurationResponseModel>[])
+              .map(ConfigurationResponseModelDto.fromDomain)
+              .toList(),
         ),
       );
 

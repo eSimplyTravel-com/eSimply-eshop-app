@@ -3,7 +3,7 @@ import "dart:io";
 
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
+import "package:esim_open_source/domain/data/response/device/device_info_response_model.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/use_case/device/register_device_use_case.dart";

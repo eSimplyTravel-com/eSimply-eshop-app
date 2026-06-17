@@ -1,7 +1,7 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/redirections_handler_service.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";

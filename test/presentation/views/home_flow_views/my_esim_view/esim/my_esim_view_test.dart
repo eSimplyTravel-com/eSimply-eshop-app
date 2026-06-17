@@ -1,5 +1,5 @@
 import "package:easy_localization/easy_localization.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/services/flutter_channel_handler_service.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/my_esim_view/my_esim_view.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/my_esim_view/my_esim_view_model.dart";

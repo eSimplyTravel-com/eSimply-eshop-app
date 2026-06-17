@@ -1,7 +1,7 @@
 import "dart:async";
 import "dart:developer";
 
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 
 class FakeData {

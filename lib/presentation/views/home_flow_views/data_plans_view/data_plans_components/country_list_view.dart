@@ -1,6 +1,6 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/core/presentation/util/flag_util.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/data_plans_components/country_region_view.dart";

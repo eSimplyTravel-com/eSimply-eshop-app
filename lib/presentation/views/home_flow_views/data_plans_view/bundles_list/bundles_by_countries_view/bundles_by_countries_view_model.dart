@@ -1,8 +1,8 @@
 import "dart:developer";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/domain/use_case/bundles/get_bundles_by_countries_use_case.dart";
 import "package:esim_open_source/domain/use_case/bundles/get_bundles_by_region_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";

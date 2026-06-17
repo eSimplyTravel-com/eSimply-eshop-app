@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";

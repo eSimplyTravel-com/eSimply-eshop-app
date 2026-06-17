@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/my_esim_view/widgets/e_sim_expired_plan_item.dart";
 import "package:esim_open_source/utils/date_time_utils.dart";
 import "package:flutter/cupertino.dart";
@@ -10,13 +10,13 @@ import "../../../../../helpers/view_model_helper.dart";
 
 Future<void> main() async {
   await prepareTest();
-  late PurchaseEsimBundleResponseModel item;
+  late PurchaseEsimBundleResponseModelDto item;
   late ESimExpiredPlanItem eSimExpiredPlanItem;
 
   setUp(() async {
     await setupTest();
     onViewModelReadyMock();
-    item = PurchaseEsimBundleResponseModel.mockItems().first;
+    item = PurchaseEsimBundleResponseModelDto.mockItems().first;
     eSimExpiredPlanItem = ESimExpiredPlanItem(
       countryCode: "",
       showUnlimitedData: item.unlimited ?? false,

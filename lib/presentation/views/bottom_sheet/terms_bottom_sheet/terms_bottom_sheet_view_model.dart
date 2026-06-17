@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart";
+import "package:esim_open_source/domain/data/response/app/dynamic_page_response.dart";
 import "package:esim_open_source/domain/use_case/app/get_terms_and_condition_use_case.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";

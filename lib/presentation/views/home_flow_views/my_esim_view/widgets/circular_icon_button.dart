@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -112,4 +113,17 @@ class CircularIconButton extends StatelessWidget {
       ..add(ColorProperty("borderColor", borderColor))
       ..add(DoubleProperty("borderRadius", borderRadius));
   }
+}
+
+@AppPreview(name: "Circular Icon Button")
+Widget circularIconButtonPreview() {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: CircularIconButton(
+        icon: Icons.share,
+        onPressed: () {},
+      ),
+    ),
+  );
 }

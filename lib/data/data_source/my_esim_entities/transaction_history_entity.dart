@@ -1,6 +1,6 @@
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_bundle_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -15,7 +15,7 @@ class TransactionHistoryEntity {
   });
 
   factory TransactionHistoryEntity.fromModel(
-    TransactionHistoryResponseModel model,
+    TransactionHistoryResponseModelDto model,
   ) {
     return TransactionHistoryEntity(
       userOrderId: model.userOrderId,
@@ -41,8 +41,8 @@ class TransactionHistoryEntity {
 
   final ToOne<EsimEntity> esimData = ToOne<EsimEntity>();
 
-  TransactionHistoryResponseModel toModel() {
-    return TransactionHistoryResponseModel(
+  TransactionHistoryResponseModelDto toModel() {
+    return TransactionHistoryResponseModelDto(
       userOrderId: userOrderId,
       iccid: iccid,
       bundleType: bundleType,

@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/redirections_handler_service.dart";
 import "package:esim_open_source/domain/use_case/user/get_user_notifications_pagination_use_case.dart";

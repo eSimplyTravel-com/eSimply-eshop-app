@@ -116,9 +116,9 @@ class _AnimatedCircularProgressIndicatorState
 
 @AppPreview(name: "Animated Circular Progress Indicator")
 Widget animatedCircularProgressIndicatorPreview() {
-  return Scaffold(
+  return const Scaffold(
     body: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Center(
         child: SizedBox(
           width: 200,

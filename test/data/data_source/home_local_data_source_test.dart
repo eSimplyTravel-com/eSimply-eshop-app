@@ -4,11 +4,11 @@ import "package:esim_open_source/data/data_source/home_data_entities/bundle_cate
 import "package:esim_open_source/data/data_source/home_data_entities/country_entity.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/home_data_entity.dart";
 import "package:esim_open_source/data/data_source/home_local_data_source.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/country_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/regions_response_model_dto.dart";
 import "package:esim_open_source/objectbox.g.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/annotations.dart";
@@ -68,9 +68,10 @@ void main() {
     mockBundleCategoryBox = MockBundleCategoryBox();
 
     // Register boxes with the fake store
-    fakeStore..registerBox<HomeDataEntity>(mockHomeDataBox)
-    ..registerBox<CountryEntity>(mockCountryBox)
-    ..registerBox<BundleCategoryEntity>(mockBundleCategoryBox);
+    fakeStore
+      ..registerBox<HomeDataEntity>(mockHomeDataBox)
+      ..registerBox<CountryEntity>(mockCountryBox)
+      ..registerBox<BundleCategoryEntity>(mockBundleCategoryBox);
 
     dataSource = HomeLocalDataSource(fakeStore);
   });
@@ -79,7 +80,7 @@ void main() {
     group("saveHomeData", () {
       test("should save home data with version", () async {
         // Arrange
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
         );
 
@@ -94,18 +95,18 @@ void main() {
 
       test("should save home data with regions", () async {
         // Arrange
-        final List<RegionsResponseModel> regions = <RegionsResponseModel>[
-          RegionsResponseModel(
+        final List<RegionsResponseModelDto> regions = <RegionsResponseModelDto>[
+          RegionsResponseModelDto(
             regionName: "North America",
             regionCode: "NA",
           ),
-          RegionsResponseModel(
+          RegionsResponseModelDto(
             regionName: "Europe",
             regionCode: "EU",
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           regions: regions,
         );
@@ -121,18 +122,18 @@ void main() {
 
       test("should save home data with countries", () async {
         // Arrange
-        final List<CountryResponseModel> countries = <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> countries = <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
-          CountryResponseModel(
+          CountryResponseModelDto(
             iso3Code: "CAN",
             country: "Canada",
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           countries: countries,
         );
@@ -148,14 +149,14 @@ void main() {
 
       test("should save home data with global bundles", () async {
         // Arrange
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle 1",
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           globalBundles: globalBundles,
         );
@@ -180,20 +181,20 @@ void main() {
 
       test("should save global bundle with bundle category", () async {
         // Arrange
-        final BundleCategoryResponseModel category =
-            BundleCategoryResponseModel(
+        final BundleCategoryResponseModelDto category =
+            BundleCategoryResponseModelDto(
           title: "Premium",
         );
 
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle 1",
             bundleCategory: category,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           globalBundles: globalBundles,
         );
@@ -220,23 +221,23 @@ void main() {
 
       test("should save global bundle with countries", () async {
         // Arrange
-        final List<CountryResponseModel> bundleCountries =
-            <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> bundleCountries =
+            <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
         ];
 
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle 1",
             countries: bundleCountries,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           globalBundles: globalBundles,
         );
@@ -262,14 +263,14 @@ void main() {
 
       test("should save home data with cruise bundles", () async {
         // Arrange
-        final List<BundleResponseModel> cruiseBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> cruiseBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "CRUISE-1",
             bundleName: "Cruise Bundle 1",
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           cruiseBundles: cruiseBundles,
         );
@@ -294,20 +295,20 @@ void main() {
 
       test("should save cruise bundle with bundle category", () async {
         // Arrange
-        final BundleCategoryResponseModel category =
-            BundleCategoryResponseModel(
+        final BundleCategoryResponseModelDto category =
+            BundleCategoryResponseModelDto(
           title: "Cruise",
         );
 
-        final List<BundleResponseModel> cruiseBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> cruiseBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "CRUISE-1",
             bundleName: "Cruise Bundle 1",
             bundleCategory: category,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           cruiseBundles: cruiseBundles,
         );
@@ -334,23 +335,23 @@ void main() {
 
       test("should save cruise bundle with countries", () async {
         // Arrange
-        final List<CountryResponseModel> bundleCountries =
-            <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> bundleCountries =
+            <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
         ];
 
-        final List<BundleResponseModel> cruiseBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> cruiseBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "CRUISE-1",
             bundleName: "Cruise Bundle 1",
             countries: bundleCountries,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           cruiseBundles: cruiseBundles,
         );
@@ -387,23 +388,23 @@ void main() {
           operatorList: null,
         );
 
-        final List<CountryResponseModel> bundleCountries =
-            <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> bundleCountries =
+            <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
         ];
 
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle 1",
             countries: bundleCountries,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           globalBundles: globalBundles,
         );
@@ -428,23 +429,23 @@ void main() {
 
       test("should create new country when iso3Code does not match", () async {
         // Arrange
-        final List<CountryResponseModel> bundleCountries =
-            <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> bundleCountries =
+            <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "CAN",
             country: "Canada",
           ),
         ];
 
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle 1",
             countries: bundleCountries,
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "1.0.0",
           globalBundles: globalBundles,
         );
@@ -470,21 +471,21 @@ void main() {
 
       test("should save complete home data with all entities", () async {
         // Arrange
-        final List<RegionsResponseModel> regions = <RegionsResponseModel>[
-          RegionsResponseModel(regionName: "Europe", regionCode: "EU"),
+        final List<RegionsResponseModelDto> regions = <RegionsResponseModelDto>[
+          RegionsResponseModelDto(regionName: "Europe", regionCode: "EU"),
         ];
 
-        final List<CountryResponseModel> countries = <CountryResponseModel>[
-          CountryResponseModel(iso3Code: "USA", country: "United States"),
+        final List<CountryResponseModelDto> countries = <CountryResponseModelDto>[
+          CountryResponseModelDto(iso3Code: "USA", country: "United States"),
         ];
 
-        final BundleCategoryResponseModel category =
-            BundleCategoryResponseModel(
+        final BundleCategoryResponseModelDto category =
+            BundleCategoryResponseModelDto(
           title: "Premium",
         );
 
-        final List<BundleResponseModel> globalBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> globalBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "GLOBAL-1",
             bundleName: "Global Bundle",
             bundleCategory: category,
@@ -492,14 +493,14 @@ void main() {
           ),
         ];
 
-        final List<BundleResponseModel> cruiseBundles = <BundleResponseModel>[
-          BundleResponseModel(
+        final List<BundleResponseModelDto> cruiseBundles = <BundleResponseModelDto>[
+          BundleResponseModelDto(
             bundleCode: "CRUISE-1",
             bundleName: "Cruise Bundle",
           ),
         ];
 
-        final HomeDataResponseModel homeData = HomeDataResponseModel(
+        final HomeDataResponseModelDto homeData = HomeDataResponseModelDto(
           version: "2.0.0",
           regions: regions,
           countries: countries,
@@ -541,14 +542,13 @@ void main() {
         when(mockQuery.findFirst()).thenReturn(null);
 
         // Act
-        final HomeDataResponseModel? result = dataSource.getHomeData();
+        final HomeDataResponseModelDto? result = dataSource.getHomeData();
 
         // Assert
         expect(result, isNull);
       });
 
-      test("should return most recent home data ordered by lastUpdated",
-          () {
+      test("should return most recent home data ordered by lastUpdated", () {
         // Arrange
         final HomeDataEntity homeDataEntity = HomeDataEntity(
           lastUpdated: DateTime.now(),
@@ -565,15 +565,17 @@ void main() {
         when(mockQuery.findFirst()).thenReturn(homeDataEntity);
 
         // Act
-        final HomeDataResponseModel? result = dataSource.getHomeData();
+        final HomeDataResponseModelDto? result = dataSource.getHomeData();
 
         // Assert
         expect(result, isNotNull);
         expect(result!.version, "1.0.0");
-        verify(mockQueryBuilder.order(
-          HomeDataEntity_.lastUpdated,
-          flags: Order.descending,
-        ),).called(1);
+        verify(
+          mockQueryBuilder.order(
+            HomeDataEntity_.lastUpdated,
+            flags: Order.descending,
+          ),
+        ).called(1);
       });
 
       test("should convert home data entity to response model", () {
@@ -593,7 +595,7 @@ void main() {
         when(mockQuery.findFirst()).thenReturn(homeDataEntity);
 
         // Act
-        final HomeDataResponseModel? result = dataSource.getHomeData();
+        final HomeDataResponseModelDto? result = dataSource.getHomeData();
 
         // Assert
         expect(result, isNotNull);

@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/regions_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -10,7 +10,7 @@ class RegionEntity {
     required this.regionName,
   });
 
-  factory RegionEntity.fromModel(RegionsResponseModel model) {
+  factory RegionEntity.fromModel(RegionsResponseModelDto model) {
     return RegionEntity(
       icon: model.icon,
       zoneName: model.zoneName,
@@ -26,8 +26,8 @@ class RegionEntity {
   final String? regionCode;
   final String? regionName;
 
-  RegionsResponseModel toModel() {
-    return RegionsResponseModel(
+  RegionsResponseModelDto toModel() {
+    return RegionsResponseModelDto(
       icon: icon,
       zoneName: zoneName,
       regionCode: regionCode,

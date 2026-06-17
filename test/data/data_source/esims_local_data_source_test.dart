@@ -4,11 +4,11 @@ import "package:esim_open_source/data/data_source/esims_local_data_source.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_bundle_category_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_country_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/country_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model_dto.dart";
 import "package:esim_open_source/objectbox.g.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/annotations.dart";
@@ -110,9 +110,10 @@ void main() {
     mockBundleCategoryBox = MockEsimBundleCategoryBox();
 
     // Register boxes with the fake store
-    fakeStore..registerBox<EsimEntity>(mockEsimBox)
-    ..registerBox<EsimCountryEntity>(mockCountryBox)
-    ..registerBox<EsimBundleCategoryEntity>(mockBundleCategoryBox);
+    fakeStore
+      ..registerBox<EsimEntity>(mockEsimBox)
+      ..registerBox<EsimCountryEntity>(mockCountryBox)
+      ..registerBox<EsimBundleCategoryEntity>(mockBundleCategoryBox);
 
     dataSource = EsimsLocalDataSource(fakeStore);
   });
@@ -130,9 +131,9 @@ void main() {
 
       test("should clear cache before saving new data", () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -156,9 +157,9 @@ void main() {
 
       test("should save esim data without related entities", () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -181,13 +182,14 @@ void main() {
 
       test("should save esim data with bundle category", () async {
         // Arrange
-        final BundleCategoryResponseModel category = BundleCategoryResponseModel(
+        final BundleCategoryResponseModelDto category =
+            BundleCategoryResponseModelDto(
           title: "Global",
         );
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -209,20 +211,20 @@ void main() {
 
       test("should save esim data with countries", () async {
         // Arrange
-        final List<CountryResponseModel> countries = <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> countries = <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
-          CountryResponseModel(
+          CountryResponseModelDto(
             iso3Code: "CAN",
             country: "Canada",
           ),
         ];
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -244,16 +246,16 @@ void main() {
 
       test("should save esim data with transaction history", () async {
         // Arrange
-        final List<TransactionHistoryResponseModel> transactions =
-            <TransactionHistoryResponseModel>[
-          TransactionHistoryResponseModel(
+        final List<TransactionHistoryResponseModelDto> transactions =
+            <TransactionHistoryResponseModelDto>[
+          TransactionHistoryResponseModelDto(
             userOrderId: "order-1",
           ),
         ];
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -273,32 +275,31 @@ void main() {
         verify(mockEsimBox.put(any)).called(1);
       });
 
-      test(
-          "should save transaction history with bundle and bundle category",
+      test("should save transaction history with bundle and bundle category",
           () async {
         // Arrange
-        final BundleCategoryResponseModel bundleCategory =
-            BundleCategoryResponseModel(
+        final BundleCategoryResponseModelDto bundleCategory =
+            BundleCategoryResponseModelDto(
           title: "Premium",
         );
 
-        final BundleResponseModel bundle = BundleResponseModel(
+        final BundleResponseModelDto bundle = BundleResponseModelDto(
           bundleCode: "PREMIUM-123",
           bundleName: "Premium Bundle",
           bundleCategory: bundleCategory,
         );
 
-        final List<TransactionHistoryResponseModel> transactions =
-            <TransactionHistoryResponseModel>[
-          TransactionHistoryResponseModel(
+        final List<TransactionHistoryResponseModelDto> transactions =
+            <TransactionHistoryResponseModelDto>[
+          TransactionHistoryResponseModelDto(
             userOrderId: "order-1",
             bundle: bundle,
           ),
         ];
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -331,19 +332,19 @@ void main() {
 
       test("should handle multiple esim bundles", () async {
         // Arrange
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle 1",
           ),
-          PurchaseEsimBundleResponseModel(
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-2",
             orderStatus: "expired",
             displayTitle: "Test Bundle 2",
           ),
-          PurchaseEsimBundleResponseModel(
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-3",
             orderStatus: "active",
             displayTitle: "Test Bundle 3",
@@ -364,30 +365,30 @@ void main() {
 
       test("should reuse existing country when iso3Code matches", () async {
         // Arrange
-        final List<CountryResponseModel> countries = <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> countries = <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
         ];
 
-        final BundleResponseModel bundle = BundleResponseModel(
+        final BundleResponseModelDto bundle = BundleResponseModelDto(
           bundleCode: "BUNDLE-123",
           bundleName: "Test Bundle",
           countries: countries,
         );
 
-        final List<TransactionHistoryResponseModel> transactions =
-            <TransactionHistoryResponseModel>[
-          TransactionHistoryResponseModel(
+        final List<TransactionHistoryResponseModelDto> transactions =
+            <TransactionHistoryResponseModelDto>[
+          TransactionHistoryResponseModelDto(
             userOrderId: "order-1",
             bundle: bundle,
           ),
         ];
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -428,30 +429,30 @@ void main() {
 
       test("should create new country when iso3Code does not match", () async {
         // Arrange
-        final List<CountryResponseModel> countries = <CountryResponseModel>[
-          CountryResponseModel(
+        final List<CountryResponseModelDto> countries = <CountryResponseModelDto>[
+          CountryResponseModelDto(
             iso3Code: "USA",
             country: "United States",
           ),
         ];
 
-        final BundleResponseModel bundle = BundleResponseModel(
+        final BundleResponseModelDto bundle = BundleResponseModelDto(
           bundleCode: "BUNDLE-123",
           bundleName: "Test Bundle",
           countries: countries,
         );
 
-        final List<TransactionHistoryResponseModel> transactions =
-            <TransactionHistoryResponseModel>[
-          TransactionHistoryResponseModel(
+        final List<TransactionHistoryResponseModelDto> transactions =
+            <TransactionHistoryResponseModelDto>[
+          TransactionHistoryResponseModelDto(
             userOrderId: "order-1",
             bundle: bundle,
           ),
         ];
 
-        final List<PurchaseEsimBundleResponseModel> dataList =
-            <PurchaseEsimBundleResponseModel>[
-          PurchaseEsimBundleResponseModel(
+        final List<PurchaseEsimBundleResponseModelDto> dataList =
+            <PurchaseEsimBundleResponseModelDto>[
+          PurchaseEsimBundleResponseModelDto(
             orderNumber: "test-order-1",
             orderStatus: "active",
             displayTitle: "Test Bundle",
@@ -493,7 +494,7 @@ void main() {
         when(mockQuery.find()).thenReturn(<EsimEntity>[]);
 
         // Act
-        final List<PurchaseEsimBundleResponseModel>? result =
+        final List<PurchaseEsimBundleResponseModelDto>? result =
             dataSource.getPurchasedEsims();
 
         // Assert
@@ -524,7 +525,7 @@ void main() {
         when(mockQuery.find()).thenReturn(esimEntities);
 
         // Act
-        final List<PurchaseEsimBundleResponseModel>? result =
+        final List<PurchaseEsimBundleResponseModelDto>? result =
             dataSource.getPurchasedEsims();
 
         // Assert
@@ -554,7 +555,7 @@ void main() {
         when(mockQuery.find()).thenReturn(esimEntities);
 
         // Act
-        final List<PurchaseEsimBundleResponseModel>? result =
+        final List<PurchaseEsimBundleResponseModelDto>? result =
             dataSource.getPurchasedEsims();
 
         // Assert

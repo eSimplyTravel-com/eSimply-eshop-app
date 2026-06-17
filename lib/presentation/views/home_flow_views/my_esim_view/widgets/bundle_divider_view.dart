@@ -1,3 +1,4 @@
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
 import "package:flutter/foundation.dart";
@@ -26,4 +27,14 @@ class BundleDivider extends StatelessWidget {
     super.debugFillProperties(properties);
     properties.add(DoubleProperty("verticalPadding", verticalPadding));
   }
+}
+
+@AppPreview(name: "Bundle Divider")
+Widget bundleDividerPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: BundleDivider(),
+    ),
+  );
 }

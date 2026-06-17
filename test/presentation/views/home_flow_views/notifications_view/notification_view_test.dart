@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/notifications_view/notification_view.dart";
 import "package:esim_open_source/utils/date_time_utils.dart";
 import "package:flutter/foundation.dart";
@@ -72,7 +72,11 @@ Future<void> main() async {
     });
 
     testWidgets("shows unread badge when status is false", (WidgetTester tester) async {
-      final UserNotificationModel unreadModel = testNotificationModel.copyWith(status: false);
+      final UserNotificationModel unreadModel = testNotificationModel.copyWith(
+        UserNotificationModelParams(
+          metaInfo: NotificationMetaParams(status: false),
+        ),
+      );
       
       await tester.pumpWidget(
         createTestableWidget(
@@ -86,7 +90,11 @@ Future<void> main() async {
     });
 
     testWidgets("hides badge when status is true", (WidgetTester tester) async {
-      final UserNotificationModel readModel = testNotificationModel.copyWith(status: true);
+      final UserNotificationModel readModel = testNotificationModel.copyWith(
+        UserNotificationModelParams(
+          metaInfo: NotificationMetaParams(status: true),
+        ),
+      );
       
       await tester.pumpWidget(
         createTestableWidget(

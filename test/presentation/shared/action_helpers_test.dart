@@ -1,8 +1,8 @@
 import "dart:io";
 
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
 import "package:esim_open_source/domain/data/params/add_device_params.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
+import "package:esim_open_source/domain/data/response/device/device_info_response_model.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";

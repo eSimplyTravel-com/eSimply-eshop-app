@@ -1,13 +1,17 @@
 import "dart:async";
 
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/data/remote/responses/auth/auth_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/domain/data/api_auth.dart";
 import "package:esim_open_source/domain/data/params/update_user_info_params.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/resend_otp_response_model.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 
@@ -22,15 +26,17 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
     required String? phoneNumber,
     String? otpChannel,
   }) async {
-    return responseToResource(
+    return responseToResource<OtpResponseModelDto, OtpResponseModel?>(
       apiAuth.login(email: email, phoneNumber: phoneNumber, otpChannel: otpChannel),
+        (OtpResponseModelDto dto) => dto.toDomain(),
     );
   }
 
   @override
   FutureOr<Resource<EmptyResponse>> logout() async {
-    return responseToResource(
+    return responseToResource<EmptyResponseDto, EmptyResponse>(
       apiAuth.logout(),
+      (EmptyResponseDto dto) => dto.toDomain(),
     );
   }
 
@@ -38,8 +44,9 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
   FutureOr<Resource<EmptyResponse?>> resendOtp({
     required String email,
   }) async {
-    return responseToResource(
+    return responseToResource<EmptyResponseDto, EmptyResponse?>(
       apiAuth.resendOtp(email: email),
+      (EmptyResponseDto dto) => dto.toDomain(),
     );
   }
 
@@ -51,7 +58,7 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
     String providerToken = "",
     String providerType = "",
   }) async {
-    return responseToResource(
+    return responseToResource<AuthResponseModelDto, AuthResponseModel>(
       apiAuth.verifyOtp(
         email: email,
         phoneNumber: phoneNumber,
@@ -59,13 +66,15 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
         providerToken: providerToken,
         providerType: providerType,
       ),
+        (AuthResponseModelDto dto) => dto.toDomain(),
     );
   }
 
   @override
   FutureOr<Resource<EmptyResponse>> deleteAccount() async {
-    return responseToResource(
+    return responseToResource<EmptyResponseDto, EmptyResponse>(
       apiAuth.deleteAccount(),
+      (EmptyResponseDto dto) => dto.toDomain(),
     );
   }
 
@@ -73,10 +82,11 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
   FutureOr<Resource<AuthResponseModel>> updateUserInfo({
     required UpdateUserInfoRequest request,
   }) async {
-    return responseToResource(
+    return responseToResource<AuthResponseModelDto, AuthResponseModel>(
       apiAuth.updateUserInfo(
         request: request,
       ),
+        (AuthResponseModelDto dto) => dto.toDomain(),
     );
   }
 
@@ -84,12 +94,18 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
   FutureOr<Resource<AuthResponseModel>> getUserInfo({
     String? bearerToken,
   }) async {
-    return responseToResource(apiAuth.getUserInfo(bearerToken: bearerToken));
+    return responseToResource<AuthResponseModelDto, AuthResponseModel>(
+      apiAuth.getUserInfo(bearerToken: bearerToken),
+        (AuthResponseModelDto dto) => dto.toDomain(),
+    );
   }
 
   @override
   FutureOr<Resource<AuthResponseModel>> refreshTokenAPITrigger() async {
-    return responseToResource(apiAuth.refreshTokenAPITrigger());
+    return responseToResource<AuthResponseModelDto, AuthResponseModel>(
+        apiAuth.refreshTokenAPITrigger(),
+        (AuthResponseModelDto dto) => dto.toDomain(),
+    );
   }
 
   @override
@@ -121,11 +137,12 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
     required String? email,
     required String? phone,
   }) async {
-    return responseToResource(
+    return responseToResource<AuthResponseModelDto, AuthResponseModel?>(
       apiAuth.tmpLogin(
         email: email,
         phone: phone,
       ),
+        (AuthResponseModelDto dto) => dto.toDomain(),
     );
   }
 
@@ -135,12 +152,13 @@ class ApiAuthRepositoryImpl implements ApiAuthRepository {
     required String? phone,
     required String otpChannel,
   }) async {
-    return responseToResource(
+    return responseToResource<ResendOtpResponseModelDto, ResendOtpResponseModel?>(
       apiAuth.resendOtpNewChannel(
         email: email,
         phone: phone,
         otpChannel: otpChannel,
       ),
+        (ResendOtpResponseModelDto dto) => dto.toDomain(),
     );
   }
 }

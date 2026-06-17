@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/account/account_model.dart";
+import "package:esim_open_source/domain/data/response/account/account_model.dart";
 import "package:esim_open_source/presentation/reactive_service/user_service.dart";
 import "package:flutter_test/flutter_test.dart";
 

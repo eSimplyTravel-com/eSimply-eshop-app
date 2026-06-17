@@ -1,5 +1,5 @@
 
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/data_plans_view/purchase_loading_view/purchase_loading_view_model.dart";
@@ -85,7 +85,7 @@ Future<void> main() async {
     test("getOrderDetails handles success with null data", () async {
       viewModel.orderID = "test_order_123";
 
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createSuccessResource<PurchaseEsimBundleResponseModel?>(
         data: null,
       );
@@ -107,7 +107,7 @@ Future<void> main() async {
       viewModel.orderID = "test_order_123";
 
       final PurchaseEsimBundleResponseModel testData = PurchaseEsimBundleResponseModel();
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createSuccessResource<PurchaseEsimBundleResponseModel?>(
         data: testData,
       );
@@ -133,7 +133,7 @@ Future<void> main() async {
     test("getOrderDetails handles error response", () async {
       viewModel.orderID = "test_order_123";
 
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createErrorResource<PurchaseEsimBundleResponseModel?>(
         message: "API Error",
       );
@@ -153,7 +153,7 @@ Future<void> main() async {
       viewModel..orderID = null
       ..bearerToken = "test_token";
 
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createSuccessResource<PurchaseEsimBundleResponseModel?>(
         data: null, // Use null to avoid navigation
       );
@@ -176,7 +176,7 @@ Future<void> main() async {
     test("isApiFetched flag prevents duplicate API calls", () async {
       viewModel.orderID = "test_order_123";
 
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createSuccessResource<PurchaseEsimBundleResponseModel?>(
         data: null, // Use null to avoid navigation
       );
@@ -209,7 +209,7 @@ Future<void> main() async {
       viewModel..orderID = testOrderID
       ..bearerToken = testBearerToken;
 
-      final Resource<PurchaseEsimBundleResponseModel?> mockResponse = 
+      final Resource<PurchaseEsimBundleResponseModel?> mockResponse =
           TestDataFactory.createSuccessResource<PurchaseEsimBundleResponseModel?>(
         data: null, // Use null to avoid navigation issues
       );

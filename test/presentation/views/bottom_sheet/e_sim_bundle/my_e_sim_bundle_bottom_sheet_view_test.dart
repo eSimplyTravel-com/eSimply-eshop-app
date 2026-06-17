@@ -1,13 +1,17 @@
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/transaction_history_response_model.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_category_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/transaction_history_response_model.dart";
+import "package:esim_open_source/presentation/enums/view_state.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/e_sim_bundle/my_e_sim_bundle_bottom_sheet_view.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/e_sim_bundle/my_e_sim_bundle_bottom_sheet_view_model.dart";
 import "package:esim_open_source/presentation/widgets/bottom_sheet_close_button.dart";
 import "package:esim_open_source/presentation/widgets/bundle_header_view.dart";
+import "package:esim_open_source/presentation/widgets/top_up_button.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/mockito.dart";
@@ -38,6 +42,7 @@ Future<void> main() async {
 
     // Mock isBusy property
     when(mockViewModel.isBusy).thenReturn(false);
+    when(mockViewModel.isCruise()).thenReturn(false);
 
     // Mock state property
     final MyESimBundleBottomState mockState = MyESimBundleBottomState();
@@ -750,6 +755,309 @@ Future<void> main() async {
         widget.request.data?.eSimBundleResponseModel?.countries?.length,
         equals(0),
       );
+    });
+
+    testWidgets("buildConsumption with limited bundle renders card",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel mockViewModel =
+          MockMyESimBundleBottomSheetViewModel();
+      final MyESimBundleBottomState mockState = MyESimBundleBottomState()
+        ..item = PurchaseEsimBundleResponseModel(unlimited: false)
+        ..consumption = 0.5
+        ..percentageUI = "50.0 %"
+        ..consumptionText = "500 MB of 1 GB"
+        ..consumptionLoading = false
+        ..showTopUP = true;
+      when(mockViewModel.state).thenReturn(mockState);
+      when(mockViewModel.isBusy).thenReturn(false);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Material(
+            child: SizedBox(
+              width: 400,
+              height: 600,
+              child: SingleChildScrollView(
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return widget.buildConsumption(context, mockViewModel);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(Card), findsWidgets);
+      expect(find.text("50.0 %"), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("buildConsumption with unlimited bundle renders unlimited body",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel mockViewModel =
+          MockMyESimBundleBottomSheetViewModel();
+      final MyESimBundleBottomState mockState = MyESimBundleBottomState()
+        ..item = PurchaseEsimBundleResponseModel(unlimited: true)
+        ..consumptionLoading = false
+        ..showTopUP = false;
+      when(mockViewModel.state).thenReturn(mockState);
+      when(mockViewModel.isBusy).thenReturn(false);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Material(
+            child: SizedBox(
+              width: 400,
+              height: 400,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return widget.buildConsumption(context, mockViewModel);
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(Card), findsWidgets);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("buildConsumptionBodyLimited with showTopUP false hides button",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel mockViewModel =
+          MockMyESimBundleBottomSheetViewModel();
+      final MyESimBundleBottomState mockState = MyESimBundleBottomState()
+        ..consumption = 0.3
+        ..percentageUI = "30.0 %"
+        ..consumptionText = "300 MB of 1 GB"
+        ..consumptionLoading = false
+        ..showTopUP = false;
+      when(mockViewModel.state).thenReturn(mockState);
+      when(mockViewModel.isBusy).thenReturn(false);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Material(
+            child: SizedBox(
+              width: 400,
+              height: 600,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return widget.buildConsumptionBodyLimited(
+                    context,
+                    mockViewModel,
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(TopUpButton), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("buildConsumptionBodyUnlimited with showTopUP true shows button",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel mockViewModel =
+          MockMyESimBundleBottomSheetViewModel();
+      final MyESimBundleBottomState mockState = MyESimBundleBottomState()
+        ..consumptionLoading = false
+        ..showTopUP = true;
+      when(mockViewModel.state).thenReturn(mockState);
+      when(mockViewModel.isBusy).thenReturn(false);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Material(
+            child: SizedBox(
+              width: 400,
+              height: 400,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return widget.buildConsumptionBodyUnlimited(
+                    context,
+                    mockViewModel,
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(TopUpButton), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("buildConsumptionBodyUnlimited with showTopUP false hides button",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel mockViewModel =
+          MockMyESimBundleBottomSheetViewModel();
+      final MyESimBundleBottomState mockState = MyESimBundleBottomState()
+        ..consumptionLoading = false
+        ..showTopUP = false;
+      when(mockViewModel.state).thenReturn(mockState);
+      when(mockViewModel.isBusy).thenReturn(false);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Material(
+            child: SizedBox(
+              width: 400,
+              height: 400,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return widget.buildConsumptionBodyUnlimited(
+                    context,
+                    mockViewModel,
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(TopUpButton), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    test("debugFillProperties includes request and completer", () {
+      final SheetRequest<MyESimBundleRequest> req =
+          SheetRequest<MyESimBundleRequest>();
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: req,
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
+      widget.debugFillProperties(builder);
+
+      final List<DiagnosticsNode> props = builder.properties;
+      expect(props, isNotEmpty);
+      expect(props.any((DiagnosticsNode p) => p.name == "request"), isTrue);
+      expect(props.any((DiagnosticsNode p) => p.name == "completer"), isTrue);
+    });
+
+    testWidgets("buildTopHeader close button triggers completer",
+        (WidgetTester tester) async {
+      bool completerCalled = false;
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {
+          completerCalled = true;
+        },
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Builder(
+            builder: (BuildContext context) =>
+                widget.buildTopHeader(context, null),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final BottomSheetCloseButton closeButton =
+          tester.widget(find.byType(BottomSheetCloseButton));
+      closeButton.onTap();
+
+      expect(completerCalled, isTrue);
+    });
+
+    testWidgets("buildTopHeader with cruise bundle uses global flag image",
+        (WidgetTester tester) async {
+      final PurchaseEsimBundleResponseModel cruiseBundle =
+          PurchaseEsimBundleResponseModel(
+        bundleName: "Cruise Bundle",
+        bundleCategory: BundleCategoryResponseModel(type: "CRUISE"),
+      );
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(
+        createTestableWidget(
+          Builder(
+            builder: (BuildContext context) =>
+                widget.buildTopHeader(context, cruiseBundle),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(BundleHeaderView), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("renders full build method via singleton registration",
+        (WidgetTester tester) async {
+      final MockMyESimBundleBottomSheetViewModel singletonMock =
+          locator<MyESimBundleBottomSheetViewModel>()
+              as MockMyESimBundleBottomSheetViewModel;
+      final MyESimBundleBottomState testState = MyESimBundleBottomState()
+        ..consumption = 0.0
+        ..percentageUI = "0.0 %"
+        ..consumptionText = ""
+        ..consumptionLoading = false
+        ..showTopUP = false;
+      when(singletonMock.state).thenReturn(testState);
+      when(singletonMock.isBusy).thenReturn(false);
+      when(singletonMock.isCruise()).thenReturn(false);
+      when(singletonMock.viewState).thenReturn(ViewState.idle);
+      when(singletonMock.getBundleTranslation(any)).thenReturn("Primary");
+
+      locator.unregister<MyESimBundleBottomSheetViewModel>();
+      locator.registerSingleton<MyESimBundleBottomSheetViewModel>(singletonMock);
+
+      final MyESimBundleBottomSheetView widget = MyESimBundleBottomSheetView(
+        request: SheetRequest<MyESimBundleRequest>(),
+        completer: (SheetResponse<MainBottomSheetResponse> response) {},
+      );
+
+      await tester.pumpWidget(createTestableWidget(widget));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(MyESimBundleBottomSheetView), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   });
 }

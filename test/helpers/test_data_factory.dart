@@ -1,14 +1,14 @@
 import "package:esim_open_source/data/remote/api_end_point.dart";
 import "package:esim_open_source/data/remote/http_methods.dart";
-import "package:esim_open_source/data/remote/responses/app/configuration_response_model.dart";
-import "package:esim_open_source/data/remote/responses/app/currencies_response_model.dart";
-import "package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart";
-import "package:esim_open_source/data/remote/responses/app/faq_response.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/device/device_info_response_model_dto.dart";
+import "package:esim_open_source/domain/data/response/app/configuration_response_model.dart";
+import "package:esim_open_source/domain/data/response/app/currencies_response_model.dart";
+import "package:esim_open_source/domain/data/response/app/dynamic_page_response.dart";
+import "package:esim_open_source/domain/data/response/app/faq_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 
 /// Factory class for creating consistent test data across all test files.
@@ -18,18 +18,18 @@ class TestDataFactory {
   TestDataFactory._();
 
   // MARK: - Device Response Data
-  static DeviceInfoResponseModel createDeviceResponse({
+  static DeviceInfoResponseModelDto createDeviceResponse({
     String? deviceId,
     String? status,
     String? name,
   }) {
-    return DeviceInfoResponseModel();
+    return DeviceInfoResponseModelDto();
   }
 
-  static List<DeviceInfoResponseModel> createDeviceResponseList({
+  static List<DeviceInfoResponseModelDto> createDeviceResponseList({
     int count = 2,
   }) {
-    return List<DeviceInfoResponseModel>.generate(
+    return List<DeviceInfoResponseModelDto>.generate(
       count,
       (int index) => createDeviceResponse(),
     );
@@ -189,12 +189,12 @@ class TestDataFactory {
   }
 
   // MARK: - ResponseMain Data
-  static ResponseMain<T> createSuccessResponse<T>({
+  static ResponseMainDto<T> createSuccessResponse<T>({
     T? data,
     int? responseCode,
     String? message,
   }) {
-    return ResponseMain<T>.createErrorWithData(
+    return ResponseMainDto<T>.createErrorWithData(
       data: data,
       responseCode: responseCode ?? 200,
       message: message, // Don't set default message for success
@@ -202,23 +202,23 @@ class TestDataFactory {
     );
   }
 
-  static ResponseMain<T> createErrorResponse<T>({
+  static ResponseMainDto<T> createErrorResponse<T>({
     int? responseCode,
     String? errorMessage,
     T? data,
   }) {
-    return ResponseMain<T>.createError(
+    return ResponseMainDto<T>.createError(
       responseCode: responseCode ?? 400,
       errorMessage: errorMessage ?? "Test Error",
     );
   }
 
-  static ResponseMain<T> createErrorWithDataResponse<T>({
+  static ResponseMainDto<T> createErrorWithDataResponse<T>({
     required T data,
     int? responseCode,
     String? errorMessage,
   }) {
-    return ResponseMain<T>.createErrorWithData(
+    return ResponseMainDto<T>.createErrorWithData(
       responseCode: responseCode ?? 400,
       message: errorMessage ?? "Test Error with Data",
       data: data,

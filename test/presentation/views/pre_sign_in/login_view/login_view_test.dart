@@ -4,17 +4,21 @@ import "package:esim_open_source/domain/data/params/add_device_params.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
+import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/repository/services/secure_storage_service.dart";
 import "package:esim_open_source/domain/repository/services/social_login_service.dart";
 import "package:esim_open_source/domain/util/resource.dart";
+import "package:esim_open_source/presentation/enums/login_type.dart";
 import "package:esim_open_source/presentation/reactive_service/user_authentication_service.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
+import "package:esim_open_source/presentation/views/pre_sign_in/continue_with_email_view/continue_with_email_view.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view_model.dart";
 import "package:esim_open_source/presentation/widgets/main_button.dart";
 import "package:flutter/foundation.dart";
+import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -52,6 +56,7 @@ Future<void> main() async {
   late MockApiPromotionRepository mockApiPromotionRepository;
   late MockApiAppRepository mockApiAppRepository;
   late MockApiDeviceRepository mockApiDeviceRepository;
+  late MockSocialLoginService mockSocialLoginService;
 
   setUp(() async {
     await setupTest();
@@ -71,6 +76,8 @@ Future<void> main() async {
     mockApiAppRepository = locator<ApiAppRepository>() as MockApiAppRepository;
     mockApiDeviceRepository =
         locator<ApiDeviceRepository>() as MockApiDeviceRepository;
+    mockSocialLoginService =
+        locator<SocialLoginService>() as MockSocialLoginService;
 
     onViewModelReadyMock(viewName: "LoginViewPage");
     when(locator<UserAuthenticationService>().isUserLoggedIn).thenReturn(false);
@@ -78,6 +85,10 @@ Future<void> main() async {
         .thenAnswer((_) => const Stream<SocialLoginResult>.empty());
     when(locator<SocialLoginService>().logOut())
         .thenAnswer((_) async => <dynamic, dynamic>{});
+    when(mockSocialLoginService.signInWithFaceBook())
+        .thenAnswer((_) async => const Stream<SocialLoginResult>.empty());
+    when(mockSocialLoginService.signInWithGoogle())
+        .thenAnswer((_) async => const Stream<SocialLoginResult>.empty());
     when(mockNavigationService.back()).thenReturn(true);
     when(
       mockNavigationService.pushNamedAndRemoveUntil(
@@ -304,6 +315,133 @@ Future<void> main() async {
     await tester.pumpAndSettle();
 
     expect(find.textContaining("terms"), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets("tapping facebook button triggers facebook social sign in",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(const LoginView()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(MainButton).first);
+    await tester.pumpAndSettle();
+
+    verify(mockSocialLoginService.signInWithFaceBook()).called(1);
+  });
+
+  testWidgets("tapping google button triggers google social sign in",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(const LoginView()),
+    );
+    await tester.pumpAndSettle();
+
+    // Google is second MainButton on non-iOS (Facebook, Google, Email)
+    await tester.tap(find.byType(MainButton).at(1));
+    await tester.pumpAndSettle();
+
+    verify(mockSocialLoginService.signInWithGoogle()).called(1);
+  });
+
+  testWidgets("tapping email button navigates to sign in page",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(const LoginView()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(MainButton).last);
+    await tester.pumpAndSettle();
+
+    verify(
+      mockNavigationService.navigateTo(
+        ContinueWithEmailView.routeName,
+        arguments: anyNamed("arguments"),
+      ),
+    ).called(1);
+  });
+
+  testWidgets("terms tappable text recognizer triggers on tap",
+      (WidgetTester tester) async {
+    late TapGestureRecognizer capturedRecognizer;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        Builder(
+          builder: (BuildContext context) {
+            const LoginView view = LoginView();
+            final Widget widget =
+                view.termsAndConditionTappableWidget(context);
+            // Text.rich returns a Text widget with a textSpan property
+            final Text textWidget = widget as Text;
+            final TextSpan rootSpan = textWidget.textSpan! as TextSpan;
+            final TextSpan tappableSpan =
+                rootSpan.children!.first as TextSpan;
+            capturedRecognizer =
+                tappableSpan.recognizer! as TapGestureRecognizer;
+            return widget;
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    capturedRecognizer.onTap!();
+    await tester.pump();
+
+    expect(find.byType(Text), findsWidgets);
+  });
+
+  testWidgets("getContinueWithText returns phone text for phoneNumber",
+      (WidgetTester tester) async {
+    when(locator<AppConfigurationService>().getLoginType)
+        .thenReturn(LoginType.phoneNumber);
+
+    const LoginView view = LoginView();
+    final String text = view.getContinueWithText();
+    expect(text, isNotEmpty);
+  });
+
+  testWidgets("getContinueWithText returns phone text for emailAndPhone",
+      (WidgetTester tester) async {
+    when(locator<AppConfigurationService>().getLoginType)
+        .thenReturn(LoginType.emailAndPhone);
+
+    const LoginView view = LoginView();
+    final String text = view.getContinueWithText();
+    expect(text, isNotEmpty);
+  });
+
+  testWidgets(
+      "getContinueWithText returns phone text for emailAndPhoneAndEmailVerification",
+      (WidgetTester tester) async {
+    when(locator<AppConfigurationService>().getLoginType)
+        .thenReturn(LoginType.emailAndPhoneAndEmailVerification);
+
+    const LoginView view = LoginView();
+    final String text = view.getContinueWithText();
+    expect(text, isNotEmpty);
+  });
+
+  testWidgets(
+      "getContinueWithText returns phone text for emailAndPhoneAndBothVerification",
+      (WidgetTester tester) async {
+    when(locator<AppConfigurationService>().getLoginType)
+        .thenReturn(LoginType.emailAndPhoneAndBothVerification);
+
+    const LoginView view = LoginView();
+    final String text = view.getContinueWithText();
+    expect(text, isNotEmpty);
   });
 
   tearDown(() async {

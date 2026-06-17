@@ -1,6 +1,6 @@
 import "package:easy_localization/easy_localization.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/notifications_view/notifications_view.dart";

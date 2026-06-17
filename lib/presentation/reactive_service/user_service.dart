@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/account/account_model.dart";
+import "package:esim_open_source/domain/data/response/account/account_model.dart";
 import "package:stacked/stacked.dart";
 
 class UserService with ListenableServiceMixin {

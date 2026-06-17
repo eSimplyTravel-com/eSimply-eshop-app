@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/promotion/reward_history_response_model.dart";
+import "package:esim_open_source/domain/data/response/promotion/reward_history_response_model.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_sections/rewards_history_view/rewards_history_view.dart";

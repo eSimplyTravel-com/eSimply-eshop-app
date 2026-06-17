@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_category_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -9,7 +9,7 @@ class BundleCategoryEntity {
     required this.title,
   });
 
-  factory BundleCategoryEntity.fromModel(BundleCategoryResponseModel model) {
+  factory BundleCategoryEntity.fromModel(BundleCategoryResponseModelDto model) {
     return BundleCategoryEntity(
       type: model.type,
       code: model.code,
@@ -23,8 +23,8 @@ class BundleCategoryEntity {
   final String? code;
   final String? title;
 
-  BundleCategoryResponseModel toModel() {
-    return BundleCategoryResponseModel(
+  BundleCategoryResponseModelDto toModel() {
+    return BundleCategoryResponseModelDto(
       type: type,
       code: code,
       title: title,

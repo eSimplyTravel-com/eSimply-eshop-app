@@ -1,9 +1,8 @@
-
-import "package:esim_open_source/data/remote/responses/app/banner_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/app/banner_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/regions_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/reactive_service/bundles_data_service.dart";
@@ -325,7 +324,7 @@ void main() async {
         BannerResponseModel(title: "Test Banner", description: "Test Description"),
       ];
       
-      final Resource<List<BannerResponseModel>?> resource = 
+      final Resource<List<BannerResponseModel>?> resource =
           Resource<List<BannerResponseModel>?>.success(banners, message: "Success");
       
       vm.processBanners(resource);
@@ -337,7 +336,7 @@ void main() async {
     test("processBanners with error response", () {
       final DataPlansViewModel vm = DataPlansViewModel();
       
-      final Resource<List<BannerResponseModel>?> resource = 
+      final Resource<List<BannerResponseModel>?> resource =
           Resource<List<BannerResponseModel>?>.error("Error");
       
       vm.processBanners(resource);

@@ -1,6 +1,6 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
 
 class Resource<T> {
   Resource({required this.resourceType, this.data, this.message, this.error});
@@ -41,18 +41,21 @@ class GeneralError {
 
 enum ResourceType { success, error, loading }
 
-FutureOr<Resource<T>> responseToResource<T>(FutureOr<dynamic> request) async {
+FutureOr<Resource<T>> responseToResource<TDto, T>(
+  FutureOr<dynamic> request,
+  T Function(TDto dto) mapper,
+) async {
   try {
-    ResponseMain<T> response = await request;
+    ResponseMainDto<dynamic> response = await request;
     if (response.statusCode == 200) {
+      TDto? dto = response.data as TDto?;
       return Resource<T>.success(
-        response.dataOfType,
+        dto == null ? null as T : mapper(dto),
         message: response.message,
       );
     }
     return Resource<T>.error(
       response.message ?? response.title ?? "",
-      data: response.data,
       error: GeneralError(
         message: response.message ?? response.title ?? "",
         errorCode: response.responseCode,
@@ -82,7 +85,7 @@ FutureOr<Resource<T>> responseToResource<T>(FutureOr<dynamic> request) async {
       error: GeneralError(
         message: e.toString(),
         errorCode: -1,
-        exception: e as Exception?,
+        exception: e,
       ),
     );
   } on Object catch (e) {

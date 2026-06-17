@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:esim_open_source/app/app.locator.dart";
-import "package:esim_open_source/data/remote/responses/promotion/reward_history_response_model.dart";
+import "package:esim_open_source/domain/data/response/promotion/reward_history_response_model.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";
 import "package:esim_open_source/domain/use_case/promotion/get_rewards_history_use_case.dart";
@@ -79,16 +79,16 @@ class RewardsHistoryViewModel extends BaseModel {
 
     applyShimmer = true;
 
-    Resource<List<RewardHistoryResponseModel>> response =
+    Resource<List<RewardHistoryResponseModel>?> response =
         await getRewardsHistoryUseCase.execute(NoParams());
 
     handleResponse(
       response,
-      onSuccess: (Resource<List<RewardHistoryResponseModel>> result) async {
+      onSuccess: (Resource<List<RewardHistoryResponseModel>?> result) async {
         _rewardsHistory = result.data ?? <RewardHistoryResponseModel>[];
         notifyListeners();
       },
-      onFailure: (Resource<List<RewardHistoryResponseModel>> result) async {
+      onFailure: (Resource<List<RewardHistoryResponseModel>?> result) async {
         handleError(response);
         _rewardsHistory = <RewardHistoryResponseModel>[];
         notifyListeners();

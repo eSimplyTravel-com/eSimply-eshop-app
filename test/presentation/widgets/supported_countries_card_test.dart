@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/widgets/country_flag_image.dart";
 import "package:esim_open_source/presentation/widgets/info_row_view.dart";
 import "package:esim_open_source/presentation/widgets/supported_countries_card.dart";

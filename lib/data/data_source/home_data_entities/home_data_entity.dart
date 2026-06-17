@@ -2,7 +2,7 @@ import "package:esim_open_source/data/data_source/home_data_entities/bundle_enti
 import "package:esim_open_source/data/data_source/home_data_entities/bundle_type.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/country_entity.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/region_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -30,8 +30,8 @@ class HomeDataEntity {
   @Backlink("homeData")
   final ToMany<BundleEntity> bundles = ToMany<BundleEntity>();
 
-  HomeDataResponseModel toModel() {
-    return HomeDataResponseModel(
+  HomeDataResponseModelDto toModel() {
+    return HomeDataResponseModelDto(
       version: version,
       regions: regions.map((RegionEntity r) => r.toModel()).toList(),
       countries: countries.map((CountryEntity c) => c.toModel()).toList(),

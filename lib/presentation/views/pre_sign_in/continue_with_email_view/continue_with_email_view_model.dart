@@ -1,7 +1,7 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/responses/auth/otp_response_model.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/auth/otp_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/use_case/auth/login_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -185,26 +185,76 @@ class ContinueWithEmailViewModel extends BaseModel {
   //#endregion
 
   //#region Apis
+  String? _determineOtpChannel() {
+    switch (_localLoginType) {
+      case LoginType.emailAndPhoneAndEmailVerification:
+        return "EMAIL";
+      case LoginType.emailAndPhoneAndBothVerification:
+        return _state.selectedOtpChannel;
+      default:
+        return null;
+    }
+  }
+
+  String? _getPhoneNumber() {
+    return _state.isValidPhoneNumber
+        ? "+${phoneController.value?.countryCode}${phoneController.value?.nsn}"
+        : null;
+  }
+
+  String? _getEmail() {
+    return _state.emailErrorMessage == "" ? _state.emailController.text : null;
+  }
+
+  VerifyLoginViewArgs _buildVerifyLoginArgs(OtpResponseModel? otpData) {
+    return VerifyLoginViewArgs(
+      redirection: redirection,
+      phoneNumber: _getPhoneNumber(),
+      email: _getEmail(),
+      otpExpiration: otpData?.otpExpiration,
+      localLoginType: _localLoginType,
+      otpChannel: _state.selectedOtpChannel,
+    );
+  }
+
+  Future<void> _handleLoginSuccess(Resource<OtpResponseModel?> response) async {
+    final VerifyLoginViewArgs args = _buildVerifyLoginArgs(response.data);
+    debugPrint("args: $args");
+    navigationService.navigateTo(
+      VerifyLoginView.routeName,
+      arguments: args,
+    );
+  }
+
+  Future<void> _handleRateLimitError(Resource<OtpResponseModel?> response) async {
+    if (response.message != null && response.message!.isNotEmpty) {
+      DisplayMessageHelper.toast(response.message!);
+    }
+    final VerifyLoginViewArgs args = _buildVerifyLoginArgs(response.data);
+    navigationService.navigateTo(VerifyLoginView.routeName, arguments: args);
+  }
+
+  Future<void> _handleOtpSendError(Resource<OtpResponseModel?> response) async {
+    if (_localLoginType == LoginType.emailAndPhoneAndBothVerification) {
+      _state.otpSendErrorMessage = response.message ??
+          (_state.selectedOtpChannel == "SMS"
+              ? LocaleKeys.continueWithEmail_otpFailedViaSms.tr()
+              : LocaleKeys.continueWithEmail_otpFailedViaEmail.tr());
+      notifyListeners();
+      return;
+    }
+    handleError(response);
+  }
+
   Future<void> _loginWithEmail() async {
     setViewState(ViewState.busy);
 
-    String? otpChannel;
-    switch (_localLoginType) {
-      case LoginType.emailAndPhoneAndEmailVerification:
-        otpChannel = "EMAIL";
-      case LoginType.emailAndPhoneAndBothVerification:
-        otpChannel = _state.selectedOtpChannel;
-      default:
-        otpChannel = null;
-    }
+    String? otpChannel = _determineOtpChannel();
 
     Resource<OtpResponseModel?> loginResponse = await loginUseCase.execute(
       LoginParams(
-        phoneNumber: _state.isValidPhoneNumber
-            ? "+${phoneController.value?.countryCode}${phoneController.value?.nsn}"
-            : null,
-        email:
-            _state.emailErrorMessage == "" ? _state.emailController.text : null,
+        phoneNumber: _getPhoneNumber(),
+        email: _getEmail(),
         otpChannel: otpChannel,
       ),
     );
@@ -212,57 +262,14 @@ class ContinueWithEmailViewModel extends BaseModel {
     await handleResponse(
       loginResponse,
       onSuccess: (Resource<OtpResponseModel?> response) async {
-        final VerifyLoginViewArgs args = VerifyLoginViewArgs(
-          redirection: redirection,
-          phoneNumber: _state.isValidPhoneNumber
-              ? "+${phoneController.value?.countryCode}${phoneController.value?.nsn}"
-              : null,
-          email: _state.emailErrorMessage == ""
-              ? _state.emailController.text
-              : null,
-          otpExpiration: response.data?.otpExpiration,
-          localLoginType: _localLoginType,
-          otpChannel: _state.selectedOtpChannel,
-        );
-        debugPrint("args: $args");
-
-        navigationService.navigateTo(
-          VerifyLoginView.routeName,
-          arguments: args,
-        );
+        await _handleLoginSuccess(response);
       },
       onFailure: (Resource<OtpResponseModel?> response) async {
         if (response.error?.errorCode == 429) {
-          if (response.message != null && response.message!.isNotEmpty) {
-            DisplayMessageHelper.toast(response.message!);
-          }
-
-          final VerifyLoginViewArgs args = VerifyLoginViewArgs(
-            redirection: redirection,
-            phoneNumber: _state.isValidPhoneNumber
-                ? "+${phoneController.value?.countryCode}${phoneController.value?.nsn}"
-                : null,
-            email: _state.emailErrorMessage == ""
-                ? _state.emailController.text
-                : null,
-            otpExpiration: response.data?.otpExpiration,
-            localLoginType: _localLoginType,
-            otpChannel: _state.selectedOtpChannel,
-          );
-          navigationService.navigateTo(VerifyLoginView.routeName, arguments: args);
+          await _handleRateLimitError(response);
           return;
         }
-
-        if (_localLoginType == LoginType.emailAndPhoneAndBothVerification) {
-          _state.otpSendErrorMessage = response.message ??
-              (_state.selectedOtpChannel == "SMS"
-                  ? LocaleKeys.continueWithEmail_otpFailedViaSms.tr()
-                  : LocaleKeys.continueWithEmail_otpFailedViaEmail.tr());
-          notifyListeners();
-          return;
-        }
-
-        handleError(response);
+        await _handleOtpSendError(response);
       },
     );
 

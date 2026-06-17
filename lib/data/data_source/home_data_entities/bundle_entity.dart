@@ -2,7 +2,7 @@ import "package:esim_open_source/data/data_source/home_data_entities/bundle_cate
 import "package:esim_open_source/data/data_source/home_data_entities/bundle_type.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/country_entity.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/home_data_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -27,7 +27,7 @@ class BundleEntity {
     required this.icon,
   });
 
-  factory BundleEntity.fromModel(BundleResponseModel model, BundleType type) {
+  factory BundleEntity.fromModel(BundleResponseModelDto model, BundleType type) {
     return BundleEntity(
       icon: model.icon,
       displayTitle: model.displayTitle,
@@ -80,8 +80,8 @@ class BundleEntity {
 
   set bundleType(BundleType type) => bundleTypeValue = type.index;
 
-  BundleResponseModel toModel() {
-    return BundleResponseModel(
+  BundleResponseModelDto toModel() {
+    return BundleResponseModelDto(
       icon: icon,
       displayTitle: displayTitle,
       displaySubtitle: displaySubtitle,

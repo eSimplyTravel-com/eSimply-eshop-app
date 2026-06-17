@@ -1,7 +1,7 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
 import "package:esim_open_source/data/remote/apis/user_apis/apis_user_impl.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
 import "package:esim_open_source/domain/data/api_user.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -12,7 +12,7 @@ import "../../../../locator_test.dart";
 import "../../../../locator_test.mocks.dart";
 
 // Import nested classes from related_search
-export "package:esim_open_source/data/remote/request/related_search.dart"
+export "package:esim_open_source/domain/data/request/related_search.dart"
     show CountriesRequestModel, RegionRequestModel;
 
 void main() {

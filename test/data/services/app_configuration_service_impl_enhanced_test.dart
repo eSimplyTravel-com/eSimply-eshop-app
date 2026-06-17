@@ -1,7 +1,7 @@
 // app_configuration_service_impl_enhanced_test.dart
 
-import "package:esim_open_source/data/remote/responses/app/configuration_response_model.dart";
 import "package:esim_open_source/data/services/app_configuration_service_impl.dart";
+import "package:esim_open_source/domain/data/response/app/configuration_response_model.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";

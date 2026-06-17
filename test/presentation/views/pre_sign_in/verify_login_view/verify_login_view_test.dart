@@ -1,4 +1,8 @@
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
+import "package:esim_open_source/domain/util/resource.dart";
+import "package:esim_open_source/presentation/enums/login_type.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view_model.dart";
@@ -38,6 +42,7 @@ Future<void> main() async {
 
   late NavigationService mockNavigationService;
   late MockLocalStorageService mockLocalStorageService;
+  late MockApiAuthRepository mockApiAuthRepository;
 
   setUp(() async {
     await setupTest();
@@ -48,6 +53,8 @@ Future<void> main() async {
         locator<NavigationService>() as MockNavigationService;
     mockLocalStorageService =
         locator<LocalStorageService>() as MockLocalStorageService;
+    mockApiAuthRepository =
+        locator<ApiAuthRepository>() as MockApiAuthRepository;
 
     onViewModelReadyMock(viewName: "VerifyLoginView");
     when(mockNavigationService.back()).thenReturn(true);
@@ -262,6 +269,216 @@ Future<void> main() async {
 
     expect(usernameProp.value, "test@example.com");
     expect(redirectionProp.value, isNotNull);
+  });
+
+  test("VerifyLoginViewArgs creates instance with all fields", () {
+    final InAppRedirection redirection = InAppRedirection.cashback();
+    final VerifyLoginViewArgs args = VerifyLoginViewArgs(
+      email: "test@example.com",
+      phoneNumber: "1234567890",
+      otpExpiration: 300,
+      redirection: redirection,
+      localLoginType: LoginType.email,
+      otpChannel: "EMAIL",
+    );
+    expect(args.email, "test@example.com");
+    expect(args.phoneNumber, "1234567890");
+    expect(args.otpExpiration, 300);
+    expect(args.redirection, isNotNull);
+    expect(args.localLoginType, LoginType.email);
+    expect(args.otpChannel, "EMAIL");
+  });
+
+  testWidgets("renders with phoneNumber login type",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: null,
+          phoneNumber: "1234567890",
+          localLoginType: LoginType.phoneNumber,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+    expect(find.byType(OtpTextField), findsOneWidget);
+    expect(find.byType(MainButton), findsOneWidget);
+  });
+
+  testWidgets("renders with emailAndPhone login type",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: "test@example.com",
+          phoneNumber: "1234567890",
+          localLoginType: LoginType.emailAndPhone,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+  });
+
+  testWidgets("renders with emailAndPhoneAndEmailVerification login type",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: "test@example.com",
+          phoneNumber: null,
+          localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+  });
+
+  testWidgets(
+      "renders emailAndPhoneAndBothVerification with EMAIL channel",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: "test@example.com",
+          phoneNumber: "1234567890",
+          localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          otpChannel: "EMAIL",
+        ),
+      ),
+    );
+    await tester.pump();
+    // Fire the 15-second channel-switch timer to avoid pending timer errors
+    await tester.pump(const Duration(seconds: 16));
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+    expect(find.byType(OtpTextField), findsOneWidget);
+  });
+
+  testWidgets(
+      "renders emailAndPhoneAndBothVerification with SMS channel",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: "test@example.com",
+          phoneNumber: "1234567890",
+          localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          otpChannel: "SMS",
+        ),
+      ),
+    );
+    await tester.pump();
+    // Fire the 15-second channel-switch timer to avoid pending timer errors
+    await tester.pump(const Duration(seconds: 16));
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+  });
+
+  testWidgets(
+      "renders canSwitchOtpChannel section after 15s timer fires",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(
+          email: "test@example.com",
+          phoneNumber: "1234567890",
+          localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          otpChannel: "EMAIL",
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 16));
+
+    expect(find.byType(VerifyLoginView), findsOneWidget);
+  });
+
+  testWidgets("renders OTP field in error state when verifyOtp fails",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    when(
+      mockApiAuthRepository.verifyOtp(
+        email: anyNamed("email"),
+        pinCode: anyNamed("pinCode"),
+      ),
+    ).thenAnswer(
+      (_) async => Resource<AuthResponseModel>.error(
+        "Invalid OTP",
+        error: GeneralError(message: "Invalid OTP", errorCode: 400),
+      ),
+    );
+
+    final VerifyLoginViewModel vm = locator<VerifyLoginViewModel>();
+    await vm.otpFieldSubmitted("123456");
+    await vm.verifyButtonTapped();
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(email: "test@example.com", phoneNumber: null),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(OtpTextField), findsOneWidget);
+  });
+
+  testWidgets("verify button tap when enabled covers onPressed callback",
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+
+    when(
+      mockApiAuthRepository.verifyOtp(
+        email: anyNamed("email"),
+        pinCode: anyNamed("pinCode"),
+      ),
+    ).thenAnswer(
+      (_) async => Resource<AuthResponseModel>.error(
+        "Error",
+        error: GeneralError(message: "Error", errorCode: 400),
+      ),
+    );
+
+    final VerifyLoginViewModel vm = locator<VerifyLoginViewModel>();
+    await vm.otpFieldSubmitted("123456");
+
+    await tester.pumpWidget(
+      createTestableWidget(
+        const VerifyLoginView(email: "test@example.com", phoneNumber: null),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(MainButton).first);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
   });
 
   tearDown(() async {

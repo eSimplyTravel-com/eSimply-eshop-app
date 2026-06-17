@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/order_history_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/order_history_response_model.dart";
 import "package:esim_open_source/presentation/views/base/base_model.dart";
 import "package:esim_open_source/utils/file_helper.dart";
 import "package:flutter/cupertino.dart";

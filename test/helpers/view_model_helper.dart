@@ -1,7 +1,7 @@
-import "package:esim_open_source/data/remote/responses/app/banner_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/domain/data/response/app/banner_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/user/user_notification_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_bundles_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
@@ -118,7 +118,7 @@ void onViewModelReadyMock({
     <BundleResponseModel>[],
     message: "Success",
   ));
-  
+
   when(mockApiBundlesRepository.getBundlesByRegion(
     regionCode: anyNamed("regionCode"),
   )).thenAnswer((_) async => Resource<List<BundleResponseModel>>.success(

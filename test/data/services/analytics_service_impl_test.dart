@@ -1,10 +1,87 @@
 import "package:esim_open_source/data/services/analytics_service_impl.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:firebase_core_platform_interface/test.dart";
+import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 
+import "../../helpers/test_environment_setup.dart";
+import "../../helpers/view_helper.dart";
+
 /// Unit tests for AnalyticsServiceImpl and AnalyticEvent classes
-/// Tests event creation, analytics service interface, and event structures
-void main() {
+/// Tests event creation, analytics service interface, and event structures.
+///
+/// The service depends on Firebase Analytics (pigeon channel), Facebook App
+/// Events (method channel) and App Tracking Transparency (method channel).
+/// These platform channels are mocked below so the service methods can be
+/// exercised in a pure unit-test environment.
+Future<void> main() async {
+  await prepareTest();
+
+  const MethodChannel attChannel = MethodChannel("app_tracking_transparency");
+  const MethodChannel facebookChannel =
+      MethodChannel("flutter.oddbit.id/facebook_app_events");
+  const String fbAnalyticsLogEventChannel =
+      "dev.flutter.pigeon.firebase_analytics_platform_interface."
+      "FirebaseAnalyticsHostApi.logEvent";
+  const String fbAnalyticsSetUserIdChannel =
+      "dev.flutter.pigeon.firebase_analytics_platform_interface."
+      "FirebaseAnalyticsHostApi.setUserId";
+
+  // TrackingStatus enum index: notDetermined=0, restricted=1, denied=2,
+  // authorized=3, notSupported=4. Defaults to authorized; individual tests
+  // override as needed.
+  int trackingStatus = 3;
+
+  void mockPigeonVoidReply(String channel) {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMessageHandler(
+      channel,
+      (ByteData? message) async =>
+          const StandardMessageCodec().encodeMessage(<Object?>[null]),
+    );
+  }
+
+  setUp(() async {
+    await setupTest();
+    await TestEnvironmentSetup.initializeTestEnvironment();
+    // setupTest() fires the legacy initFirebaseMock() without awaiting it and it
+    // fails silently against the pigeon-based firebase_core. Register the proper
+    // pigeon mock so the default Firebase app initializes for
+    // FirebaseAnalytics.instance.
+    setupFirebaseCoreMocks();
+    await Firebase.initializeApp();
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      ..setMockMethodCallHandler(attChannel, (MethodCall call) async {
+        switch (call.method) {
+          case "trackingAuthorizationStatus":
+          case "requestTrackingAuthorization":
+            return trackingStatus;
+          default:
+            return null;
+        }
+      })
+      ..setMockMethodCallHandler(
+          facebookChannel, (MethodCall call) async => null,);
+
+    mockPigeonVoidReply(fbAnalyticsLogEventChannel);
+    mockPigeonVoidReply(fbAnalyticsSetUserIdChannel);
+  });
+
+  tearDown(() async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      ..setMockMethodCallHandler(attChannel, null)
+      ..setMockMethodCallHandler(facebookChannel, null)
+      ..setMockMessageHandler(fbAnalyticsLogEventChannel, null)
+      ..setMockMessageHandler(fbAnalyticsSetUserIdChannel, null);
+    await tearDownTest();
+  });
+
+  tearDownAll(() async {
+    await tearDownAllTest();
+  });
+
   group("AnalyticEvent Tests", () {
     test("AnalyticsEvent can be created with event name", () {
       final AnalyticsEvent event = AnalyticsEvent("test_event");
@@ -145,15 +222,194 @@ void main() {
     });
   });
 
+  group("BundleDetailEvent / CreateOrderEvent / StripePaymentEvent Tests", () {
+    test("bundleDetail event is created with correct parameters", () {
+      final AnalyticEvent event = AnalyticEvent.bundleDetail(
+        bundleCode: "code",
+        bundleName: "name",
+        user: "user",
+      );
+
+      expect(event, isA<BundleDetailEvent>());
+      expect(event.eventName, "bundle_detail");
+      expect(event.parameters?["bundleCode"], "code");
+      expect(event.parameters?["bundleName"], "name");
+      expect(event.parameters?["user"], "user");
+    });
+
+    test("createOrder event is created with correct parameters", () {
+      final AnalyticEvent event = AnalyticEvent.createOrder(
+        bundleCode: "code",
+        bundleName: "name",
+        user: "user",
+        orderId: "order",
+        method: "Card",
+      );
+
+      expect(event, isA<CreateOrderEvent>());
+      expect(event.eventName, "create_order");
+      expect(event.parameters?["orderId"], "order");
+      expect(event.parameters?["method"], "Card");
+    });
+
+    test("stripePay event is created with Card method", () {
+      final AnalyticEvent event = AnalyticEvent.stripePay(
+        bundleCode: "code",
+        bundleName: "name",
+        user: "user",
+        orderId: "order",
+      );
+
+      expect(event, isA<StripePaymentEvent>());
+      expect(event.eventName, "stripe_pay");
+      expect(event.parameters?["method"], "Card");
+    });
+
+    test("stripePaymentSuccessful event is created correctly", () {
+      final AnalyticEvent event = AnalyticEvent.stripePaymentSuccessful(
+        bundleCode: "code",
+        bundleName: "name",
+        user: "user",
+        orderId: "order",
+      );
+
+      expect(event.eventName, "stripe_payment_successful");
+      expect(event.parameters?["method"], "Card");
+    });
+
+    test("walletPaymentSuccessful event is created with Wallet method", () {
+      final AnalyticEvent event = AnalyticEvent.walletPaymentSuccessful(
+        bundleCode: "code",
+        bundleName: "name",
+        user: "user",
+        orderId: "order",
+      );
+
+      expect(event.eventName, "wallet_payment_successful");
+      expect(event.parameters?["method"], "Wallet");
+    });
+  });
+
+  group("AnalyticsServiceImpl Tests", () {
+    test("singleton instance is created and reused", () {
+      final AnalyticsServiceImpl instance1 = AnalyticsServiceImpl.instance;
+      final AnalyticsServiceImpl instance2 = AnalyticsServiceImpl.instance;
+
+      expect(instance1, isNotNull);
+      expect(instance1, same(instance2));
+    });
+
+    test("instance implements AnalyticsService interface", () {
+      final AnalyticsServiceImpl instance = AnalyticsServiceImpl.instance;
+
+      expect(instance, isA<AnalyticsService>());
+    });
+
+    test("configure completes when tracking is already authorized", () async {
+      trackingStatus = 3; // authorized
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      await expectLater(service.configure(), completes);
+    });
+
+    test("configure requests authorization when not determined", () async {
+      trackingStatus = 0; // notDetermined -> requestTrackingAuthorization
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      await expectLater(
+        service.configure(),
+        completes,
+      );
+    });
+
+    test("configure with analytics flags disabled completes", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      await expectLater(
+        service.configure(
+          firebaseAnalytics: false,
+          facebookAnalytics: false,
+        ),
+        completes,
+      );
+    });
+
+    test("logEvent logs to both providers when enabled", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+      await service.configure();
+
+      await expectLater(
+        service.logEvent(event: AnalyticEvent.appCheckApp()),
+        completes,
+      );
+    });
+
+    test("logEvent skips providers when disabled", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+      await service.configure(
+        firebaseAnalytics: false,
+        facebookAnalytics: false,
+      );
+
+      await expectLater(
+        service.logEvent(event: AnalyticEvent.contactUsClicked()),
+        completes,
+      );
+    });
+
+    test("setUserId sets the firebase user id when enabled", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+      await service.configure();
+
+      await expectLater(service.setUserId("hashed_email"), completes);
+    });
+
+    test("setUserId accepts null", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+      await service.configure();
+
+      await expectLater(service.setUserId(null), completes);
+    });
+
+    test("setUserId does nothing when firebase disabled", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+      await service.configure(
+        firebaseAnalytics: false,
+        facebookAnalytics: false,
+      );
+
+      await expectLater(service.setUserId("hashed_email"), completes);
+    });
+
+    test("logFireBaseEvent completes for a parameterized event", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      await expectLater(
+        service.logFireBaseEvent(
+          event: AnalyticEvent.loginSuccess(utm: "x", platform: "ios"),
+        ),
+        completes,
+      );
+    });
+
+    test("logFaceBookEvent completes for a parameterized event", () async {
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      await expectLater(
+        service.logFaceBookEvent(
+          event: AnalyticEvent.buySuccess(
+            utm: "x",
+            platform: "ios",
+            amount: "10",
+            currency: "USD",
+          ),
+        ),
+        completes,
+      );
+    });
+  });
+
   group("AnalyticsService Interface Tests", () {
-    test("AnalyticsService interface is properly defined", () {
-      expect(AnalyticsService, isNotNull);
-    });
-
-    test("AnalyticEvent is sealed class", () {
-      expect(AnalyticEvent, isNotNull);
-    });
-
     test("different event types have different event names", () {
       final AnalyticEvent appCheck = AnalyticEvent.appCheckApp();
       final AnalyticEvent contactUs = AnalyticEvent.contactUsClicked();
@@ -165,23 +421,9 @@ void main() {
     });
 
     test("simple events have no parameters", () {
-      final AnalyticEvent event1 = AnalyticEvent.appCheckApp();
-      final AnalyticEvent event2 = AnalyticEvent.contactUsClicked();
-      final AnalyticEvent event3 = AnalyticEvent.regionsClicked();
-
-      expect(event1.parameters, isNull);
-      expect(event2.parameters, isNull);
-      expect(event3.parameters, isNull);
-    });
-
-    test("campaign events have parameters", () {
-      final AnalyticEvent event = AnalyticEvent.loginSuccess(
-        utm: "test",
-        platform: "ios",
-      );
-
-      expect(event.parameters, isNotNull);
-      expect(event.parameters, isA<Map<String, Object>>());
+      expect(AnalyticEvent.appCheckApp().parameters, isNull);
+      expect(AnalyticEvent.contactUsClicked().parameters, isNull);
+      expect(AnalyticEvent.regionsClicked().parameters, isNull);
     });
 
     test("purchase events have more parameters than campaign events", () {
@@ -189,7 +431,6 @@ void main() {
         utm: "test",
         platform: "ios",
       );
-
       final AnalyticEvent purchaseEvent = AnalyticEvent.buySuccess(
         utm: "test",
         platform: "ios",
@@ -200,23 +441,5 @@ void main() {
       expect(campaignEvent.parameters?.length, 2);
       expect(purchaseEvent.parameters?.length, 4);
     });
-  });
-
-  group("AnalyticsServiceImpl Tests", () {
-    test("AnalyticsServiceImpl class exists", () {
-      expect(AnalyticsServiceImpl, isNotNull);
-    });
-
-    // Note: The following tests cannot be run because AnalyticsServiceImpl.instance
-    // initializes Firebase Analytics and Facebook App Events which require
-    // platform-specific setup that is not available in unit tests.
-    //
-    // To test AnalyticsServiceImpl properly, the class would need to be refactored to:
-    // 1. Accept dependencies through constructor (dependency injection)
-    // 2. Use interfaces for Firebase and Facebook analytics
-    // 3. Avoid singleton pattern in favor of factory pattern
-    //
-    // Current coverage focuses on AnalyticEvent classes which contain the business logic
-    // for event creation and parameter validation.
   });
 }

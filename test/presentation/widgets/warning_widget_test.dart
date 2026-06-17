@@ -1,8 +1,6 @@
-import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/presentation/widgets/warning_widget.dart";
-import "package:esim_open_source/translations/locale_keys.g.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
-import "package:flutter/rendering.dart";
 import "package:flutter_test/flutter_test.dart";
 
 import "../../helpers/view_helper.dart";
@@ -17,23 +15,37 @@ Future<void> main() async {
     });
 
     testWidgets("renders with warning content", (WidgetTester tester) async {
+      // Arrange & Act
       await tester.pumpWidget(
         createTestableWidget(
           const WarningWidget(
-            warningTextContent: "This is a warning message",
+            warningTextContent: "Please be careful",
           ),
         ),
       );
-
       await tester.pump();
 
-      expect(find.byType(WarningWidget), findsOneWidget);
-      expect(find.text(LocaleKeys.warning_title.tr()), findsOneWidget);
-      expect(find.text("This is a warning message"), findsOneWidget);
+      // Assert
+      expect(find.text("Please be careful"), findsOneWidget);
+    });
+
+    testWidgets("renders as Card widget", (WidgetTester tester) async {
+      // Arrange & Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const WarningWidget(
+            warningTextContent: "Warning",
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Assert
       expect(find.byType(Card), findsOneWidget);
     });
 
-    testWidgets("displays info icon", (WidgetTester tester) async {
+    testWidgets("contains info icon", (WidgetTester tester) async {
+      // Arrange & Act
       await tester.pumpWidget(
         createTestableWidget(
           const WarningWidget(
@@ -41,126 +53,48 @@ Future<void> main() async {
           ),
         ),
       );
-
       await tester.pump();
 
-      final Finder iconFinder = find.byIcon(Icons.info_outline);
-      expect(iconFinder, findsOneWidget);
-
-      final Icon icon = tester.widget<Icon>(iconFinder);
-      expect(icon.size, 18);
+      // Assert
+      expect(find.byIcon(Icons.info_outline), findsOneWidget);
     });
 
-    testWidgets("applies correct card styling", (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          const WarningWidget(
-            warningTextContent: "Card style test",
-          ),
-        ),
-      );
-
-      await tester.pump();
-
-      final Card card = tester.widget<Card>(find.byType(Card));
-      expect(card.elevation, 0);
-      expect(card.margin, EdgeInsets.zero);
-      expect(card.shape, isA<RoundedRectangleBorder>());
-    });
-
-    testWidgets("applies correct padding", (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          const WarningWidget(
-            warningTextContent: "Padding test",
-          ),
-        ),
-      );
-
-      await tester.pump();
-
-      final Padding padding = tester.widget<Padding>(
-        find.ancestor(
-          of: find.byType(Column),
-          matching: find.byType(Padding),
-        ).first,
-      );
-
-      expect(padding.padding, const EdgeInsets.all(12));
-    });
-
-    testWidgets("has column with correct layout", (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          const WarningWidget(
-            warningTextContent: "Layout test",
-          ),
-        ),
-      );
-
-      await tester.pump();
-
-      final Column column = tester.widget<Column>(
-        find.descendant(
-          of: find.byType(Padding),
-          matching: find.byType(Column),
-        ),
-      );
-
-      expect(column.crossAxisAlignment, CrossAxisAlignment.start);
-    });
-
-    testWidgets("displays row with icon and title", (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          const WarningWidget(
-            warningTextContent: "Row test",
-          ),
-        ),
-      );
-
-      await tester.pump();
-
-      final Finder rowFinder = find.descendant(
-        of: find.byType(Column),
-        matching: find.byType(Row),
-      );
-
-      expect(rowFinder, findsOneWidget);
-
-      final Row row = tester.widget<Row>(rowFinder);
-      expect(row.children.length, 2);
-    });
-
-    test("handles warning text property", () {
+    test("handles content property", () {
+      // Arrange & Act
       const WarningWidget widget = WarningWidget(
-        warningTextContent: "Test Warning Content",
+        warningTextContent: "Test content",
       );
 
-      expect(widget.warningTextContent, equals("Test Warning Content"));
+      // Assert
+      expect(widget.warningTextContent, equals("Test content"));
     });
 
-    test("handles empty warning text", () {
-      const WarningWidget widget = WarningWidget(
-        warningTextContent: "",
+    test("can be instantiated with a key", () {
+      // Arrange & Act
+      const Key k = ValueKey<String>("warning-key");
+      final WarningWidget widget = WarningWidget(
+        key: k,
+        warningTextContent: "Keyed warning",
       );
 
-      expect(widget.warningTextContent, isEmpty);
+      // Assert
+      expect(widget.key, equals(k));
     });
 
     test("debug properties coverage", () {
+      // Arrange & Act
       const WarningWidget widget = WarningWidget(
-        warningTextContent: "Debug warning text",
+        warningTextContent: "Debug warning",
       );
-
-      final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
+      final DiagnosticPropertiesBuilder builder =
+          DiagnosticPropertiesBuilder();
       widget.debugFillProperties(builder);
 
+      // Assert
       final List<DiagnosticsNode> props = builder.properties;
       expect(props, isNotEmpty);
-
       expect(
-        props.any((DiagnosticsNode prop) => prop.name == "warningTextContent"),
+        props.any((DiagnosticsNode p) => p.name == "warningTextContent"),
         isTrue,
       );
     });

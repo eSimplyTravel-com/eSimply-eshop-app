@@ -8,8 +8,9 @@ import "package:esim_open_source/data/remote/api_end_point.dart";
 import "package:esim_open_source/data/remote/apis/http_client_wrapper.dart";
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
 import "package:esim_open_source/data/remote/http_methods.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/utils/log_helper.dart";
 import "package:http/http.dart" as http;
 
@@ -77,20 +78,19 @@ class HttpRequest {
   }
 
   // Notify all listeners
-  static void notifyAuthReloadListeners(
-    ResponseMain<dynamic>? base,
-  ) {
+  static void notifyAuthReloadListeners(AuthResponseModel? authResponse) {
     _authReloadListeners.removeWhere(
-      (WeakReference<AuthReloadListener> weakRef) => weakRef.target == null,
+          (WeakReference<AuthReloadListener> weakRef) => weakRef.target == null,
     );
     for (final WeakReference<AuthReloadListener> weakRef
-        in _authReloadListeners) {
+    in _authReloadListeners) {
       final AuthReloadListener? listener = weakRef.target;
       if (listener != null) {
-        listener.onAuthReloadListenerCallBackUseCase(base);
+        listener.onAuthReloadListenerCallBackUseCase(authResponse);
       }
     }
   }
+
 
   // ignore: unnecessary_getters_setters
   static int get defaultTimeoutSeconds => _defaultTimeoutSeconds;
@@ -98,7 +98,7 @@ class HttpRequest {
   static set defaultTimeoutSeconds(int timeout) =>
       _defaultTimeoutSeconds = timeout;
 
-  static Future<ResponseMain<T>> sendRequestMain<T>({
+  static Future<ResponseMainDto<T>> sendRequestMain<T>({
     required APIEndPoint endPoint,
     T Function({dynamic json})? fromJson,
     HttpClientWrapper? client,
@@ -159,7 +159,7 @@ class HttpRequest {
     }
   }
 
-  static Future<ResponseMain<T>> _sendMultipartMain<T>({
+  static Future<ResponseMainDto<T>> _sendMultipartMain<T>({
     required APIEndPoint endPoint,
     T Function({dynamic json})? fromJson,
     HttpClientWrapper? client,
@@ -213,7 +213,7 @@ class HttpRequest {
     }
   }
 
-  static Future<ResponseMain<T>> _validateMainAndParseResponse<T>(
+  static Future<ResponseMainDto<T>> _validateMainAndParseResponse<T>(
     http.StreamedResponse response,
     T Function({dynamic json})? fromJson,
     String debugInfo,
@@ -224,7 +224,7 @@ class HttpRequest {
         response.statusCode == 400 ||
         response.statusCode == 404 ||
         response.statusCode == 429) {
-      ResponseMain<T>? responseMain;
+      ResponseMainDto<T>? responseMain;
       try {
         String result = await response.stream.bytesToString();
 
@@ -232,7 +232,7 @@ class HttpRequest {
         log("${debugInfo}Response Raw: $result $printHeader('Request End')");
 
         // Parse the response using the fromJson function
-        responseMain = ResponseMain<T>.fromJson(
+        responseMain = ResponseMainDto<T>.fromJson(
           response: result,
           fromJson: fromJson,
           statusCode: response.statusCode,
@@ -244,7 +244,7 @@ class HttpRequest {
         }
       } catch (e) {
         throw ResponseMainException(
-          ResponseMain<T>.createError(
+          ResponseMainDto<T>.createError(
             responseCode: response.statusCode,
             errorMessage: e.toString(),
           ),
@@ -252,7 +252,7 @@ class HttpRequest {
       }
 
       throw ResponseMainException(
-        ResponseMain<T>.createErrorWithData(
+        ResponseMainDto<T>.createErrorWithData(
           title: responseMain.title,
           status: responseMain.status,
           totalCount: responseMain.totalCount,
@@ -278,7 +278,7 @@ class HttpRequest {
 
       // Throw an error for other status codes
       throw ResponseMainException(
-        ResponseMain<T>.createError(
+        ResponseMainDto<T>.createError(
           responseCode: response.statusCode,
           errorMessage: response.reasonPhrase ?? "no reason shared",
         ),

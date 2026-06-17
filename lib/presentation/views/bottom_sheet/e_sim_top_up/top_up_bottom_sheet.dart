@@ -3,7 +3,7 @@ import "dart:async";
 import "package:easy_localization/easy_localization.dart"
     show StringTranslateExtension;
 import "package:esim_open_source/app/environment/environment_images.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
 import "package:esim_open_source/presentation/extensions/shimmer_extensions.dart";
 import "package:esim_open_source/presentation/setup_bottom_sheet_ui.dart";

@@ -1,5 +1,5 @@
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
 import "package:esim_open_source/domain/use_case/user/assign_user_bundle_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";

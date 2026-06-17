@@ -1,6 +1,6 @@
 import "package:easy_localization/easy_localization.dart" show StringTranslateExtension;
 import "package:esim_open_source/app/environment/environment_images.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:esim_open_source/presentation/widgets/country_flag_image.dart";

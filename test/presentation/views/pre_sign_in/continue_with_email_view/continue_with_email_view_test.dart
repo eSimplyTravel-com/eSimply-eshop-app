@@ -161,7 +161,8 @@ Future<void> main() async {
       expect(termsText, findsWidgets);
     });
 
-    testWidgets("getContinueWithEmailSubtitleText returns correct text for email",
+    testWidgets(
+        "getContinueWithEmailSubtitleText returns correct text for email",
         (WidgetTester tester) async {
       const ContinueWithEmailView view = ContinueWithEmailView(
         localLoginType: LoginType.email,
@@ -171,7 +172,8 @@ Future<void> main() async {
       expect(subtitleText, isNotEmpty);
     });
 
-    testWidgets("getContinueWithEmailSubtitleText returns correct text for phoneNumber",
+    testWidgets(
+        "getContinueWithEmailSubtitleText returns correct text for phoneNumber",
         (WidgetTester tester) async {
       const ContinueWithEmailView view = ContinueWithEmailView(
         localLoginType: LoginType.phoneNumber,
@@ -181,7 +183,8 @@ Future<void> main() async {
       expect(subtitleText, isNotEmpty);
     });
 
-    testWidgets("getContinueWithEmailSubtitleText returns correct text for emailAndPhone",
+    testWidgets(
+        "getContinueWithEmailSubtitleText returns correct text for emailAndPhone",
         (WidgetTester tester) async {
       const ContinueWithEmailView view = ContinueWithEmailView(
         localLoginType: LoginType.emailAndPhone,
@@ -189,6 +192,235 @@ Future<void> main() async {
 
       final String subtitleText = view.getContinueWithEmailSubtitleText();
       expect(subtitleText, isNotEmpty);
+    });
+
+    test("routeName constant is ContinueWithEmailView", () {
+      // Assert
+      expect(ContinueWithEmailView.routeName, "ContinueWithEmailView");
+    });
+
+    testWidgets("renders Container when showEmailField is false",
+        (WidgetTester tester) async {
+      // Arrange
+      when(mockViewModel.showEmailField).thenReturn(false);
+
+      // Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const ContinueWithEmailView(),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      // Assert
+      expect(find.byType(MainInputField), findsNothing);
+    });
+
+    testWidgets("renders two MainButtons for emailAndPhoneAndBothVerification",
+        (WidgetTester tester) async {
+      // Arrange
+      tester.view.physicalSize = Size(tester.view.physicalSize.width, 2556);
+      tester.view.devicePixelRatio = 3.0;
+
+      when(mockViewModel.otpSendErrorMessage).thenReturn(null);
+
+      // Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const ContinueWithEmailView(
+            localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      // Assert
+      expect(find.byType(MainButton), findsNWidgets(2));
+    });
+
+    testWidgets(
+        "tapping EMAIL MainButton calls loginButtonTappedWithChannel EMAIL",
+        (WidgetTester tester) async {
+      // Arrange
+      tester.view.physicalSize = Size(tester.view.physicalSize.width, 2556);
+      tester.view.devicePixelRatio = 3.0;
+
+      when(mockViewModel.otpSendErrorMessage).thenReturn(null);
+      when(mockViewModel.state)
+          .thenReturn(ContinueWithEmailState()..isLoginEnabled = true);
+
+      // Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const ContinueWithEmailView(
+            localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      await tester.tap(find.byType(MainButton).first);
+      await tester.pumpAndSettle();
+
+      // Assert
+      verify(mockViewModel.loginButtonTappedWithChannel("EMAIL")).called(1);
+    });
+
+    testWidgets("tapping SMS MainButton calls loginButtonTappedWithChannel SMS",
+        (WidgetTester tester) async {
+      // Arrange
+      tester.view.physicalSize = Size(tester.view.physicalSize.width, 2556);
+      tester.view.devicePixelRatio = 3.0;
+
+      when(mockViewModel.otpSendErrorMessage).thenReturn(null);
+      when(mockViewModel.state)
+          .thenReturn(ContinueWithEmailState()..isLoginEnabled = true);
+
+      // Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const ContinueWithEmailView(
+            localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      await tester.tap(find.byType(MainButton).at(1));
+      await tester.pumpAndSettle();
+
+      // Assert
+      verify(mockViewModel.loginButtonTappedWithChannel("SMS")).called(1);
+    });
+
+    testWidgets("displays otpSendErrorMessage text when non-null",
+        (WidgetTester tester) async {
+      // Arrange
+      tester.view.physicalSize = Size(tester.view.physicalSize.width, 2556);
+      tester.view.devicePixelRatio = 3.0;
+
+      when(mockViewModel.otpSendErrorMessage)
+          .thenReturn("OTP failed via email");
+
+      // Act
+      await tester.pumpWidget(
+        createTestableWidget(
+          const ContinueWithEmailView(
+            localLoginType: LoginType.emailAndPhoneAndBothVerification,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      // Assert
+      expect(find.text("OTP failed via email"), findsOneWidget);
+    });
+
+    testWidgets("getLoginInstructionText returns text for phoneNumber",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.phoneNumber,
+      );
+
+      // Act
+      final String text = view.getLoginInstructionText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets("getLoginInstructionText returns text for emailAndPhone",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.emailAndPhone,
+      );
+
+      // Act
+      final String text = view.getLoginInstructionText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets(
+        "getLoginInstructionText returns text for emailAndPhoneAndEmailVerification",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+
+      // Act
+      final String text = view.getLoginInstructionText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets(
+        "getLoginInstructionText returns text for emailAndPhoneAndBothVerification",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+
+      // Act
+      final String text = view.getLoginInstructionText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets(
+        "getContinueWithEmailSubtitleText returns text for emailAndPhoneAndEmailVerification",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.emailAndPhoneAndEmailVerification,
+      );
+
+      // Act
+      final String text = view.getContinueWithEmailSubtitleText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets(
+        "getContinueWithEmailSubtitleText returns text for emailAndPhoneAndBothVerification",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.emailAndPhoneAndBothVerification,
+      );
+
+      // Act
+      final String text = view.getContinueWithEmailSubtitleText();
+
+      // Assert
+      expect(text, isNotEmpty);
+    });
+
+    testWidgets("debugFillProperties includes localLoginType property",
+        (WidgetTester tester) async {
+      // Arrange
+      const ContinueWithEmailView view = ContinueWithEmailView(
+        localLoginType: LoginType.email,
+      );
+      final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
+
+      // Act
+      view.debugFillProperties(builder);
+
+      // Assert
+      expect(
+        builder.properties
+            .any((DiagnosticsNode prop) => prop.name == "localLoginType"),
+        isTrue,
+      );
     });
   });
 

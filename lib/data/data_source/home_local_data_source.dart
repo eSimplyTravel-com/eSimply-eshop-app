@@ -5,10 +5,10 @@ import "package:esim_open_source/data/data_source/home_data_entities/bundle_type
 import "package:esim_open_source/data/data_source/home_data_entities/country_entity.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/home_data_entity.dart";
 import "package:esim_open_source/data/data_source/home_data_entities/region_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/country_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/regions_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/country_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/regions_response_model_dto.dart";
 import "package:esim_open_source/objectbox.g.dart";
 
 class HomeLocalDataSource {
@@ -21,7 +21,7 @@ class HomeLocalDataSource {
   final Box<CountryEntity> _countryBox;
   final Box<BundleCategoryEntity> _bundleCategoryBox;
 
-  Future<void> saveHomeData(HomeDataResponseModel data) async {
+  Future<void> saveHomeData(HomeDataResponseModelDto data) async {
     _store.runInTransaction(TxMode.write, () {
       final HomeDataEntity homeData =
           HomeDataEntity(lastUpdated: DateTime.now())..version = data.version;
@@ -36,43 +36,43 @@ class HomeLocalDataSource {
   }
 
   void _saveRegions(
-      List<RegionsResponseModel>? regions, HomeDataEntity homeData,) {
+      List<RegionsResponseModelDto>? regions, HomeDataEntity homeData,) {
     if (regions == null) {
       return;
     }
 
-    for (final RegionsResponseModel region in regions) {
+    for (final RegionsResponseModelDto region in regions) {
       final RegionEntity regionEntity = RegionEntity.fromModel(region);
       homeData.regions.add(regionEntity);
     }
   }
 
   void _saveCountries(
-      List<CountryResponseModel>? countries, HomeDataEntity homeData,) {
+      List<CountryResponseModelDto>? countries, HomeDataEntity homeData,) {
     if (countries == null) {
       return;
     }
 
-    for (final CountryResponseModel country in countries) {
+    for (final CountryResponseModelDto country in countries) {
       final CountryEntity countryEntity = CountryEntity.fromModel(country);
       homeData.countries.add(countryEntity);
     }
   }
 
-  void _saveBundles(List<BundleResponseModel>? bundles, BundleType bundleType,
+  void _saveBundles(List<BundleResponseModelDto>? bundles, BundleType bundleType,
       HomeDataEntity homeData,) {
     if (bundles == null) {
       return;
     }
 
-    for (final BundleResponseModel bundle in bundles) {
+    for (final BundleResponseModelDto bundle in bundles) {
       final BundleEntity bundleEntity = _createBundleEntity(bundle, bundleType);
       homeData.bundles.add(bundleEntity);
     }
   }
 
   BundleEntity _createBundleEntity(
-      BundleResponseModel bundle, BundleType bundleType,) {
+      BundleResponseModelDto bundle, BundleType bundleType,) {
     final BundleEntity bundleEntity = BundleEntity.fromModel(bundle, bundleType);
 
     _attachBundleCategory(bundle, bundleEntity);
@@ -82,7 +82,7 @@ class HomeLocalDataSource {
   }
 
   void _attachBundleCategory(
-      BundleResponseModel bundle, BundleEntity bundleEntity,) {
+      BundleResponseModelDto bundle, BundleEntity bundleEntity,) {
     if (bundle.bundleCategory == null) {
       return;
     }
@@ -94,18 +94,18 @@ class HomeLocalDataSource {
   }
 
   void _linkBundleCountries(
-      BundleResponseModel bundle, BundleEntity bundleEntity,) {
+      BundleResponseModelDto bundle, BundleEntity bundleEntity,) {
     if (bundle.countries == null) {
       return;
     }
 
-    for (final CountryResponseModel country in bundle.countries!) {
+    for (final CountryResponseModelDto country in bundle.countries!) {
       final CountryEntity countryEntity = _findOrCreateCountry(country);
       bundleEntity.countries.add(countryEntity);
     }
   }
 
-  CountryEntity _findOrCreateCountry(CountryResponseModel country) {
+  CountryEntity _findOrCreateCountry(CountryResponseModelDto country) {
     final CountryEntity? existingCountry = _countryBox
         .query(CountryEntity_.iso3Code.equals(country.iso3Code ?? ""))
         .build()
@@ -120,7 +120,7 @@ class HomeLocalDataSource {
     return newCountry;
   }
 
-  HomeDataResponseModel? getHomeData() {
+  HomeDataResponseModelDto? getHomeData() {
     final HomeDataEntity? homeData = _homeDataBox
         .query()
         .order(HomeDataEntity_.lastUpdated, flags: Order.descending)

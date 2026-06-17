@@ -1,37 +1,58 @@
 image: ghcr.io/cirruslabs/flutter:stable
 
 variables:
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Location of the analysis task cache
+  GIT_DEPTH: "0" # Fetch all branches, required by the analysis task
+  SONAR_SCANNER_VERSION: "7.0.2.4839"
+
+cache:
+  - key: flutter-dependencies
+    paths:
+      - .dart_tool/
+      - .packages
 
 stages:
-  - get-binaries
   - sonarcloud-check
 
-
-get-binaries:
-  stage: get-binaries
-  cache:
-    policy: push
-    key:  "${CI_COMMIT_SHORT_SHA}"
-    paths:
-      - sonar-scanner/
-
-  script:
-    # Download sonar-scanner
-    - curl -sSLo ./sonar-scanner.zip 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.2.4839-linux-x64.zip'
-    - unzip -o sonar-scanner.zip
-    - mv sonar-scanner-7.0.2.4839-linux-x64 sonar-scanner
-
-sonarcloud-check:
+# Run unit tests with coverage and push results to SonarCloud.
+# Replaces the Fastlane `sonar_main` / `sonar_pr` lanes with plain CLI commands.
+# `sonar-scanner` auto-reads sonar-project.properties plus the
+# SONAR_TOKEN / SONAR_HOST_URL CI variables from the environment.
+sonarcloud-main:
   stage: sonarcloud-check
-  cache:
-    policy: pull-push
-    key: "${CI_COMMIT_SHORT_SHA}"
-    paths:
-      - sonar-scanner/
+  before_script:
+    # Download the SonarScanner CLI (Java is already provided by the flutter image)
+    - apt-get update && apt-get install -y --no-install-recommends unzip curl
+    - curl -fL -o sonar-scanner.zip "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-x64.zip"
+    - unzip -q sonar-scanner.zip
+    - export PATH="${CI_PROJECT_DIR}/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64/bin:$PATH"
   script:
-    - sonar-scanner/bin/sonar-scanner
+    # Equivalent of the Fastlane `run_tests_with_coverage` lane
+    - flutter pub get
+    - dart run build_runner build --delete-conflicting-outputs
+    - flutter test --coverage
+    # Equivalent of the Fastlane `sonar` action (config comes from sonar-project.properties).
+    # On a merge request, pass sonar.pullrequest.* so SonarCloud decorates the MR
+    # instead of overwriting the main branch analysis with the MR's code.
+    - |
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        sonar-scanner \
+          -Dsonar.pullrequest.key="$CI_MERGE_REQUEST_IID" \
+          -Dsonar.pullrequest.branch="$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME" \
+          -Dsonar.pullrequest.base="$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" \
+          -Dsonar.verbose=true
+      else
+        sonar-scanner \
+          -Dsonar.projectVersion="$CI_COMMIT_SHORT_SHA" \
+          -Dsonar.verbose=true
+      fi
+  coverage: '/^\s*lines\.*: (\d+\.\d+)%/'
+  tags:
+    - saas-linux-large-amd64
   only:
     - merge_requests
     - main
+  artifacts:
+    when: always
+    paths:
+      - coverage/

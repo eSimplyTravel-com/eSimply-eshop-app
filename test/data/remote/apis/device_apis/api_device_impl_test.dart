@@ -1,8 +1,8 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
 import "package:esim_open_source/data/remote/apis/device_apis/api_device_impl.dart";
-import "package:esim_open_source/data/remote/request/device/device_info_request_model.dart";
 import "package:esim_open_source/domain/data/api_device.dart";
 import "package:esim_open_source/domain/data/params/register_device_params.dart";
+import "package:esim_open_source/domain/data/request/device_info_request_model.dart";
 import "package:esim_open_source/domain/repository/services/connectivity_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -60,8 +60,6 @@ void main() {
       final RegisterDeviceParams params = RegisterDeviceParams(
         fcmToken: "test_fcm_token",
         deviceId: "test_device_id",
-        platformTag: "android",
-        osTag: "Android",
         appGuid: "test_app_guid",
         version: "1.0.0",
         userGuid: "test_user_guid",
@@ -88,8 +86,6 @@ void main() {
       final RegisterDeviceParams params = RegisterDeviceParams(
         fcmToken: "test_fcm_token",
         deviceId: "test_device_id",
-        platformTag: "ios",
-        osTag: "iOS",
         appGuid: "test_app_guid",
         version: "1.0.0",
         userGuid: "",

@@ -1,37 +1,92 @@
 import "package:esim_open_source/data/services/dynamic_linking_service_impl.dart";
 import "package:esim_open_source/domain/repository/services/dynamic_linking_service.dart";
+import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 
-/// Unit tests for DynamicLinkingServiceImpl
-/// Tests enum values, interface implementation, and service structure
+/// Unit tests for DynamicLinkingServiceImpl.
 ///
-/// Note: Most tests are skipped because DynamicLinkingServiceImpl relies on
-/// flutter_branch_sdk package which requires platform channels and native
-/// SDK integration that are not available in unit tests.
+/// DynamicLinkingServiceImpl wraps the static flutter_branch_sdk API, which
+/// communicates over a method channel ("flutter_branch_sdk/message") and an
+/// event channel ("flutter_branch_sdk/event"). Both channels are mocked so the
+/// service's init, link-generation and session-listening logic can be exercised
+/// without the native Branch SDK.
+///
+/// Note: on a non-iOS test host the tracking methods short-circuit to
+/// `notSupported` inside the SDK, so the iOS-only switch arms of
+/// requestTrackingAuthorization / getTrackingAuthorizationStatus are not
+/// reachable in unit tests.
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  const MethodChannel messageChannel =
+      MethodChannel("flutter_branch_sdk/message");
+  const EventChannel eventChannel = EventChannel("flutter_branch_sdk/event");
+
+  // Per-test control over the getShortUrl response and whether it throws.
+  Map<dynamic, dynamic> shortUrlResponse = <dynamic, dynamic>{
+    "success": true,
+    "url": "https://branch.link/short",
+  };
+  bool getShortUrlThrows = false;
+
+  // Event channel behaviour for listSession().
+  Object? eventToEmit;
+  bool emitError = false;
+
+  setUp(() {
+    shortUrlResponse = <dynamic, dynamic>{
+      "success": true,
+      "url": "https://branch.link/short",
+    };
+    getShortUrlThrows = false;
+    eventToEmit = null;
+    emitError = false;
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(messageChannel, (MethodCall call) async {
+      switch (call.method) {
+        case "init":
+          return null;
+        case "validateSDKIntegration":
+          return null;
+        case "getShortUrl":
+          if (getShortUrlThrows) {
+            throw PlatformException(code: "ERR", message: "boom");
+          }
+          return shortUrlResponse;
+        case "requestTrackingAuthorization":
+        case "getTrackingAuthorizationStatus":
+          return 3; // authorized (unused on non-iOS host)
+        default:
+          return null;
+      }
+    });
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockStreamHandler(
+      eventChannel,
+      MockStreamHandler.inline(
+        onListen: (Object? arguments, MockStreamHandlerEventSink events) {
+          if (emitError) {
+            events.error(code: "INIT_ERR", message: "session error");
+          } else if (eventToEmit != null) {
+            events.success(eventToEmit);
+          }
+          events.endOfStream();
+        },
+      ),
+    );
+  });
+
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      ..setMockMethodCallHandler(messageChannel, null)
+      ..setMockStreamHandler(eventChannel, null);
+  });
+
   group("DynamicLinkingTrackingStatus Tests", () {
     test("all enum values are defined", () {
       expect(DynamicLinkingTrackingStatus.values.length, 5);
-      expect(
-        DynamicLinkingTrackingStatus.values,
-        contains(DynamicLinkingTrackingStatus.notDetermined),
-      );
-      expect(
-        DynamicLinkingTrackingStatus.values,
-        contains(DynamicLinkingTrackingStatus.restricted),
-      );
-      expect(
-        DynamicLinkingTrackingStatus.values,
-        contains(DynamicLinkingTrackingStatus.denied),
-      );
-      expect(
-        DynamicLinkingTrackingStatus.values,
-        contains(DynamicLinkingTrackingStatus.authorized),
-      );
-      expect(
-        DynamicLinkingTrackingStatus.values,
-        contains(DynamicLinkingTrackingStatus.notSupported),
-      );
     });
 
     test("enum values have correct names", () {
@@ -40,50 +95,6 @@ void main() {
       expect(DynamicLinkingTrackingStatus.denied.name, "denied");
       expect(DynamicLinkingTrackingStatus.authorized.name, "authorized");
       expect(DynamicLinkingTrackingStatus.notSupported.name, "notSupported");
-    });
-
-    test("enum values are distinct", () {
-      final Set<DynamicLinkingTrackingStatus> uniqueValues =
-          DynamicLinkingTrackingStatus.values.toSet();
-      expect(
-        uniqueValues.length,
-        DynamicLinkingTrackingStatus.values.length,
-      );
-    });
-
-    test("notDetermined represents unasked state", () {
-      const DynamicLinkingTrackingStatus status =
-          DynamicLinkingTrackingStatus.notDetermined;
-      expect(status, isNotNull);
-      expect(status.index, 0);
-    });
-
-    test("restricted represents disabled tracking state", () {
-      const DynamicLinkingTrackingStatus status =
-          DynamicLinkingTrackingStatus.restricted;
-      expect(status, isNotNull);
-      expect(status.index, 1);
-    });
-
-    test("denied represents user rejection", () {
-      const DynamicLinkingTrackingStatus status =
-          DynamicLinkingTrackingStatus.denied;
-      expect(status, isNotNull);
-      expect(status.index, 2);
-    });
-
-    test("authorized represents user approval", () {
-      const DynamicLinkingTrackingStatus status =
-          DynamicLinkingTrackingStatus.authorized;
-      expect(status, isNotNull);
-      expect(status.index, 3);
-    });
-
-    test("notSupported represents unsupported platform", () {
-      const DynamicLinkingTrackingStatus status =
-          DynamicLinkingTrackingStatus.notSupported;
-      expect(status, isNotNull);
-      expect(status.index, 4);
     });
 
     test("enum can be used in switch statements", () {
@@ -101,153 +112,152 @@ void main() {
         getStatusMessage(DynamicLinkingTrackingStatus.notDetermined),
         "Not asked",
       );
-      expect(
-        getStatusMessage(DynamicLinkingTrackingStatus.authorized),
-        "Authorized",
-      );
-      expect(
-        getStatusMessage(DynamicLinkingTrackingStatus.denied),
-        "Denied",
-      );
     });
   });
 
-  group("DynamicLinkingService Interface Tests", () {
-    test("DynamicLinkingService interface is properly defined", () {
-      expect(DynamicLinkingService, isNotNull);
-    });
-
-    test("DynamicLinkingServiceImpl class exists", () {
-      expect(DynamicLinkingServiceImpl, isNotNull);
-    });
-
-    test("DynamicLinkingServiceImpl can be instantiated", () {
+  group("DynamicLinkingServiceImpl Tests", () {
+    test("can be instantiated and implements the interface", () {
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
       expect(service, isA<DynamicLinkingService>());
-    });
-
-    test("service implements required interface", () {
-      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
-      expect(service, isA<DynamicLinkingService>());
-    });
-
-    test("dispose method exists and can be called", () async {
-      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
-
-      // Should not throw
-      await service.dispose();
-      expect(true, true);
     });
 
     test("multiple instances can be created", () {
       final DynamicLinkingServiceImpl service1 = DynamicLinkingServiceImpl();
       final DynamicLinkingServiceImpl service2 = DynamicLinkingServiceImpl();
-
-      expect(service1, isA<DynamicLinkingService>());
-      expect(service2, isA<DynamicLinkingService>());
       expect(service1, isNot(same(service2)));
     });
-  });
 
-  group("DynamicLinkingServiceImpl Method Signature Tests", () {
-    test("generateBranchLink accepts required deepLinkUrl parameter", () {
+    test("initialize sets up the Branch session listener", () async {
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
 
-      // Verify method exists and has correct signature by checking it compiles
-      expect(
-        () async => service.generateBranchLink(
-          deepLinkUrl: "https://example.com/deep",
-        ),
-        isA<Function>(),
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
+        validateSDKIntegration: true,
       );
+
+      await service.dispose();
     });
 
-    test("generateBranchLink accepts optional parameters", () {
+    test("initialize forwards a deep link from the session stream", () async {
+      eventToEmit = <dynamic, dynamic>{
+        "original_url": "https://deep.link/path",
+      };
+
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
 
-      // Verify method exists with all optional parameters
-      expect(
-        () async => service.generateBranchLink(
-          deepLinkUrl: "https://example.com/deep",
-          referUserID: "user123",
-          title: "Test Title",
-          description: "Test Description",
-        ),
-        isA<Function>(),
+      Uri? receivedUri;
+      bool? receivedIsInitial;
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {
+          receivedUri = uri;
+          receivedIsInitial = isInitial;
+        },
       );
+
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(receivedUri, Uri.parse("https://deep.link/path"));
+      expect(receivedIsInitial, isFalse);
+
+      await service.dispose();
     });
 
-    test("initialize method accepts onDeepLink callback", () {
+    test("initialize handles a session stream error", () async {
+      emitError = true;
+
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
 
-      void testCallback({required Uri uri, required bool isInitial}) {
-        // Test callback
-      }
-
-      // Verify method exists and has correct signature
-      expect(
-        () async => service.initialize(
-          onDeepLink: testCallback,
-        ),
-        isA<Function>(),
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
       );
+
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      await service.dispose();
     });
 
-    test("initialize method accepts optional boolean parameters", () {
+    test("requestTrackingAuthorization returns a status", () async {
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
-
-      void testCallback({required Uri uri, required bool isInitial}) {
-        // Test callback
-      }
-
-      // Verify method exists with all parameters
-      expect(
-        () async => service.initialize(
-          onDeepLink: testCallback,
-        ),
-        isA<Function>(),
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
       );
+
+      final DynamicLinkingTrackingStatus status =
+          await service.requestTrackingAuthorization();
+
+      expect(status, isA<DynamicLinkingTrackingStatus>());
     });
 
-    // Note: The following tests are skipped because they require
-    // flutter_branch_sdk platform channel initialization which is not
-    // available in unit tests without extensive mocking.
-    //
-    // - test("initialize successfully initializes Branch SDK")
-    // - test("generateBranchLink returns valid URL")
-    // - test("requestTrackingAuthorization returns status")
-    // - test("getTrackingAuthorizationStatus returns current status")
-    // - test("deep links are handled correctly")
-    // - test("dispose cancels subscriptions")
-    //
-    // To properly test these, consider:
-    // 1. Using integration tests with platform channels
-    // 2. Creating mock implementations of FlutterBranchSdk
-    // 3. Using a test wrapper that can be mocked
-    // 4. Testing in a real device/simulator environment
-  });
+    test("getTrackingAuthorizationStatus returns a status", () async {
+      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
+      );
 
-  group("DynamicLinkingServiceImpl Edge Cases", () {
-    test("service can be disposed multiple times", () async {
+      final DynamicLinkingTrackingStatus status =
+          await service.getTrackingAuthorizationStatus();
+
+      expect(status, isA<DynamicLinkingTrackingStatus>());
+    });
+
+    test("generateBranchLink returns the generated url on success", () async {
+      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
+      );
+
+      final String? link = await service.generateBranchLink(
+        deepLinkUrl: "https://example.com/deep",
+        referUserID: "user-123",
+        title: "Title",
+        description: "Description",
+      );
+
+      expect(link, "https://branch.link/short");
+    });
+
+    test("generateBranchLink returns null when the SDK reports failure",
+        () async {
+      shortUrlResponse = <dynamic, dynamic>{
+        "success": false,
+        "errorCode": "100",
+        "errorMessage": "failed",
+      };
+
+      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
+      );
+
+      final String? link = await service.generateBranchLink(
+        deepLinkUrl: "https://example.com/deep",
+      );
+
+      expect(link, isNull);
+    });
+
+    test("generateBranchLink returns null when the SDK throws", () async {
+      getShortUrlThrows = true;
+
+      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
+      await service.initialize(
+        onDeepLink: ({required Uri uri, required bool isInitial}) {},
+      );
+
+      final String? link = await service.generateBranchLink(
+        deepLinkUrl: "https://example.com/deep",
+      );
+
+      expect(link, isNull);
+    });
+
+    test("dispose can be called multiple times", () async {
       final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
 
       await service.dispose();
       await service.dispose();
-      await service.dispose();
 
-      // Should not throw
-      expect(true, true);
-    });
-
-    test("service methods exist before initialization", () {
-      final DynamicLinkingServiceImpl service = DynamicLinkingServiceImpl();
-
-      // Methods should exist even if not initialized
-      expect(service.generateBranchLink, isA<Function>());
-      expect(service.initialize, isA<Function>());
-      expect(service.requestTrackingAuthorization, isA<Function>());
-      expect(service.getTrackingAuthorizationStatus, isA<Function>());
-      expect(service.dispose, isA<Function>());
+      expect(true, isTrue);
     });
   });
 }

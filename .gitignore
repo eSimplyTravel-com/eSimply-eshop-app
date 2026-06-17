@@ -17,7 +17,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
-
+exportOptions.plist
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -32,7 +32,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-
+*.p8
+*.report.xml
 # Symbolication related
 app.*.symbols
 
@@ -50,5 +51,12 @@ ios/flutterfire_logs.txt
 *.orig
 /ios/build
 /android/build
+/fastlane/.env.local
+/fastlane/esim-opensource---test-5c8450a038e7.json
+/fastlane/esim-opensource-live-ce6959de8ebb.json
+/fastlane/AuthKey_WKVJ7B974X.p8
+/fastlane/report.xml
+fastlane/android_plugin_patches.sh
+/android/gitlab.properties
 /android/app/EsimplyKey
 android/app/src/main/assets/adi-registration.properties

@@ -2,10 +2,10 @@ import "dart:async";
 
 import "package:esim_open_source/app/app.locator.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/request/device/device_info_request_model.dart";
-import "package:esim_open_source/data/remote/responses/device/device_info_response_model.dart";
 import "package:esim_open_source/domain/data/params/add_device_params.dart";
 import "package:esim_open_source/domain/data/params/register_device_params.dart";
+import "package:esim_open_source/domain/data/request/device_info_request_model.dart";
+import "package:esim_open_source/domain/data/response/device/device_info_response_model.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";
 import "package:esim_open_source/domain/repository/services/secure_storage_service.dart";
@@ -40,8 +40,6 @@ class RegisterDeviceUseCase
       params: RegisterDeviceParams(
         fcmToken: params.fcmToken,
         deviceId: uniqueDeviceID,
-        platformTag: DeviceInfoRequestModel.platformTag,
-        osTag: DeviceInfoRequestModel.osTag,
         appGuid: AppEnvironment.appEnvironmentHelper.omniConfigAppGuid,
         version: deviceParams.appVersion,
         userGuid: params.userGuid,

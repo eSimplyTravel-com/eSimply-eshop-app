@@ -2,8 +2,8 @@ import "dart:async";
 
 import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/notifications/notifications_apis.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
 import "package:esim_open_source/domain/data/api_notifications.dart";
 
 class ApiNotificationsImpl extends APIService implements APINotifications {
@@ -23,11 +23,11 @@ class ApiNotificationsImpl extends APIService implements APINotifications {
 
   @override
   FutureOr<dynamic> getConsumptionLimit() async {
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: NotificationsApis.consumptionLimit,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return response;

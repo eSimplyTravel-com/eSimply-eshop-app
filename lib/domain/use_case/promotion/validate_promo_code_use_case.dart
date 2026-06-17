@@ -1,6 +1,6 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
@@ -26,10 +26,8 @@ class ValidatePromoCodeUseCase
   @override
   FutureOr<Resource<BundleResponseModel?>> execute(
     ValidatePromoCodeUseCaseParams params,
-  ) async {
-    return await repository.validatePromoCode(
+  ) async => await repository.validatePromoCode(
       promoCode: params.promoCode,
       bundleCode: params.bundleCode,
     );
-  }
 }

@@ -2,11 +2,11 @@ import "dart:async";
 import "dart:developer";
 
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/request/device/device_info_request_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/data/params/add_device_params.dart";
 import "package:esim_open_source/domain/data/params/register_device_params.dart";
+import "package:esim_open_source/domain/data/request/device_info_request_model.dart";
+import "package:esim_open_source/domain/data/response/core/empty_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/api_device_repository.dart";
 import "package:esim_open_source/domain/repository/services/device_info_service.dart";
@@ -46,13 +46,10 @@ class AddDeviceUseCase implements UseCase<Resource<EmptyResponse?>, NoParams> {
           AppEnvironment.appEnvironmentHelper.omniConfigAppGuid
               .trim()
               .isNotEmpty) {
-        unawaited(
-          await deviceRepository.registerDevice(
-              params: RegisterDeviceParams(
+        await deviceRepository.registerDevice(
+          params: RegisterDeviceParams(
             fcmToken: fcmToken,
             deviceId: uniqueDeviceID,
-            platformTag: DeviceInfoRequestModel.platformTag,
-            osTag: DeviceInfoRequestModel.osTag,
             appGuid: AppEnvironment.appEnvironmentHelper.omniConfigAppGuid,
             version: deviceParams.appVersion,
             userGuid: locator<LocalStorageService>()
@@ -63,7 +60,7 @@ class AddDeviceUseCase implements UseCase<Resource<EmptyResponse?>, NoParams> {
             deviceInfo: DeviceInfoRequestModel(
               deviceName: deviceParams.deviceModel,
             ),
-          ),),
+          ),
         );
       }
     } on Object catch (ex) {

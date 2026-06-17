@@ -2,10 +2,10 @@ import "dart:async";
 
 import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/bundles_apis/bundles_apis.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_consumption_response.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_consumption_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/home_data_response_model_dto.dart";
 import "package:esim_open_source/domain/data/api_bundles.dart";
 
 class APIBundlesImpl extends APIService implements APIBundles {
@@ -24,80 +24,80 @@ class APIBundlesImpl extends APIService implements APIBundles {
   void _initialise() {}
 
   @override
-  FutureOr<ResponseMain<BundleConsumptionResponse>> getBundleConsumption({
+  FutureOr<ResponseMainDto<BundleConsumptionResponseDto>> getBundleConsumption({
     required String iccID,
   }) async {
-    ResponseMain<BundleConsumptionResponse> response = await sendRequest(
+    ResponseMainDto<BundleConsumptionResponseDto> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getBundleConsumption,
         paramIDs: <String>[iccID],
       ),
-      fromJson: BundleConsumptionResponse.fromJson,
+      fromJson: BundleConsumptionResponseDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<HomeDataResponseModel>> getAllData() async {
-    ResponseMain<HomeDataResponseModel> homeDataResponse = await sendRequest(
+  FutureOr<ResponseMainDto<HomeDataResponseModelDto>> getAllData() async {
+    ResponseMainDto<HomeDataResponseModelDto> homeDataResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getAllData,
       ),
-      fromJson: HomeDataResponseModel.fromAPIJson,
+      fromJson: HomeDataResponseModelDto.fromAPIJson,
     );
 
     return homeDataResponse;
   }
 
   @override
-  FutureOr<ResponseMain<List<BundleResponseModel>>> getAllBundles() async {
-    ResponseMain<List<BundleResponseModel>> response = await sendRequest(
+  FutureOr<ResponseMainDto<List<BundleResponseModelDto>>> getAllBundles() async {
+    ResponseMainDto<List<BundleResponseModelDto>> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getBundles,
       ),
-      fromJson: BundleResponseModel.fromJsonList,
+      fromJson: BundleResponseModelDto.fromJsonList,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<BundleResponseModel>> getBundle({
+  FutureOr<ResponseMainDto<BundleResponseModelDto>> getBundle({
     required String code,
   }) async {
-    ResponseMain<BundleResponseModel> response = await sendRequest(
+    ResponseMainDto<BundleResponseModelDto> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getBundle,
         paramIDs: <String>[code],
       ),
-      fromJson: BundleResponseModel.fromJson,
+      fromJson: BundleResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<BundleResponseModel>>> getBundlesByRegion({
+  FutureOr<ResponseMainDto<List<BundleResponseModelDto>>> getBundlesByRegion({
     required String regionCode,
   }) async {
-    ResponseMain<List<BundleResponseModel>> response = await sendRequest(
+    ResponseMainDto<List<BundleResponseModelDto>> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getBundlesByRegion,
         paramIDs: <String>[regionCode],
       ),
-      fromJson: BundleResponseModel.fromJsonList,
+      fromJson: BundleResponseModelDto.fromJsonList,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<BundleResponseModel>>> getBundlesByCountries({
+  FutureOr<ResponseMainDto<List<BundleResponseModelDto>>> getBundlesByCountries({
     required String countryCodes,
   }) async {
-    ResponseMain<List<BundleResponseModel>> response = await sendRequest(
+    ResponseMainDto<List<BundleResponseModelDto>> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: BundlesApis.getBundlesByCountries,
         queryParameters: <String, String>{"country_codes": countryCodes},
       ),
-      fromJson: BundleResponseModel.fromJsonList,
+      fromJson: BundleResponseModelDto.fromJsonList,
     );
     return response;
   }

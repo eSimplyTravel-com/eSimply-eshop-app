@@ -1,24 +1,26 @@
 import "dart:async";
 import "dart:convert";
 
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
+import "package:esim_open_source/data/remote/responses/auth/auth_response_model_dto.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/presentation/enums/language_enum.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class LocalStorageServiceImpl implements LocalStorageService {
   LocalStorageServiceImpl._privateConstructor();
+
   late SharedPreferences _sharedPrefs;
   static LocalStorageServiceImpl? _instance;
 
-  AuthResponseModel? _authResponse;
+  AuthResponseModelDto? _authResponse;
 
   @override
   AuthResponseModel? get authResponse {
     if (_authResponse == null) {
       _getLoginResponseFromDisk();
     }
-    return _authResponse;
+    return _authResponse?.toDomain();
   }
 
   static Future<LocalStorageServiceImpl> get instance async {
@@ -94,14 +96,16 @@ class LocalStorageServiceImpl implements LocalStorageService {
 
   @override
   Future<void> saveLoginResponse(AuthResponseModel? authResponse) async {
-    _authResponse = authResponse;
+    _authResponse = authResponse == null
+        ? null
+        : AuthResponseModelDto.fromDomain(authResponse);
     await setString(
       LocalStorageKeys.loginResponseKey,
-      authResponse != null ? json.encode(authResponse) : "",
+      authResponse != null ? json.encode(_authResponse) : "",
     );
   }
 
-  AuthResponseModel? _getLoginResponseFromDisk() {
+  AuthResponseModelDto? _getLoginResponseFromDisk() {
     String? val = getString(LocalStorageKeys.loginResponseKey);
     if (val == null || val.isEmpty) {
       return null;
@@ -110,7 +114,7 @@ class LocalStorageServiceImpl implements LocalStorageService {
     if (json.isEmpty) {
       return null;
     }
-    _authResponse = AuthResponseModel.fromAPIJson(json: json);
+    _authResponse = AuthResponseModelDto.fromAPIJson(json: json);
     return _authResponse;
   }
 
@@ -122,7 +126,8 @@ class LocalStorageServiceImpl implements LocalStorageService {
 
     if (defaultLanguage == null) {
       //user has not set a language
-      unawaited(setString(LocalStorageKeys.appLanguage, language.toLowerCase()));
+      unawaited(
+          setString(LocalStorageKeys.appLanguage, language.toLowerCase()));
     } else {
       language = defaultLanguage;
     }

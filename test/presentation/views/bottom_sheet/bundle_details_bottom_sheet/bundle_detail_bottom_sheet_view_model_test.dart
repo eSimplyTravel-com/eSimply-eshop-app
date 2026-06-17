@@ -1,8 +1,9 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_exists_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/api_promotion_repository.dart";
 import "package:esim_open_source/domain/repository/api_user_repository.dart";
@@ -43,7 +44,8 @@ Future<void> main() async {
     await setupTest();
     onViewModelReadyMock(viewName: "BundleDetailBottomSheetView");
 
-    mockApiAuthRepository = locator<ApiAuthRepository>() as MockApiAuthRepository;
+    mockApiAuthRepository =
+        locator<ApiAuthRepository>() as MockApiAuthRepository;
     mockApiPromotionRepository =
         locator<ApiPromotionRepository>() as MockApiPromotionRepository;
     mockApiUserRepository =
@@ -58,8 +60,7 @@ Future<void> main() async {
         locator<NavigationService>() as MockNavigationService;
     mockAppConfigurationService =
         locator<AppConfigurationService>() as MockAppConfigurationService;
-    mockPaymentService =
-        locator<PaymentService>() as MockPaymentService;
+    mockPaymentService = locator<PaymentService>() as MockPaymentService;
 
     // Setup default stub for getPaymentTypes
     when(mockAppConfigurationService.getPaymentTypes)
@@ -203,11 +204,12 @@ Future<void> main() async {
     });
 
     test("validatePromoCode success updates bundle", () async {
-      viewModel..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      )
-      ..tempBundle = viewModel.bundle;
+      viewModel
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        )
+        ..tempBundle = viewModel.bundle;
 
       // Must set promoCodeController.text for updatePromoCodeView to apply changes
       viewModel.promoCodeController.text = "PROMO123";
@@ -237,11 +239,12 @@ Future<void> main() async {
     });
 
     test("validatePromoCode success with referral code", () async {
-      viewModel..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      )
-      ..tempBundle = viewModel.bundle;
+      viewModel
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        )
+        ..tempBundle = viewModel.bundle;
 
       final BundleResponseModel updatedBundle = BundleResponseModel(
         bundleCode: "TEST_BUNDLE",
@@ -270,11 +273,12 @@ Future<void> main() async {
     });
 
     test("validatePromoCode failure reverts to temp bundle", () async {
-      viewModel..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      )
-      ..tempBundle = viewModel.bundle;
+      viewModel
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        )
+        ..tempBundle = viewModel.bundle;
 
       // Must set promoCodeController.text for updatePromoCodeView to apply changes
       viewModel.promoCodeController.text = "INVALID";
@@ -297,12 +301,14 @@ Future<void> main() async {
       expect(viewModel.promoCodeFieldColor, equals(Colors.red));
     });
 
-    test("validatePromoCode failure with referral clears and collapses", () async {
-      viewModel..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      )
-      ..tempBundle = viewModel.bundle;
+    test("validatePromoCode failure with referral clears and collapses",
+        () async {
+      viewModel
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        )
+        ..tempBundle = viewModel.bundle;
 
       when(mockLocalStorageService.remove(LocalStorageKeys.referralCode))
           .thenAnswer((_) async => true);
@@ -325,15 +331,16 @@ Future<void> main() async {
     });
 
     test("validatePromoCode cancel clears promo code", () async {
-      viewModel..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 5,
-      )
-      ..tempBundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      )
-      ..promoCodeFieldEnabled = false;
+      viewModel
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 5,
+        )
+        ..tempBundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        )
+        ..promoCodeFieldEnabled = false;
       viewModel.promoCodeController.text = "PROMO123";
 
       await viewModel.validatePromoCode("PROMO123");
@@ -356,7 +363,8 @@ Future<void> main() async {
       expect(result, isTrue);
     });
 
-    test("isPurchaseButtonEnabled returns false when not logged in and not enabled",
+    test(
+        "isPurchaseButtonEnabled returns false when not logged in and not enabled",
         () {
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(false);
 
@@ -378,7 +386,8 @@ Future<void> main() async {
 
     test("buyNowPressed shows compatible sheet and exits when not confirmed",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Initialize bundle to prevent LateInitializationError
       viewModel.bundle = BundleResponseModel(
@@ -411,7 +420,6 @@ Future<void> main() async {
       ).called(1);
     });
 
-
     test("promoCodeFieldIcon returns correct icon based on state", () {
       viewModel.promoCodeFieldEnabled = true;
       expect(viewModel.promoCodeFieldIcon, equals(Icons.error_outline));
@@ -442,11 +450,10 @@ Future<void> main() async {
     test("onViewModelReady with referral code validates promo", () {
       final BundleDetailBottomSheetViewModel newViewModel =
           BundleDetailBottomSheetViewModel()
-
-      ..bundle = BundleResponseModel(
-        bundleCode: "TEST",
-        price: 10,
-      );
+            ..bundle = BundleResponseModel(
+              bundleCode: "TEST",
+              price: 10,
+            );
 
       when(mockLocalStorageService.getString(LocalStorageKeys.referralCode))
           .thenReturn("REF123");
@@ -475,15 +482,14 @@ Future<void> main() async {
       expect(viewModel.isLoginEnabled, isTrue);
     });
 
-
     test("validateNumber with invalid number disables login", () {
-      viewModel..updateTermsSelections()
-
-      ..validateNumber(
-        code: "+961",
-        number: "123",
-        isValid: false,
-      );
+      viewModel
+        ..updateTermsSelections()
+        ..validateNumber(
+          code: "+961",
+          number: "123",
+          isValid: false,
+        );
 
       expect(viewModel.isLoginEnabled, isFalse);
     });
@@ -504,7 +510,8 @@ Future<void> main() async {
 
     test("isPromoCodeEnabled returns environment setting", () {
       final bool isEnabled = viewModel.isPromoCodeEnabled;
-      expect(isEnabled, equals(AppEnvironment.appEnvironmentHelper.enablePromoCode));
+      expect(isEnabled,
+          equals(AppEnvironment.appEnvironmentHelper.enablePromoCode));
     });
 
     test("bundle assignment handles all properties", () {
@@ -514,17 +521,17 @@ Future<void> main() async {
         displayTitle: "Test Bundle",
       );
 
-      viewModel..bundle = testBundle
-      ..tempBundle = testBundle
-      ..region = null
-      ..countriesList = <CountriesRequestModel>[];
+      viewModel
+        ..bundle = testBundle
+        ..tempBundle = testBundle
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[];
 
       expect(viewModel.bundle, equals(testBundle));
       expect(viewModel.tempBundle, equals(testBundle));
       expect(viewModel.region, isNull);
       expect(viewModel.countriesList, isEmpty);
     });
-
 
     test("isUserLoggedIn affects isPurchaseButtonEnabled", () {
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
@@ -553,28 +560,31 @@ Future<void> main() async {
     });
 
     test("region and countriesList can be initialized", () {
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[];
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[];
 
       expect(viewModel.region, isNull);
       expect(viewModel.countriesList, isEmpty);
     });
 
     test("buyNowPressed with logged in user checks if bundle exists", () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "TEST_BUNDLE",
-        price: 10,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "TEST_BUNDLE",
+          price: 10,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -593,7 +603,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Success"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Success",
+        ),
       );
 
       // Mock assign bundle to prevent flow from erroring
@@ -636,21 +649,23 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user and zero price bundle skips payment selection",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data with ZERO price (100% discount)
-      // This covers line 254-260 where price == 0 skips payment type selection
-      ..bundle = BundleResponseModel(
-        bundleCode: "FREE_BUNDLE",
-        price: 0,
-      );
+        // Mock bundle data with ZERO price (100% discount)
+        // This covers line 254-260 where price == 0 skips payment type selection
+        ..bundle = BundleResponseModel(
+          bundleCode: "FREE_BUNDLE",
+          price: 0,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -669,7 +684,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock assign bundle - for free bundle, payment type doesn't matter (line 257-258)
@@ -714,7 +732,8 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user and wallet payment refreshes user info successfully",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
@@ -724,14 +743,15 @@ Future<void> main() async {
           .thenReturn(150);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "WALLET_BUNDLE",
-        price: 100,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "WALLET_BUNDLE",
+          price: 100,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -750,7 +770,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types include wallet (to trigger getUserInfo call - line 264)
@@ -795,20 +818,22 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user and wallet payment when getUserInfo fails removes wallet option",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "WALLET_FAIL_BUNDLE",
-        price: 50,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "WALLET_FAIL_BUNDLE",
+          price: 50,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -827,7 +852,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types include wallet
@@ -866,25 +894,26 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user and insufficient wallet balance removes wallet option",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Mock INsufficient wallet balance (less than bundle price)
       // This covers lines 287-292
-      when(mockUserAuthenticationService.walletAvailableBalance)
-          .thenReturn(25);
+      when(mockUserAuthenticationService.walletAvailableBalance).thenReturn(25);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data with price > wallet balance
-      ..bundle = BundleResponseModel(
-        bundleCode: "EXPENSIVE_BUNDLE",
-        price: 100,
-      );
+        // Mock bundle data with price > wallet balance
+        ..bundle = BundleResponseModel(
+          bundleCode: "EXPENSIVE_BUNDLE",
+          price: 100,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -903,7 +932,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types include wallet
@@ -945,20 +977,22 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user handles successful assign bundle with COMPLETED payment status",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "COMPLETED_BUNDLE",
-        price: 100,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "COMPLETED_BUNDLE",
+          price: 100,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -977,7 +1011,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types
@@ -1001,7 +1038,8 @@ Future<void> main() async {
         (_) async => Resource<BundleAssignResponseModel?>.success(
           BundleAssignResponseModel(
             orderId: "ORDER_COMPLETED_123",
-            paymentStatus: "COMPLETED", // This makes the if condition true at line 368
+            paymentStatus:
+                "COMPLETED", // This makes the if condition true at line 368
           ),
           message: "Success",
         ),
@@ -1050,20 +1088,22 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user handles successful assign bundle response triggering onSuccess callback",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "SUCCESS_BUNDLE",
-        price: 100,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "SUCCESS_BUNDLE",
+          price: 100,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -1082,7 +1122,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types
@@ -1150,20 +1193,22 @@ Future<void> main() async {
     test(
         "buyNowPressed with logged in user handles PENDING payment status and calls PaymentHelper checkTaxAmount",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       // Mock user is logged in
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
 
       // Initialize required fields
-      viewModel..region = null
-      ..countriesList = <CountriesRequestModel>[]
+      viewModel
+        ..region = null
+        ..countriesList = <CountriesRequestModel>[]
 
-      // Mock bundle data
-      ..bundle = BundleResponseModel(
-        bundleCode: "PENDING_PAYMENT_BUNDLE",
-        price: 50,
-      );
+        // Mock bundle data
+        ..bundle = BundleResponseModel(
+          bundleCode: "PENDING_PAYMENT_BUNDLE",
+          price: 50,
+        );
 
       // Mock compatible sheet confirmed
       when(
@@ -1182,7 +1227,10 @@ Future<void> main() async {
           code: anyNamed("code"),
         ),
       ).thenAnswer(
-        (_) async => Resource<bool?>.success(false, message: "Not found"),
+        (_) async => Resource<BundleExistsResponse?>.success(
+          BundleExistsResponse(exists: false),
+          message: "Not found",
+        ),
       );
 
       // Mock payment types
@@ -1300,13 +1348,13 @@ Future<void> main() async {
       when(mockAppConfigurationService.getLoginType)
           .thenReturn(LoginType.phoneNumber);
 
-      viewModel..updateTermsSelections()
-
-      ..validateNumber(
-        code: "+1",
-        number: "1234567890",
-        isValid: true,
-      );
+      viewModel
+        ..updateTermsSelections()
+        ..validateNumber(
+          code: "+1",
+          number: "1234567890",
+          isValid: true,
+        );
 
       expect(viewModel.isLoginEnabled, isTrue);
     });
@@ -1317,13 +1365,13 @@ Future<void> main() async {
       when(mockAppConfigurationService.getLoginType)
           .thenReturn(LoginType.emailAndPhone);
 
-      viewModel..updateTermsSelections()
-
-      ..validateNumber(
-        code: "+1",
-        number: "1234567890",
-        isValid: true,
-      );
+      viewModel
+        ..updateTermsSelections()
+        ..validateNumber(
+          code: "+1",
+          number: "1234567890",
+          isValid: true,
+        );
 
       expect(viewModel.isLoginEnabled, isTrue);
     });
@@ -1334,20 +1382,21 @@ Future<void> main() async {
       when(mockAppConfigurationService.getLoginType)
           .thenReturn(LoginType.emailAndPhone);
 
-      viewModel..updateTermsSelections()
-
-      ..validateNumber(
-        code: "+1",
-        number: "123",
-        isValid: false,
-      );
+      viewModel
+        ..updateTermsSelections()
+        ..validateNumber(
+          code: "+1",
+          number: "123",
+          isValid: false,
+        );
 
       expect(viewModel.isLoginEnabled, isFalse);
     });
 
     test("buyNowPressed when not logged in and button confirmation is false",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(false);
 
@@ -1364,8 +1413,7 @@ Future<void> main() async {
           variant: anyNamed("variant"),
         ),
       ).thenAnswer(
-        (_) async =>
-            SheetResponse<EmptyBottomSheetResponse>(),
+        (_) async => SheetResponse<EmptyBottomSheetResponse>(),
       );
 
       await viewModel.buyNowPressed(context);
@@ -1380,7 +1428,8 @@ Future<void> main() async {
 
     test("buyNowPressed when not logged in with invalid email validates",
         () async {
-      final BuildContext context = MaterialApp(home: Container()).createElement();
+      final BuildContext context =
+          MaterialApp(home: Container()).createElement();
 
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(false);
       when(mockAppConfigurationService.getLoginType)
@@ -1452,8 +1501,9 @@ Future<void> main() async {
         price: 20,
       );
 
-      viewModel..bundle = bundle1
-      ..tempBundle = bundle2;
+      viewModel
+        ..bundle = bundle1
+        ..tempBundle = bundle2;
 
       expect(viewModel.bundle?.bundleCode, equals("BUNDLE1"));
       expect(viewModel.tempBundle?.bundleCode, equals("BUNDLE2"));

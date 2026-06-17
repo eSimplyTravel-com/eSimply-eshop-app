@@ -2,14 +2,15 @@ import "dart:async";
 
 import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/app_apis/app_apis.dart";
-import "package:esim_open_source/data/remote/responses/app/banner_response_model.dart";
-import "package:esim_open_source/data/remote/responses/app/configuration_response_model.dart";
-import "package:esim_open_source/data/remote/responses/app/currencies_response_model.dart";
-import "package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart";
-import "package:esim_open_source/data/remote/responses/app/faq_response.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/core/string_response.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
+import "package:esim_open_source/data/remote/request/app/add_device_params_dto.dart";
+import "package:esim_open_source/data/remote/responses/app/banner_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/app/configuration_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/app/currencies_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/app/dynamic_page_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/app/faq_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/string_response_dto.dart";
 import "package:esim_open_source/domain/data/api_app.dart";
 import "package:esim_open_source/domain/data/params/add_device_params.dart";
 
@@ -30,43 +31,31 @@ class APIAppImpl extends APIService implements APIApp {
 
   @override
   FutureOr<dynamic> addDevice(AddDeviceParams params) async {
-    Map<String, dynamic> requestParams = <String, dynamic>{
-      "fcm_token": params.fcmToken,
-      "manufacturer": params.manufacturer,
-      "device_model": params.deviceModel,
-      "os": params.deviceOs,
-      "os_version": params.deviceOsVersion,
-      "app_version": params.appVersion,
-      "ram_size": params.ramSize,
-      "screen_resolution": params.screenResolution,
-      "is_rooted": params.isRooted,
-    };
-
-    ResponseMain<EmptyResponse?> addDeviceResponse = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> addDeviceResponse = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.addDevice,
-        parameters: requestParams,
+        parameters: AddDeviceParamsDto.fromDomain(params).toJson(),
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return addDeviceResponse;
   }
 
   @override
-  FutureOr<ResponseMain<List<FaqResponse>?>> getFaq() async {
-    ResponseMain<List<FaqResponse>?> response = await sendRequest(
+  FutureOr<ResponseMainDto<List<FaqResponseDto>?>> getFaq() async {
+    ResponseMainDto<List<FaqResponseDto>?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.faq,
       ),
-      fromJson: FaqResponse.fromJsonList,
+      fromJson: FaqResponseDto.fromJsonList,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<StringResponse?>> contactUs({
+  FutureOr<ResponseMainDto<StringResponseDto?>> contactUs({
     required String email,
     required String message,
   }) async {
@@ -75,79 +64,79 @@ class APIAppImpl extends APIService implements APIApp {
       "content": message,
     };
 
-    ResponseMain<StringResponse?> response = await sendRequest(
+    ResponseMainDto<StringResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.contactUs,
         parameters: params,
       ),
-      fromJson: StringResponse.fromJson,
+      fromJson: StringResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<DynamicPageResponse?>> getAboutUs() async {
-    ResponseMain<DynamicPageResponse?> response = await sendRequest(
+  FutureOr<ResponseMainDto<DynamicPageResponseDto?>> getAboutUs() async {
+    ResponseMainDto<DynamicPageResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.aboutUS,
       ),
-      fromJson: DynamicPageResponse.fromJson,
+      fromJson: DynamicPageResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<DynamicPageResponse?>> getTermsConditions() async {
-    ResponseMain<DynamicPageResponse?> response = await sendRequest(
+  FutureOr<ResponseMainDto<DynamicPageResponseDto?>> getTermsConditions() async {
+    ResponseMainDto<DynamicPageResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.termsConditions,
       ),
-      fromJson: DynamicPageResponse.fromJson,
+      fromJson: DynamicPageResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<ConfigurationResponseModel>?>>
+  FutureOr<ResponseMainDto<List<ConfigurationResponseModelDto>?>>
       getConfigurations() async {
-    ResponseMain<List<ConfigurationResponseModel>?> response =
+    ResponseMainDto<List<ConfigurationResponseModelDto>?> response =
         await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.configurations,
       ),
-      fromJson: ConfigurationResponseModel.fromJsonList,
+      fromJson: ConfigurationResponseModelDto.fromJsonList,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<CurrenciesResponseModel>?>> getCurrencies() async {
-    ResponseMain<List<CurrenciesResponseModel>?> response = await sendRequest(
+  FutureOr<ResponseMainDto<List<CurrenciesResponseModelDto>?>> getCurrencies() async {
+    ResponseMainDto<List<CurrenciesResponseModelDto>?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.getCurrencies,
       ),
-      fromJson: CurrenciesResponseModel.fromJsonList,
+      fromJson: CurrenciesResponseModelDto.fromJsonList,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<BannerResponseModel>?>> getBanner() async {
+  FutureOr<ResponseMainDto<List<BannerResponseModelDto>?>> getBanner() async {
     Map<String, String> headers = <String, String>{
       "x-platform": "mobile",
     };
 
-    ResponseMain<List<BannerResponseModel>?> response = await sendRequest(
+    ResponseMainDto<List<BannerResponseModelDto>?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: AppApis.getBanner,
         additionalHeaders: headers,
       ),
-      fromJson: BannerResponseModel.fromJsonList,
+      fromJson: BannerResponseModelDto.fromJsonList,
     );
 
     return response;

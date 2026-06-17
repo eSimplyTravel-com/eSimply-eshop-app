@@ -1,7 +1,7 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/app/dynamic_page_response.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/response/app/dynamic_page_response.dart";
 import "package:esim_open_source/domain/repository/api_app_repository.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:esim_open_source/domain/use_case/base_use_case.dart";

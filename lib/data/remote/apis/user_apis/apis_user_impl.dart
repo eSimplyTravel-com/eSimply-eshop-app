@@ -2,16 +2,18 @@ import "dart:async";
 
 import "package:esim_open_source/data/remote/apis/api_provider.dart";
 import "package:esim_open_source/data/remote/apis/user_apis/user_apis.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
-import "package:esim_open_source/data/remote/responses/empty_response.dart";
-import "package:esim_open_source/data/remote/responses/user/order_history_response_model.dart";
-import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response.dart";
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/data/remote/request/related_search_dto.dart";
+import "package:esim_open_source/data/remote/responses/base_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_exists_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/core/empty_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/order_history_response_model_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/user_bundle_consumption_response_dto.dart";
+import "package:esim_open_source/data/remote/responses/user/user_notification_response_dto.dart";
 import "package:esim_open_source/domain/data/api_user.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
 
 class APIUserImpl extends APIService implements ApiUser {
   APIUserImpl._privateConstructor() : super.privateConstructor();
@@ -29,21 +31,21 @@ class APIUserImpl extends APIService implements ApiUser {
   void _initialise() {}
 
   @override
-  FutureOr<ResponseMain<UserBundleConsumptionResponse?>> getUserConsumption({
+  FutureOr<ResponseMainDto<UserBundleConsumptionResponseDto?>> getUserConsumption({
     required String iccID,
   }) async {
-    ResponseMain<UserBundleConsumptionResponse> response = await sendRequest(
+    ResponseMainDto<UserBundleConsumptionResponseDto> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getUserConsumption,
         paramIDs: <String>[iccID],
       ),
-      fromJson: UserBundleConsumptionResponse.fromJson,
+      fromJson: UserBundleConsumptionResponseDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<BundleAssignResponseModel?>> assignBundle({
+  FutureOr<ResponseMainDto<BundleAssignResponseModelDto?>> assignBundle({
     required String bundleCode,
     required String promoCode,
     required String referralCode,
@@ -58,27 +60,28 @@ class APIUserImpl extends APIService implements ApiUser {
       "referral_code": referralCode,
       "affiliate_code": affiliateCode,
       "payment_type": paymentType,
-      "related_search": relatedSearch.toJson(),
+      "related_search":
+          RelatedSearchRequestModelDto.fromDomain(relatedSearch).toJson(),
     };
 
     Map<String, String> headers = <String, String>{
       "Authorization": "Bearer $bearerToken",
     };
 
-    ResponseMain<BundleAssignResponseModel?> response = await sendRequest(
+    ResponseMainDto<BundleAssignResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.assignBundle,
         parameters: params,
         additionalHeaders:
             (bearerToken?.isNotEmpty ?? false) ? headers : <String, String>{},
       ),
-      fromJson: BundleAssignResponseModel.fromJson,
+      fromJson: BundleAssignResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<BundleAssignResponseModel?>> topUpBundle({
+  FutureOr<ResponseMainDto<BundleAssignResponseModelDto?>> topUpBundle({
     required String iccID,
     required String bundleCode,
     required String paymentType,
@@ -89,22 +92,22 @@ class APIUserImpl extends APIService implements ApiUser {
       "payment_type": paymentType,
     };
 
-    ResponseMain<BundleAssignResponseModel?> response = await sendRequest(
+    ResponseMainDto<BundleAssignResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.topUpBundle,
         parameters: params,
       ),
-      fromJson: BundleAssignResponseModel.fromJson,
+      fromJson: BundleAssignResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<UserNotificationModel>>> getUserNotifications({
+  FutureOr<ResponseMainDto<List<UserNotificationModelDto>>> getUserNotifications({
     required int pageIndex,
     required int pageSize,
   }) async {
-    ResponseMain<List<UserNotificationModel>> response = await sendRequest(
+    ResponseMainDto<List<UserNotificationModelDto>> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getUserNotifications,
         queryParameters: <String, dynamic>{
@@ -112,72 +115,73 @@ class APIUserImpl extends APIService implements ApiUser {
           "page_size": pageSize,
         },
       ),
-      fromJson: UserNotificationModel.fromJsonList,
+      fromJson: UserNotificationModelDto.fromJsonList,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> setNotificationsRead() async {
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> setNotificationsRead() async {
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.setNotificationsRead,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<bool?>> getBundleExists({
+  FutureOr<ResponseMainDto<BundleExistsResponseDto?>> getBundleExists({
     required String code,
   }) async {
-    ResponseMain<bool?> response = await sendRequest(
+    ResponseMainDto<BundleExistsResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getBundleExists,
         paramIDs: <String>[code],
       ),
+      fromJson: BundleExistsResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> getBundleLabel({
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> getBundleLabel({
     required String iccid,
     required String label,
   }) async {
     Map<String, dynamic> params = <String, dynamic>{"label": label};
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getBundleLabel,
         paramIDs: <String>[iccid],
         parameters: params,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
 
     return response;
   }
 
   @override
-  Future<ResponseMain<PurchaseEsimBundleResponseModel?>> getMyEsimByIccID({
+  Future<ResponseMainDto<PurchaseEsimBundleResponseModelDto?>> getMyEsimByIccID({
     required String iccID,
   }) async {
-    ResponseMain<PurchaseEsimBundleResponseModel?> response = await sendRequest(
+    ResponseMainDto<PurchaseEsimBundleResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getMyEsimByIccID,
         paramIDs: <String>[iccID],
       ),
-      fromJson: PurchaseEsimBundleResponseModel.fromJson,
+      fromJson: PurchaseEsimBundleResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  Future<ResponseMain<PurchaseEsimBundleResponseModel?>> getMyEsimByOrder({
+  Future<ResponseMainDto<PurchaseEsimBundleResponseModelDto?>> getMyEsimByOrder({
     required String orderID,
     String? bearerToken,
   }) async {
@@ -185,52 +189,52 @@ class APIUserImpl extends APIService implements ApiUser {
       "Authorization": "Bearer $bearerToken",
     };
 
-    ResponseMain<PurchaseEsimBundleResponseModel?> response = await sendRequest(
+    ResponseMainDto<PurchaseEsimBundleResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getMyEsimByOrder,
         paramIDs: <String>[orderID],
         additionalHeaders:
             (bearerToken?.isNotEmpty ?? false) ? headers : <String, String>{},
       ),
-      fromJson: PurchaseEsimBundleResponseModel.fromJson,
+      fromJson: PurchaseEsimBundleResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  Future<ResponseMain<List<PurchaseEsimBundleResponseModel>?>>
+  Future<ResponseMainDto<List<PurchaseEsimBundleResponseModelDto>?>>
       getMyEsims() async {
-    ResponseMain<List<PurchaseEsimBundleResponseModel>?> response =
+    ResponseMainDto<List<PurchaseEsimBundleResponseModelDto>?> response =
         await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getMyEsims,
       ),
-      fromJson: PurchaseEsimBundleResponseModel.fromJsonList,
+      fromJson: PurchaseEsimBundleResponseModelDto.fromJsonList,
     );
     return response;
   }
 
   @override
-  Future<ResponseMain<List<BundleResponseModel>?>> getRelatedTopUp({
+  Future<ResponseMainDto<List<BundleResponseModelDto>?>> getRelatedTopUp({
     required String iccID,
     required String bundleCode,
   }) async {
-    ResponseMain<List<BundleResponseModel>?> response = await sendRequest(
+    ResponseMainDto<List<BundleResponseModelDto>?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getRelatedTopUp,
         paramIDs: <String>[bundleCode, iccID],
       ),
-      fromJson: BundleResponseModel.fromJsonList,
+      fromJson: BundleResponseModelDto.fromJsonList,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<List<OrderHistoryResponseModel>?>> getOrderHistory({
+  FutureOr<ResponseMainDto<List<OrderHistoryResponseModelDto>?>> getOrderHistory({
     required int pageIndex,
     required int pageSize,
   }) async {
-    ResponseMain<List<OrderHistoryResponseModel>?> response = await sendRequest(
+    ResponseMainDto<List<OrderHistoryResponseModelDto>?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getOrderHistory,
         queryParameters: <String, dynamic>{
@@ -238,27 +242,27 @@ class APIUserImpl extends APIService implements ApiUser {
           "page_size": pageSize,
         },
       ),
-      fromJson: OrderHistoryResponseModel.fromJsonList,
+      fromJson: OrderHistoryResponseModelDto.fromJsonList,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<OrderHistoryResponseModel?>> getOrderByID({
+  FutureOr<ResponseMainDto<OrderHistoryResponseModelDto?>> getOrderByID({
     required String orderID,
   }) async {
-    ResponseMain<OrderHistoryResponseModel?> response = await sendRequest(
+    ResponseMainDto<OrderHistoryResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.getOrderByID,
         paramIDs: <String>[orderID],
       ),
-      fromJson: OrderHistoryResponseModel.fromJson,
+      fromJson: OrderHistoryResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  Future<ResponseMain<BundleAssignResponseModel?>> topUpWallet({
+  Future<ResponseMainDto<BundleAssignResponseModelDto?>> topUpWallet({
     required double amount,
     required String currency,
   }) async {
@@ -267,46 +271,46 @@ class APIUserImpl extends APIService implements ApiUser {
       //"currency": currency,
     };
 
-    ResponseMain<BundleAssignResponseModel?> response = await sendRequest(
+    ResponseMainDto<BundleAssignResponseModelDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.topUpWallet,
         parameters: params,
       ),
-      fromJson: BundleAssignResponseModel.fromJson,
+      fromJson: BundleAssignResponseModelDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> cancelOrder({
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> cancelOrder({
     required String orderID,
   }) async {
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.cancelOrder,
         paramIDs: <String>[orderID],
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> resendOrderOtp({
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> resendOrderOtp({
     required String orderID,
   }) async {
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.resendOrderOtp,
         paramIDs: <String>[orderID],
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
     return response;
   }
 
   @override
-  FutureOr<ResponseMain<EmptyResponse?>> verifyOrderOtp({
+  FutureOr<ResponseMainDto<EmptyResponseDto?>> verifyOrderOtp({
     required String otp,
     required String iccid,
     required String orderID,
@@ -317,12 +321,12 @@ class APIUserImpl extends APIService implements ApiUser {
       "order_id": orderID,
     };
 
-    ResponseMain<EmptyResponse?> response = await sendRequest(
+    ResponseMainDto<EmptyResponseDto?> response = await sendRequest(
       endPoint: createAPIEndpoint(
         endPoint: UserApis.verifyOrderOtp,
         parameters: params,
       ),
-      fromJson: EmptyResponse.fromJson,
+      fromJson: EmptyResponseDto.fromJson,
     );
     return response;
   }

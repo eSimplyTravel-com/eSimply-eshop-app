@@ -1,6 +1,6 @@
 import "dart:async";
 
-import "package:esim_open_source/data/remote/responses/bundles/bundle_consumption_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_consumption_response.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/reactive_service/bundles_data_service.dart";
 

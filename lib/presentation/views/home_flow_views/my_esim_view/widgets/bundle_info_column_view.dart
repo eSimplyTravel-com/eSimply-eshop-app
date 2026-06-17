@@ -1,4 +1,5 @@
 import "package:esim_open_source/presentation/extensions/helper_extensions.dart";
+import "package:esim_open_source/presentation/previews/app_preview.dart";
 import "package:esim_open_source/presentation/shared/shared_styles.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -44,4 +45,17 @@ class BundleInfoColumn extends StatelessWidget {
       ..add(StringProperty("label", label))
       ..add(StringProperty("value", value));
   }
+}
+
+@AppPreview(name: "Bundle Info Column")
+Widget bundleInfoColumnPreview() {
+  return const Scaffold(
+    body: Padding(
+      padding: EdgeInsets.all(16),
+      child: BundleInfoColumn(
+        label: "Data",
+        value: "5 GB",
+      ),
+    ),
+  );
 }

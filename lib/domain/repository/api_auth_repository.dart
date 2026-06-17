@@ -1,10 +1,10 @@
 import "dart:async";
 
 import "package:esim_open_source/data/remote/auth_reload_interface.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/auth/resend_otp_response_model.dart";
 import "package:esim_open_source/data/remote/unauthorized_access_interface.dart";
 import "package:esim_open_source/domain/data/params/update_user_info_params.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/auth/resend_otp_response_model.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 
 abstract interface class ApiAuthRepository {

@@ -3,12 +3,12 @@ import "dart:io";
 
 import "package:easy_localization/easy_localization.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
-import "package:esim_open_source/data/remote/request/related_search.dart";
-import "package:esim_open_source/data/remote/responses/auth/auth_response_model.dart";
-import "package:esim_open_source/data/remote/responses/base_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_assign_response_model.dart";
-import "package:esim_open_source/data/remote/responses/bundles/bundle_response_model.dart";
 import "package:esim_open_source/di/locator.dart";
+import "package:esim_open_source/domain/data/request/related_search.dart";
+import "package:esim_open_source/domain/data/response/auth/auth_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_assign_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_exists_response.dart";
+import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/repository/api_auth_repository.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
@@ -19,6 +19,7 @@ import "package:esim_open_source/domain/use_case/promotion/validate_promo_code_u
 import "package:esim_open_source/domain/use_case/user/assign_user_bundle_use_case.dart";
 import "package:esim_open_source/domain/use_case/user/get_bundle_exists_use_case.dart";
 import "package:esim_open_source/domain/use_case/user/get_user_info_use_case.dart";
+import "package:esim_open_source/domain/util/network_constants.dart";
 import "package:esim_open_source/domain/util/resource.dart";
 import "package:esim_open_source/presentation/enums/bottomsheet_type.dart";
 import "package:esim_open_source/presentation/enums/login_type.dart";
@@ -458,8 +459,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
         );
       },
       onFailure: (Resource<BundleAssignResponseModel?> result) async {
-        if (response.error?.errorCode ==
-            MainTimeoutException.timeoutErrorCode) {
+        if (response.error?.errorCode == timeoutErrorCode) {
           await showNativeErrorMessage(
             response.error?.message,
             LocaleKeys.processing.tr(),
@@ -630,19 +630,19 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
   Future<bool> _checkIfBundleExists() async {
     setViewState(ViewState.busy);
     bool bundleExists = false;
-    Resource<bool?> response = await getBundleExistsUseCase
+    Resource<BundleExistsResponse?> response = await getBundleExistsUseCase
         .execute(BundleExistsParams(code: bundle?.bundleCode ?? ""));
 
     handleResponse(
       response,
-      onSuccess: (Resource<bool?> result) async {
+      onSuccess: (Resource<BundleExistsResponse?> result) async {
         if (result.data == null) {
           handleError(response);
           return;
         }
-        bundleExists = result.data ?? false;
+        bundleExists = result.data?.exists ?? false;
       },
-      onFailure: (Resource<bool?> result) async {},
+      onFailure: (Resource<BundleExistsResponse?> result) async {},
     );
     setViewState(ViewState.idle);
     return bundleExists;

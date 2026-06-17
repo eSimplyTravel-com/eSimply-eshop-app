@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/user/user_notification_response.dart";
+import "package:esim_open_source/data/remote/responses/user/user_notification_response_dto.dart";
 import "package:flutter_test/flutter_test.dart";
 
 void main() {
@@ -20,8 +20,8 @@ void main() {
       };
 
       // Act
-      final UserNotificationModel model =
-          UserNotificationModel.fromJson(json: json);
+      final UserNotificationModelDto model =
+          UserNotificationModelDto.fromJson(json: json);
 
       // Assert
       expect(model.notificationId, 123);
@@ -39,7 +39,7 @@ void main() {
 
     test("constructor assigns values correctly", () {
       // Act
-      final UserNotificationModel model = UserNotificationModel(
+      final UserNotificationModelDto model = UserNotificationModelDto(
         notificationId: 456,
         title: "Another Notification",
         content: "Another content",
@@ -69,7 +69,7 @@ void main() {
 
     test("toJson returns correct map with all fields", () {
       // Arrange
-      final UserNotificationModel model = UserNotificationModel(
+      final UserNotificationModelDto model = UserNotificationModelDto(
         notificationId: 123,
         title: "Test",
         content: "Content",
@@ -102,15 +102,19 @@ void main() {
 
     test("copyWith creates new instance with updated values", () {
       // Arrange
-      final UserNotificationModel original = UserNotificationModel(
+      final UserNotificationModelDto original = UserNotificationModelDto(
         notificationId: 123,
         title: "Original",
       );
 
       // Act
-      final UserNotificationModel copied = original.copyWith(
-        title: "Updated",
-        content: "New content",
+      final UserNotificationModelDto copied = original.copyWith(
+        UserNotificationModelParamsDto(
+          contentInfo: NotificationContentParamsDto(
+            title: "Updated",
+            content: "New content",
+          ),
+        ),
       );
 
       // Assert
@@ -133,8 +137,8 @@ void main() {
       ];
 
       // Act
-      final List<UserNotificationModel> models =
-          UserNotificationModel.fromJsonList(json: jsonList);
+      final List<UserNotificationModelDto> models =
+          UserNotificationModelDto.fromJsonList(json: jsonList);
 
       // Assert
       expect(models.length, 2);

@@ -1,7 +1,7 @@
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_bundle_category_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/esim_country_entity.dart";
 import "package:esim_open_source/data/data_source/my_esim_entities/transaction_history_entity.dart";
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model_dto.dart";
 import "package:objectbox/objectbox.dart";
 
 @Entity()
@@ -40,7 +40,7 @@ class EsimEntity {
     required this.searchedCountries,
   });
 
-  factory EsimEntity.fromModel(PurchaseEsimBundleResponseModel model) {
+  factory EsimEntity.fromModel(PurchaseEsimBundleResponseModelDto model) {
     return EsimEntity(
       isTopupAllowed: model.isTopupAllowed,
       planStarted: model.planStarted,
@@ -119,8 +119,8 @@ class EsimEntity {
   final ToMany<TransactionHistoryEntity> transactionHistory =
       ToMany<TransactionHistoryEntity>();
 
-  PurchaseEsimBundleResponseModel toModel() {
-    return PurchaseEsimBundleResponseModel(
+  PurchaseEsimBundleResponseModelDto toModel() {
+    return PurchaseEsimBundleResponseModelDto(
       isTopupAllowed: isTopupAllowed,
       planStarted: planStarted,
       bundleExpired: bundleExpired,

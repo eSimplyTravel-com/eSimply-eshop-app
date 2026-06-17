@@ -1,4 +1,4 @@
-import "package:esim_open_source/data/remote/responses/bundles/purchase_esim_bundle_response_model.dart";
+import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bundle_response_model.dart";
 import "package:esim_open_source/presentation/helpers/route_wrapper.dart";
 import "package:esim_open_source/presentation/helpers/view_state_utils.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
@@ -28,7 +28,6 @@ import "package:esim_open_source/presentation/views/pre_sign_in/continue_with_em
 import "package:esim_open_source/presentation/views/pre_sign_in/device_compability_check_view/device_compability_check_view.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/login_view/login_view.dart";
 import "package:esim_open_source/presentation/views/pre_sign_in/verify_login_view/verify_login_view.dart";
-import "package:esim_open_source/presentation/views/skeleton_view/skeleton_view.dart";
 import "package:esim_open_source/presentation/views/start_up_view/startup_view.dart";
 import "package:esim_open_source/presentation/widgets/qr_scanner/qr_scanner_view.dart";
 import "package:esim_open_source/presentation/widgets/stories_view/story_item.dart";
@@ -53,12 +52,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settingsName,
         viewToShow: const AppClipSelectionView(),
-      );
-
-    case SkeletonView.routeName:
-      return _getPageRoute(
-        routeName: settingsName,
-        viewToShow: const SkeletonView(),
       );
 
     case LoginView.routeName:

@@ -34,10 +34,10 @@ class ReferalStoriesView {
             title: LocaleKeys.storiesView_startSharing.tr(),
             hideShadows: true,
             height: 55,
-            enabledTextColor: enabledMainButtonTextColor(
+            enabledTextColor: enabledMainButtonColor(
               context: context,
             ),
-            enabledBackgroundColor: enabledMainButtonColor(
+            enabledBackgroundColor: myEsimSecondaryBackGroundColor(
               context: context,
             ),
           ),

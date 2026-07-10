@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "796049769419",
+    "project_id": "esimply-live",
+    "storage_bucket": "esimply-live.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796049769419:android:7bd16c15beb3f842afac4e",
+        "android_client_info": {
+          "package_name": "com.esimply.esim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796049769419-i2tukjpood5kbc1gmkc4ivonlr9346qu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.esimply.esim",
+            "certificate_hash": "d664c225fa63e3bf09f1f0d769207ac27fe7b1d6"
+          }
+        },
+        {
+          "client_id": "796049769419-vuegobh0tu9if1vn9ho48nnfh1ho6c05.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.esimply.esim",
+            "certificate_hash": "8443d488287219e5c8d4a04a550d5ddc42ce45eb"
+          }
+        },
+        {
+          "client_id": "796049769419-gecodeq1letknr4h810un7nd1mjfm2rv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSnkP00Isw8Wytc6fp6ClSqB0tGFRXirQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796049769419-gecodeq1letknr4h810un7nd1mjfm2rv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796049769419-14l7na91o751h5jb5ce5lq2o87ism18j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.esimply.esim"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

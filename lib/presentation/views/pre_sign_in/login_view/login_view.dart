@@ -64,22 +64,24 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  verticalSpaceSmallMedium,
+                  verticalSpaceSmall,
                   Image.asset(
                     EnvironmentImages.whiteAppIcon.fullImagePath,
-                    width: screenWidth(context) / 1.5,
+                    width: screenWidth(context) / 2,
                     fit: BoxFit.fitWidth,
                   ),
-                  verticalSpaceMedium,
+                  verticalSpaceLarge,
+                  verticalSpaceLarge,
                   Text(
                     LocaleKeys.loginView_titleText.tr(),
                     textAlign: TextAlign.center,
                     style: headerOneBoldTextStyle(
                       context: context,
                       fontColor: mainWhiteTextColor(context: context),
+                      fontSize: 28,
                     ),
                   ),
-                  verticalSpaceSmallMedium,
+                  verticalSpaceSmall,
                   Text(
                     LocaleKeys.loginView_subTitleText.tr(),
                     textAlign: TextAlign.center,
@@ -90,7 +92,7 @@ class LoginView extends StatelessWidget {
                   ),
                 ],
               ),
-              verticalSpaceMedium,
+              verticalSpaceSmall,
               Column(
                 children: <Widget>[
                   AppEnvironment.appEnvironmentHelper.enableFacebookSignIn

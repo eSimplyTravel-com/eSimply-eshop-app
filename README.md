@@ -108,6 +108,6 @@ Note: In case you need a text with arguments here’s an example
 1. Create your fb App at (https://developers.facebook.com/apps/?show_reminder=true)
 2. In the App Settings -> Basic add your iOS and android apps with your bundle ids
 3. Get the Facebook client token from App Settings -> advanced and the Facebook App ID from the top header view
-4. Navigate to (android/app/build.gradle) add for every flavor the facebook_app_id value, fb_client_token, fb_login_protocol_scheme note that fb_login_protocol_scheme is the facebook_app_id but with fb infant of key
+4. Navigate to (android/app/build.gradle) add for every flavor the facebook_app_id value, fb_client_token, fb_login_protocol_scheme note that fb_login_protocol_scheme is the facebook_app_id but with fb in front of key
 5. In iOS open the project with Xcode in build settings -> user defined add the values for each flavor in the key FACEBOOK_SIGN_IN_APP_ID
 6. To integrate supabase with your Facebook login follow this link (https://supabase.com/docs/guides/auth/social-login/auth-facebook)

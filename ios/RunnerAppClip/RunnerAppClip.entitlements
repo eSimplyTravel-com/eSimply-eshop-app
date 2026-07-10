@@ -2,13 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>com.apple.developer.associated-domains</key>
-    <array>
-        <string>appclips:subscriber-open-source.onrender.com</string>
-    </array>
-    <key>com.apple.developer.parent-application-identifiers</key>
-    <array>
-        <string>$(AppIdentifierPrefix)monty.esim.opensource.test</string>
-    </array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>appclips:esimply-eshop-web.onrender.com</string>
+	</array>
+	<key>com.apple.developer.parent-application-identifiers</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.esimply.esim</string>
+	</array>
 </dict>
 </plist>

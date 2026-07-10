@@ -346,7 +346,7 @@ class MyESimBundleBottomSheetView extends StatelessWidget {
                   TopUpButton(
                     onClick: viewModel.onTopUpClick,
                     backgroundColor:
-                        myEsimSecondaryBackGroundColor(context: context),
+                    enabledMainButtonColor(context: context),
                   ),
                   const Spacer(),
                 ],
@@ -398,7 +398,7 @@ class MyESimBundleBottomSheetView extends StatelessWidget {
                 ? TopUpButton(
                     onClick: viewModel.onTopUpClick,
                     backgroundColor:
-                        myEsimSecondaryBackGroundColor(context: context),
+                    enabledMainButtonColor(context: context),
                   )
                 : Container(),
           ],

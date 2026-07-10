@@ -66,7 +66,7 @@ class ApplyPromoCode extends StatelessWidget {
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     size: 20,
-                    color: mainTabBackGroundColor(
+                    color: enabledMainButtonColor(
                       context: context,
                     ),
                   ),

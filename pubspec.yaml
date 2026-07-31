@@ -231,3 +231,9 @@ flutter:
           weight: 600
         - asset: assets/fonts/inter/Inter_18pt-Bold.ttf
           weight: 700
+    - family: Graveure
+      fonts:
+        - asset: assets/fonts/graveure/Graveure-Medium.otf
+          weight: 500
+        - asset: assets/fonts/graveure/Graveure-Bold.otf
+          weight: 700

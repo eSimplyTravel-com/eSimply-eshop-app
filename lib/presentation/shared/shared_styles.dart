@@ -186,8 +186,7 @@ TextStyle headerZeroMediumTextStyle({
       fontWeight: FontWeight.w500,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerZeroBoldTextStyle({
@@ -201,8 +200,7 @@ TextStyle headerZeroBoldTextStyle({
       fontWeight: FontWeight.w700,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerOneNormalTextStyle({
@@ -216,8 +214,7 @@ TextStyle headerOneNormalTextStyle({
       fontWeight: FontWeight.w400,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerOneMediumTextStyle({
@@ -231,8 +228,7 @@ TextStyle headerOneMediumTextStyle({
       fontWeight: FontWeight.w500,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerOneBoldTextStyle({
@@ -247,8 +243,7 @@ TextStyle headerOneBoldTextStyle({
       fontWeight: FontWeight.w700,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerTwoMediumTextStyle({
@@ -262,8 +257,7 @@ TextStyle headerTwoMediumTextStyle({
       fontWeight: FontWeight.w500,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerTwoBoldTextStyle({
@@ -277,8 +271,7 @@ TextStyle headerTwoBoldTextStyle({
       fontWeight: FontWeight.w700,
       color: fontColor ?? context.appColors.baseBlack,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      fontFamily:
-          fontFamily ?? Theme.of(context).textTheme.labelLarge?.fontFamily,
+      fontFamily: fontFamily ?? "Graveure",
     );
 
 TextStyle headerThreeMediumTextStyle({

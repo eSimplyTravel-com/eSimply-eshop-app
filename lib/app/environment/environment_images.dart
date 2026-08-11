@@ -1,6 +1,6 @@
 import "package:esim_open_source/app/environment/app_environment.dart";
 
-enum EnvironmentImagesType { png, gif, svg }
+enum EnvironmentImagesType { png, jpg, gif, svg }
 
 enum EnvironmentImages {
   //user guide
@@ -112,6 +112,7 @@ enum EnvironmentImages {
   globalFlag,
   //logo
   splashIcon,
+  headerLockup,
   //stories
   storyCar,
   storyGirl,
@@ -163,6 +164,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.emptyNotifications:
       case EnvironmentImages.loginMail:
       case EnvironmentImages.splashIcon:
+      case EnvironmentImages.headerLockup:
       case EnvironmentImages.storyCar:
       case EnvironmentImages.storyGirl:
       case EnvironmentImages.storyBuilding:
@@ -208,6 +210,12 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.iconWarning:
       case EnvironmentImages.globalFlag:
         return EnvironmentImagesType.svg;
+      // Full-bleed photography — JPEG keeps these at ~200 KB each instead of
+      // the several MB a photographic PNG would cost in the bundle.
+      case EnvironmentImages.storyCar:
+      case EnvironmentImages.storyGirl:
+      case EnvironmentImages.storyBuilding:
+        return EnvironmentImagesType.jpg;
       default:
         return EnvironmentImagesType.png;
     }
@@ -323,6 +331,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.globalFlag:
         return "flags/$name";
       case EnvironmentImages.splashIcon:
+      case EnvironmentImages.headerLockup:
         return "logo/$name";
       case EnvironmentImages.storyCar:
       case EnvironmentImages.storyGirl:

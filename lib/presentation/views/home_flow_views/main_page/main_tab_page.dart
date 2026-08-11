@@ -147,6 +147,10 @@ class _MainTabPageState extends State<MainTabPage>
             tabController: tabController,
             isKeyboardVisible: isKeyboardVisible,
             backgroundColor: background,
+            selectedColor:
+                bottomNavbarSelectedBackGroundColor(context: context),
+            unselectedColor:
+                bottomNavbarUnselectedBackGroundColor(context: context),
             floatingActionButton: whatsAppFab,
             tabsWidgets: generateTabWidgets(
               context: context,

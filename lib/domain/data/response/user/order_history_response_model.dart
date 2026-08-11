@@ -40,7 +40,7 @@ class OrderHistoryResponseModel {
     String mockOrderNumber = "ada2964e-81df-4a39-ab34-f1adde6e7b15";
     String mockOrderStatus = "order status";
     String mockOrderType = "order Type";
-    String mockCompanyName = "Monty Mobile";
+    String mockCompanyName = "eSimply";
     String mockOrderDisplayPrice = "2.5 USD";
     String mockOrderCurrency = "USD";
     String mockOrderDate = "12344";

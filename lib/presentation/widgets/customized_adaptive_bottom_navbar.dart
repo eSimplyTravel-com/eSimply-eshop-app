@@ -14,6 +14,8 @@ class BaseAdaptiveBottomNavBar extends StatefulWidget {
     this.tabController,
     this.floatingActionButton,
     this.backgroundColor,
+    this.selectedColor,
+    this.unselectedColor,
   });
 
   final List<String> tabsIconData;
@@ -23,6 +25,12 @@ class BaseAdaptiveBottomNavBar extends StatefulWidget {
   final LockableTabController? tabController;
   final Widget? floatingActionButton;
   final Color? backgroundColor;
+
+  /// Without these the native iOS 26 tab bar falls back to
+  /// `CupertinoTheme.of(context).primaryColor`, which is the system blue and
+  /// has nothing to do with the CVI palette.
+  final Color? selectedColor;
+  final Color? unselectedColor;
 
   @override
   State<BaseAdaptiveBottomNavBar> createState() =>
@@ -38,7 +46,9 @@ class BaseAdaptiveBottomNavBar extends StatefulWidget {
       ..add(
         DiagnosticsProperty<TabController?>("tabController", tabController),
       )
-      ..add(ColorProperty("backgroundColor", backgroundColor));
+      ..add(ColorProperty("backgroundColor", backgroundColor))
+      ..add(ColorProperty("selectedColor", selectedColor))
+      ..add(ColorProperty("unselectedColor", unselectedColor));
   }
 }
 
@@ -107,6 +117,8 @@ class _BaseAdaptiveBottomNavBarState extends State<BaseAdaptiveBottomNavBar> {
       bottomNavigationBar: AdaptiveBottomNavigationBar(
         selectedIndex: clampedIndex,
         onTap: _onTap,
+        selectedItemColor: widget.selectedColor,
+        unselectedItemColor: widget.unselectedColor,
         items: <AdaptiveNavigationDestination>[
           for (int i = 0; i < widget.tabsIconData.length; i++)
             AdaptiveNavigationDestination(

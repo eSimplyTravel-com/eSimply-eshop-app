@@ -126,8 +126,6 @@
 		</dict>
 		<key>FlutterDeepLinkingEnabled</key>
 		<false/>
-		<key>NSUserTrackingUsageDescription</key>
-		<string>This app would like to access IDFA to provide better ad experiences and measure ad performance.</string>
 		<!-- Analytics is off until the user consents. Privacy §3 promises
 		     analytics runs on consent (GDPR Art. 6(1)(a)), and storing SDK
 		     identifiers on the device needs prior consent under the Danish

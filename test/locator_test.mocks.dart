@@ -2008,18 +2008,12 @@ class MockAnalyticsService extends _i1.Mock implements _i10.AnalyticsService {
   }
 
   @override
-  _i22.Future<void> configure({
-    bool? firebaseAnalytics = true,
-    bool? facebookAnalytics = true,
-  }) =>
+  _i22.Future<void> configure({bool? firebaseAnalytics = true}) =>
       (super.noSuchMethod(
         Invocation.method(
           #configure,
           [],
-          {
-            #firebaseAnalytics: firebaseAnalytics,
-            #facebookAnalytics: facebookAnalytics,
-          },
+          {#firebaseAnalytics: firebaseAnalytics},
         ),
         returnValue: _i22.Future<void>.value(),
         returnValueForMissingStub: _i22.Future<void>.value(),
@@ -14379,6 +14373,18 @@ class MockProfileViewModel extends _i1.Mock implements _i94.ProfileViewModel {
       ) as _i22.Future<void>);
 
   @override
+  _i22.Future<void> setAnalyticsConsent({required bool? granted}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setAnalyticsConsent,
+          [],
+          {#granted: granted},
+        ),
+        returnValue: _i22.Future<void>.value(),
+        returnValueForMissingStub: _i22.Future<void>.value(),
+      ) as _i22.Future<void>);
+
+  @override
   String getUserName() => (super.noSuchMethod(
         Invocation.method(
           #getUserName,
@@ -21002,6 +21008,16 @@ class MockLoginViewModel extends _i1.Mock implements _i103.LoginViewModel {
         ),
         returnValueForMissingStub: null,
       );
+
+  @override
+  _i22.Future<void> showTermsSheet() => (super.noSuchMethod(
+        Invocation.method(
+          #showTermsSheet,
+          [],
+        ),
+        returnValue: _i22.Future<void>.value(),
+        returnValueForMissingStub: _i22.Future<void>.value(),
+      ) as _i22.Future<void>);
 
   @override
   _i22.Future<void> initializeListener() => (super.noSuchMethod(

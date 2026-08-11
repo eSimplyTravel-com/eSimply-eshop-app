@@ -1,11 +1,9 @@
 import "package:esim_open_source/data/services/analytics_service_impl.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
-import "package:esim_open_source/domain/repository/services/dynamic_linking_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_core_platform_interface/test.dart";
-import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mockito/mockito.dart";
@@ -24,9 +22,6 @@ import "../../locator_test.mocks.dart";
 Future<void> main() async {
   await prepareTest();
 
-  const MethodChannel attChannel = MethodChannel("app_tracking_transparency");
-  const MethodChannel facebookChannel =
-      MethodChannel("flutter.oddbit.id/facebook_app_events");
   const String fbAnalyticsLogEventChannel =
       "dev.flutter.pigeon.firebase_analytics_platform_interface."
       "FirebaseAnalyticsHostApi.logEvent";
@@ -34,18 +29,12 @@ Future<void> main() async {
       "dev.flutter.pigeon.firebase_analytics_platform_interface."
       "FirebaseAnalyticsHostApi.setUserId";
 
-  // TrackingStatus enum index: notDetermined=0, restricted=1, denied=2,
-  // authorized=3, notSupported=4. Defaults to authorized; individual tests
-  // override as needed.
-  int trackingStatus = 3;
-
   // Stored analytics consent. `null` means the user has never been asked, which
   // is the state a fresh install is in.
   bool? storedConsent;
 
-  // Call counters, so the consent tests can assert that nothing reached the
-  // SDKs rather than merely that the futures completed.
-  int attRequestCount = 0;
+  // Call counter, so the consent tests can assert that nothing reached the SDK
+  // rather than merely that the futures completed.
   int firebaseLogEventCount = 0;
 
   void mockPigeonVoidReply(String channel) {
@@ -58,9 +47,6 @@ Future<void> main() async {
   }
 
   setUp(() async {
-    // AppTrackingTransparency short-circuits to notSupported unless the target
-    // platform is iOS, so without this the ATT assertions below are vacuous.
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     await setupTest();
     await TestEnvironmentSetup.initializeTestEnvironment();
     // setupTest() fires the legacy initFirebaseMock() without awaiting it and it
@@ -70,28 +56,10 @@ Future<void> main() async {
     setupFirebaseCoreMocks();
     await Firebase.initializeApp();
 
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      ..setMockMethodCallHandler(attChannel, (MethodCall call) async {
-        switch (call.method) {
-          case "requestTrackingAuthorization":
-            attRequestCount++;
-            return trackingStatus;
-          // The plugin calls `getTrackingAuthorizationStatus`; the previous
-          // mock listened for `trackingAuthorizationStatus` and so never fired.
-          case "getTrackingAuthorizationStatus":
-            return trackingStatus;
-          default:
-            return null;
-        }
-      })
-      ..setMockMethodCallHandler(
-          facebookChannel, (MethodCall call) async => null,);
-
     mockPigeonVoidReply(fbAnalyticsLogEventChannel);
     mockPigeonVoidReply(fbAnalyticsSetUserIdChannel);
 
     storedConsent = null;
-    attRequestCount = 0;
     firebaseLogEventCount = 0;
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -120,11 +88,8 @@ Future<void> main() async {
 
   tearDown(() async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      ..setMockMethodCallHandler(attChannel, null)
-      ..setMockMethodCallHandler(facebookChannel, null)
       ..setMockMessageHandler(fbAnalyticsLogEventChannel, null)
       ..setMockMessageHandler(fbAnalyticsSetUserIdChannel, null);
-    debugDefaultTargetPlatformOverride = null;
     await tearDownTest();
   });
 
@@ -356,7 +321,6 @@ Future<void> main() async {
     });
 
     test("configure completes when tracking is already authorized", () async {
-      trackingStatus = 3; // authorized
       storedConsent = true;
       final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
 
@@ -370,19 +334,6 @@ Future<void> main() async {
       // "not asked" must stay distinguishable from "refused" — only the first
       // may be turned into a prompt.
       expect(service.analyticsConsent, isNull);
-    });
-
-    test("configure does not prompt for ATT before analytics consent",
-        () async {
-      trackingStatus = 0; // notDetermined — would prompt if we asked
-      storedConsent = null;
-      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
-
-      await service.configure();
-
-      // Apple treats ATT and GDPR consent as separate things; the user must
-      // not meet the system prompt before answering ours.
-      expect(attRequestCount, 0);
     });
 
     test("no event reaches Firebase until consent is granted", () async {
@@ -405,11 +356,9 @@ Future<void> main() async {
       expect(storedConsent, isFalse);
       expect(service.analyticsConsent, isFalse);
       expect(firebaseLogEventCount, 0);
-      expect(attRequestCount, 0);
     });
 
     test("granting consent persists it and lets events through", () async {
-      trackingStatus = 3; // authorized
       final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
 
       await service.setAnalyticsConsent(granted: true);
@@ -445,42 +394,6 @@ Future<void> main() async {
       expect(firebaseLogEventCount, afterGrant);
     });
 
-    test("Branch's own ATT call is not made before consent", () async {
-      trackingStatus = 0; // notDetermined
-      final MockDynamicLinkingService branch =
-          locator<DynamicLinkingService>() as MockDynamicLinkingService;
-      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
-
-      // AnalyticsServiceImpl is a static singleton shared across tests, so
-      // start from a known interaction count rather than inheriting whatever
-      // ran before.
-      clearInteractions(branch);
-
-      await service.configure();
-      await service.setAnalyticsConsent(granted: false);
-
-      // There is only one system ATT prompt, so whichever SDK asks first owns
-      // the moment. Branch used to ask from main() before anyone had been asked
-      // anything.
-      //
-      // Only the negative direction is asserted here. The matching positive
-      // assertion turned out to depend on locator/singleton state that differs
-      // between a single-file run and the full suite, and a flaky test is worth
-      // less than none. That ATT is reached at all after consent is covered by
-      // "ATT is only requested once analytics consent is granted".
-      verifyNever(branch.requestTrackingAuthorization());
-    });
-
-    test("ATT is only requested once analytics consent is granted", () async {
-      trackingStatus = 0; // notDetermined
-      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
-
-      await service.setAnalyticsConsent(granted: false);
-      expect(attRequestCount, 0);
-
-      await service.setAnalyticsConsent(granted: true);
-      expect(attRequestCount, 1);
-    });
 
     test("configure with analytics flags disabled completes", () async {
       final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
@@ -488,7 +401,6 @@ Future<void> main() async {
       await expectLater(
         service.configure(
           firebaseAnalytics: false,
-          facebookAnalytics: false,
         ),
         completes,
       );
@@ -508,7 +420,6 @@ Future<void> main() async {
       final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
       await service.configure(
         firebaseAnalytics: false,
-        facebookAnalytics: false,
       );
 
       await expectLater(
@@ -535,7 +446,6 @@ Future<void> main() async {
       final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
       await service.configure(
         firebaseAnalytics: false,
-        facebookAnalytics: false,
       );
 
       await expectLater(service.setUserId("hashed_email"), completes);
@@ -552,21 +462,6 @@ Future<void> main() async {
       );
     });
 
-    test("logFaceBookEvent completes for a parameterized event", () async {
-      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
-
-      await expectLater(
-        service.logFaceBookEvent(
-          event: AnalyticEvent.buySuccess(
-            utm: "x",
-            platform: "ios",
-            amount: "10",
-            currency: "USD",
-          ),
-        ),
-        completes,
-      );
-    });
   });
 
   group("AnalyticsService Interface Tests", () {

@@ -58,7 +58,15 @@ class BundleDetailBottomSheetView extends StatelessWidget {
             vertical: 15,
             horizontal: 15,
             child: SizedBox(
-              height: screenHeight,
+              // `screenHeight` comes from BaseView.safeAreaHeight, which does
+              // not subtract viewInsets — so with the keyboard up this box was
+              // taller than the space the sheet actually had, and the bottom of
+              // the content (the checkboxes) was clipped. Subtract the inset
+              // here and let the scroll area take whatever is left, instead of
+              // the previous fixed 100/200 magic numbers, which under-estimated
+              // the real keyboard height.
+              height: (screenHeight - MediaQuery.viewInsetsOf(context).bottom)
+                  .clamp(0.0, screenHeight),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -67,10 +75,7 @@ class BundleDetailBottomSheetView extends StatelessWidget {
                       SheetResponse<EmptyBottomSheetResponse>(),
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight -
-                        100 -
-                        (viewModel.isKeyboardVisible(context) ? 200 : 0),
+                  Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -110,7 +115,6 @@ class BundleDetailBottomSheetView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Spacer(),
                   _buildPurchaseButton(context, viewModel),
                 ],
               ),

@@ -73,7 +73,10 @@ void main() async {
       DeepLinkHandler.shared.handleDeepLink(uri: uri, isInitial: isInitial);
     },
   );
-  locator<DynamicLinkingService>().requestTrackingAuthorization();
+  // Branch's ATT request used to fire here, before the user had been asked
+  // anything. There is only one system ATT prompt, so whichever SDK asks first
+  // owns the moment — and it was this one. It now runs from
+  // AnalyticsServiceImpl, after analytics consent has been granted.
 
   runApp(const MyFlutterActivity(StartUpView()));
   FlutterNativeSplash.remove();

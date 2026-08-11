@@ -1,6 +1,7 @@
 import "package:esim_open_source/data/services/analytics_service_impl.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
+import "package:esim_open_source/domain/repository/services/dynamic_linking_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_core_platform_interface/test.dart";
@@ -442,6 +443,32 @@ Future<void> main() async {
 
       expect(afterGrant, greaterThan(0));
       expect(firebaseLogEventCount, afterGrant);
+    });
+
+    test("Branch's own ATT call is not made before consent", () async {
+      trackingStatus = 0; // notDetermined
+      final MockDynamicLinkingService branch =
+          locator<DynamicLinkingService>() as MockDynamicLinkingService;
+      final AnalyticsServiceImpl service = AnalyticsServiceImpl.instance;
+
+      // AnalyticsServiceImpl is a static singleton shared across tests, so
+      // start from a known interaction count rather than inheriting whatever
+      // ran before.
+      clearInteractions(branch);
+
+      await service.configure();
+      await service.setAnalyticsConsent(granted: false);
+
+      // There is only one system ATT prompt, so whichever SDK asks first owns
+      // the moment. Branch used to ask from main() before anyone had been asked
+      // anything.
+      //
+      // Only the negative direction is asserted here. The matching positive
+      // assertion turned out to depend on locator/singleton state that differs
+      // between a single-file run and the full suite, and a flaky test is worth
+      // less than none. That ATT is reached at all after consent is covered by
+      // "ATT is only requested once analytics consent is granted".
+      verifyNever(branch.requestTrackingAuthorization());
     });
 
     test("ATT is only requested once analytics consent is granted", () async {

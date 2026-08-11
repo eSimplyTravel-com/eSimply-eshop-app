@@ -10,6 +10,7 @@ enum BottomSheetType {
   receiptOrder,
   voucherCode,
   termsCondition,
+  analyticsConsent,
   bundleDetails,
   paymentMethod,
   topUpBundle,

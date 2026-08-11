@@ -8,6 +8,7 @@ import "package:esim_open_source/presentation/shared/ui_helpers.dart";
 import "package:esim_open_source/presentation/views/base/base_view.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_model.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view_sections.dart";
+import "package:esim_open_source/presentation/widgets/customized_switch.dart";
 import "package:esim_open_source/presentation/widgets/main_button.dart";
 import "package:esim_open_source/presentation/widgets/padding_widget.dart";
 import "package:esim_open_source/translations/locale_keys.g.dart";
@@ -143,6 +144,14 @@ class ProfileView extends StatelessWidget {
         ],
       );
     } else {
+      if (section == ProfileViewSections.analyticsConsent) {
+        return analyticsConsentSectionView(
+          context,
+          viewModel,
+          section,
+        );
+      }
+
       return GestureDetector(
         onTap: () async {
           section.tapAction(viewModel);
@@ -182,6 +191,58 @@ class ProfileView extends StatelessWidget {
         ),
       );
     }
+  }
+
+  Widget analyticsConsentSectionView(
+    BuildContext context,
+    ProfileViewModel viewModel,
+    ProfileViewSections section,
+  ) {
+    return PaddingWidget.applySymmetricPadding(
+      vertical: 15,
+      child: Row(
+        children: <Widget>[
+          Image.asset(
+            section.sectionImagePath,
+            width: 15,
+            height: 15,
+          ),
+          horizontalSpaceSmall,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  section.sectionTitle,
+                  style: bodyNormalTextStyle(
+                    context: context,
+                    fontColor: titleTextColor(context: context),
+                  ),
+                ).textSupportsRTL(context),
+                verticalSpaceTiny,
+                Text(
+                  LocaleKeys.analyticsConsent_settingsSubtitle.tr(),
+                  style: captionOneMediumTextStyle(
+                    context: context,
+                    fontColor: contentTextColor(context: context),
+                  ),
+                ).textSupportsRTL(context),
+              ],
+            ),
+          ),
+          horizontalSpaceSmall,
+          MySwitch(
+            value: viewModel.analyticsConsent ?? false,
+            onChanged: ({required bool value}) async {
+              await viewModel.setAnalyticsConsent(granted: value);
+            },
+            activeColor: analyticsConsentAccentColor(context: context),
+            trackColor: greyBackGroundColor(context: context),
+            thumbColor: whiteBackGroundColor(context: context),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget getTopTrialingWidget({

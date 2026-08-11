@@ -5,6 +5,7 @@ import "package:esim_open_source/domain/data/response/bundles/purchase_esim_bund
 import "package:esim_open_source/domain/data/response/user/order_history_response_model.dart";
 import "package:esim_open_source/presentation/enums/bottomsheet_type.dart";
 import "package:esim_open_source/presentation/enums/payment_type.dart";
+import "package:esim_open_source/presentation/views/bottom_sheet/analytics_consent_bottom_sheet/analytics_consent_bottom_sheet_view.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/bundle_details_bottom_sheet/bundle_detail_bottom_sheet_view.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/cashback_reward_bottom_sheet/cashback_reward_bottom_sheet.dart";
 import "package:esim_open_source/presentation/views/bottom_sheet/compatible_bottom_sheet_view/compatible_bottom_sheet_view.dart";
@@ -133,6 +134,15 @@ void setupBottomSheetUi() {
       Function(SheetResponse<EmptyBottomSheetResponse>) completer,
     ) =>
         TermsBottomSheetView(
+          requestBase: sheetRequest,
+          completer: completer,
+        ),
+    BottomSheetType.analyticsConsent: (
+      dynamic context,
+      dynamic sheetRequest,
+      Function(SheetResponse<EmptyBottomSheetResponse>) completer,
+    ) =>
+        AnalyticsConsentBottomSheetView(
           requestBase: sheetRequest,
           completer: completer,
         ),

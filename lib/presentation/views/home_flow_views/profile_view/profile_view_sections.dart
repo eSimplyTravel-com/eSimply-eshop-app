@@ -32,6 +32,7 @@ enum ProfileViewSections {
   userGuide,
   language,
   currency,
+  analyticsConsent,
   accountHeader,
   logout,
   deleteAccount;
@@ -96,6 +97,8 @@ enum ProfileViewSections {
         return LocaleKeys.profile_language.tr();
       case ProfileViewSections.currency:
         return LocaleKeys.profile_currency.tr();
+      case ProfileViewSections.analyticsConsent:
+        return LocaleKeys.analyticsConsent_settingsTitle.tr();
       case ProfileViewSections.accountHeader:
         return LocaleKeys.profile_account.tr();
       case ProfileViewSections.logout:
@@ -136,6 +139,8 @@ enum ProfileViewSections {
         return "language";
       case ProfileViewSections.currency:
         return "currency";
+      case ProfileViewSections.analyticsConsent:
+        return "notificationIcon";
       case ProfileViewSections.accountHeader:
         return "";
       case ProfileViewSections.logout:
@@ -186,6 +191,8 @@ enum ProfileViewSections {
           DynamicSelectionView.routeName,
           arguments: LanguagesDataSource(),
         );
+      case ProfileViewSections.analyticsConsent:
+        log("Tapped $sectionTitle");
       case ProfileViewSections.logout:
         SheetResponse<EmptyBottomSheetResponse>? logoutResponse =
             await viewModel.bottomSheetService.showCustomSheet(

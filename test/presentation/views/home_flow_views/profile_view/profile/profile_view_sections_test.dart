@@ -145,6 +145,7 @@ Future<void> main() async {
           ProfileViewSections.userGuide,
           ProfileViewSections.language,
           ProfileViewSections.currency,
+          ProfileViewSections.analyticsConsent,
           ProfileViewSections.accountHeader,
           ProfileViewSections.logout,
           ProfileViewSections.deleteAccount,

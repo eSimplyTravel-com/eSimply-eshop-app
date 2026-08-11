@@ -1,4 +1,5 @@
 import "package:easy_localization/easy_localization.dart";
+import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/app/environment/environment_images.dart";
 import "package:esim_open_source/presentation/reactive_service/user_authentication_service.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/profile_view/profile_view.dart";
@@ -15,12 +16,19 @@ import "package:stacked_services/stacked_services.dart";
 import "../../../../../helpers/view_helper.dart";
 import "../../../../../helpers/view_model_helper.dart";
 import "../../../../../locator_test.dart";
+import "../../../../../locator_test.mocks.dart";
 
 Future<void> main() async {
   await prepareTest();
 
   setUp(() async {
     await setupTest();
+    // The analytics-consent prompt reads this on first appearance. `false`
+    // means "already answered", so these tests are not interrupted by it.
+    when(
+      (locator<AnalyticsService>() as MockAnalyticsService).analyticsConsent,
+    ).thenReturn(false);
+
   });
 
   tearDown(() async {

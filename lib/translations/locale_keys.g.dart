@@ -403,5 +403,11 @@ abstract class  LocaleKeys {
   static const validity_year_plural = 'validity_year_plural';
   static const primaryBundle = 'primaryBundle';
   static const bundleDetails_immediateSupplyConsent = 'bundleDetails_immediateSupplyConsent';
+  static const analyticsConsent_title = 'analyticsConsent_title';
+  static const analyticsConsent_body = 'analyticsConsent_body';
+  static const analyticsConsent_allow = 'analyticsConsent_allow';
+  static const analyticsConsent_deny = 'analyticsConsent_deny';
+  static const analyticsConsent_settingsTitle = 'analyticsConsent_settingsTitle';
+  static const analyticsConsent_settingsSubtitle = 'analyticsConsent_settingsSubtitle';
 
 }

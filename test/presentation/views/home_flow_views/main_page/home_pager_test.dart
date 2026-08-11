@@ -1,3 +1,4 @@
+import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/presentation/extensions/stacked_services/custom_route_observer.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/main_page/home_pager.dart";
@@ -8,6 +9,7 @@ import "package:mockito/mockito.dart";
 import "../../../../helpers/view_helper.dart";
 import "../../../../helpers/view_model_helper.dart";
 import "../../../../locator_test.dart";
+import "../../../../locator_test.mocks.dart";
 
 Future<void> main() async {
   await prepareTest();
@@ -15,6 +17,12 @@ Future<void> main() async {
   group("HomePager Unit Tests", () {
     setUp(() async {
       await setupTest();
+    // The analytics-consent prompt reads this on first appearance. `false`
+    // means "already answered", so these tests are not interrupted by it.
+    when(
+      (locator<AnalyticsService>() as MockAnalyticsService).analyticsConsent,
+    ).thenReturn(false);
+
       onViewModelReadyMock(viewName: "HomePager");
       // onViewModelReadyMock(viewName: "MyEsimView");
       // onViewModelReadyMock(viewName: "ProfileView");

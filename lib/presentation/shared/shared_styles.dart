@@ -105,12 +105,18 @@ Color emptyStateButtonColor({required BuildContext context}) =>
 Color promoCodeButtonColor({required BuildContext context}) =>
     context.appColors.secondaryAltIconBtn_600!;
 
+Color analyticsConsentAccentColor({required BuildContext context}) =>
+    context.appColors.secondary_500!;
+
 //border color
 Color errorBorderColor({required BuildContext context}) =>
     context.appColors.error_300!;
 
 Color mainBorderColor({required BuildContext context}) =>
     context.appColors.grey_200!;
+
+Color analyticsConsentBorderColor({required BuildContext context}) =>
+    context.appColors.secondary_600!;
 
 //background
 Color myEsimSecondaryBackGroundColor({required BuildContext context}) =>

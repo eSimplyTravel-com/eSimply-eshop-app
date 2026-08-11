@@ -398,5 +398,11 @@
   "validity_year": "an",
   "validity_year_plural": "ans",
   "primaryBundle": "Offre Principale",
-  "bundleDetails_immediateSupplyConsent": "Je souhaite que mon eSIM (code QR) soit livré immédiatement et je reconnais perdre mon droit de rétractation de 14 jours dès le début de la livraison/activation."
+  "bundleDetails_immediateSupplyConsent": "Je souhaite que mon eSIM (code QR) soit livré immédiatement et je reconnais perdre mon droit de rétractation de 14 jours dès le début de la livraison/activation.",
+  "analyticsConsent_title": "AIDEZ-NOUS À AMÉLIORER L'APPLICATION",
+  "analyticsConsent_body": "Les statistiques nous montrent comment l'application est utilisée, afin que nous puissions corriger ce qui gêne. Elles restent désactivées sauf si vous les autorisez, et vous pouvez changer d'avis à tout moment dans Profil.",
+  "analyticsConsent_allow": "Autoriser les statistiques",
+  "analyticsConsent_deny": "Non merci",
+  "analyticsConsent_settingsTitle": "Statistiques",
+  "analyticsConsent_settingsSubtitle": "Aidez-nous à améliorer l'application. Désactivé sauf autorisation."
 }

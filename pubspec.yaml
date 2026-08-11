@@ -113,8 +113,6 @@ dependencies:
   flutter_branch_sdk: ^8.12.1
   cupertino_http: ^2.3.0
   firebase_analytics: ^12.4.0
-  facebook_app_events: ^0.21.0
-  app_tracking_transparency: ^2.0.6+1
   firebase_crashlytics: ^5.2.1
   phone_numbers_parser: ^9.0.22
   adaptive_platform_ui: ^0.1.107

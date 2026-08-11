@@ -91,7 +91,11 @@ post_install do |installer|
         ## dart: PermissionGroup.bluetooth
         #'PERMISSION_BLUETOOTH=1',
         ## dart: PermissionGroup.appTrackingTransparency
-        'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
+        ## Off: NSUserTrackingUsageDescription was removed with the ATT work.
+        ## Leaving this at 1 compiles permission_handler's ATT path in, which
+        ## links AppTrackingTransparency and crashes if anything ever calls it
+        ## without the usage string. Nothing does today — this keeps it that way.
+        #'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
         ## dart: PermissionGroup.criticalAlerts
         #'PERMISSION_CRITICAL_ALERTS=1',
       ]

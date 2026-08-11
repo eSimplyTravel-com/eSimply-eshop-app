@@ -1,21 +1,16 @@
 import "dart:developer";
 
-import "package:app_tracking_transparency/app_tracking_transparency.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
-import "package:esim_open_source/domain/repository/services/dynamic_linking_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
-import "package:facebook_app_events/facebook_app_events.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 
 class AnalyticsServiceImpl extends AnalyticsService {
-  // Both stay false until a stored consent says otherwise. The platform
-  // defaults (Info.plist / AndroidManifest) keep the SDKs themselves quiet;
-  // these two only gate the events we log by hand.
+  // Stays false until a stored consent says otherwise. The platform defaults
+  // (Info.plist / AndroidManifest) keep the SDK itself quiet; this only gates
+  // the events we log by hand.
   bool _useFirebaseAnalytics = false;
-  bool _useFacebookAnalytics = false;
 
-  final FacebookAppEvents _facebookAppEvents = FacebookAppEvents();
   final FirebaseAnalytics _firebaseAppEvents = FirebaseAnalytics.instance;
 
   static AnalyticsServiceImpl? _instance;
@@ -47,27 +42,25 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
   /// Reads any stored choice and applies it. Called at start-up.
   ///
-  /// It deliberately does NOT ask for anything: no analytics consent prompt and
-  /// no ATT prompt. Privacy §3 promises analytics runs on consent
-  /// (GDPR Art. 6(1)(a)), and until the user has answered, everything stays
-  /// off — which the platform defaults already guarantee at the SDK level.
+  /// It deliberately does NOT ask for anything. Privacy §3 promises analytics
+  /// runs on consent (GDPR Art. 6(1)(a)), and until the user has answered,
+  /// everything stays off — which the platform defaults already guarantee at
+  /// the SDK level.
   ///
-  /// The `firebaseAnalytics` / `facebookAnalytics` arguments are a build-time
-  /// kill switch, not a consent signal: passing `false` keeps a provider off
-  /// even for a user who consented.
+  /// The `firebaseAnalytics` argument is a build-time kill switch, not a
+  /// consent signal: passing `false` keeps analytics off even for a user who
+  /// consented.
   @override
   Future<void> configure({
     bool firebaseAnalytics = true,
-    bool facebookAnalytics = true,
   }) async {
     final bool granted = analyticsConsent ?? false;
 
     _useFirebaseAnalytics = firebaseAnalytics && granted;
-    _useFacebookAnalytics = facebookAnalytics && granted;
 
     log(
       "Analytics configured — stored consent: ${analyticsConsent ?? "not asked"}, "
-      "Firebase: $_useFirebaseAnalytics, Facebook: $_useFacebookAnalytics",
+      "Firebase: $_useFirebaseAnalytics",
     );
 
     await _applyToSdks(granted: granted);
@@ -87,7 +80,6 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }
 
     _useFirebaseAnalytics = granted;
-    _useFacebookAnalytics = granted;
 
     log("Analytics consent set to $granted");
 
@@ -103,53 +95,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
         adUserDataConsentGranted: granted,
         adPersonalizationSignalsConsentGranted: granted,
       );
-      await _facebookAppEvents.setAutoLogAppEventsEnabled(granted);
     } on Object catch (ex) {
       log("Failed to apply analytics consent: $ex");
-    }
-
-    if (granted) {
-      await _requestTrackingAuthorization();
-    } else {
-      // Withdrawal has to be as easy as consent, so a refusal actively turns
-      // advertiser tracking back off rather than merely stopping new events.
-      try {
-        await _facebookAppEvents.setAdvertiserTracking(enabled: false);
-      } on Object catch (ex) {
-        log("Failed to disable advertiser tracking: $ex");
-      }
-    }
-  }
-
-  /// ATT is Apple's cross-app tracking permission, not GDPR consent — Apple
-  /// treats the two as separate. It is only reached once analytics consent has
-  /// been given, so the user is never met by the system prompt first.
-  Future<void> _requestTrackingAuthorization() async {
-    try {
-      final TrackingStatus status =
-          await AppTrackingTransparency.trackingAuthorizationStatus;
-      log("ATT status: $status");
-
-      TrackingStatus resolved = status;
-      if (status == TrackingStatus.notDetermined) {
-        resolved = await AppTrackingTransparency.requestTrackingAuthorization();
-        log("ATT permission result: $resolved");
-      }
-
-      await _facebookAppEvents.setAdvertiserTracking(
-        enabled: resolved == TrackingStatus.authorized,
-      );
-    } on Object catch (ex) {
-      log("ATT request failed: $ex");
-    }
-
-    // Branch ships its own ATT call, which used to run from main() before the
-    // user had been asked anything. iOS only ever shows the dialog once, so
-    // this now just hands Branch the status the user already chose.
-    try {
-      await locator<DynamicLinkingService>().requestTrackingAuthorization();
-    } on Object catch (ex) {
-      log("Branch tracking authorization failed: $ex");
     }
   }
 
@@ -160,10 +107,6 @@ class AnalyticsServiceImpl extends AnalyticsService {
     log("Logging event of type ${event.eventName}");
     if (_useFirebaseAnalytics) {
       logFireBaseEvent(event: event);
-    }
-
-    if (_useFacebookAnalytics) {
-      logFaceBookEvent(event: event);
     }
   }
 
@@ -182,18 +125,5 @@ class AnalyticsServiceImpl extends AnalyticsService {
       name: event.eventName,
       parameters: event.parameters,
     );
-  }
-
-  Future<void> logFaceBookEvent({
-    required AnalyticEvent event,
-  }) async {
-    try {
-      await _facebookAppEvents.logEvent(
-        name: event.eventName,
-        parameters: event.parameters,
-      );
-    } on Object catch (ex) {
-      log("Error exception: $ex");
-    }
   }
 }

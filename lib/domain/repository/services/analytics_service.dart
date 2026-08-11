@@ -250,7 +250,6 @@ class StripePaymentEvent extends AnalyticEvent {
 abstract class AnalyticsService {
   Future<void> configure({
     bool firebaseAnalytics = true,
-    bool facebookAnalytics = true,
   });
 
   Future<void> logEvent({

@@ -355,12 +355,44 @@ Future<void> main() async {
       expect(viewModel.promoCodeFieldEnabled, isFalse);
     });
 
-    test("isPurchaseButtonEnabled returns true when user logged in", () {
+    test(
+        "isPurchaseButtonEnabled returns true when user logged in and supply "
+        "consent given", () {
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
+      viewModel.updateSupplyConsentSelection();
 
       final bool result = viewModel.isPurchaseButtonEnabled;
 
       expect(result, isTrue);
+    });
+
+    test(
+        "isPurchaseButtonEnabled returns false when logged in without supply "
+        "consent", () {
+      when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
+
+      expect(viewModel.isSupplyConsentChecked, isFalse);
+      expect(viewModel.isPurchaseButtonEnabled, isFalse);
+    });
+
+    test("updateSupplyConsentSelection toggles supply consent", () {
+      expect(viewModel.isSupplyConsentChecked, isFalse);
+
+      viewModel.updateSupplyConsentSelection();
+      expect(viewModel.isSupplyConsentChecked, isTrue);
+
+      viewModel.updateSupplyConsentSelection();
+      expect(viewModel.isSupplyConsentChecked, isFalse);
+    });
+
+    test("accepting the terms does not grant supply consent", () {
+      when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(false);
+
+      viewModel.updateTermsSelections();
+
+      expect(viewModel.isTermsChecked, isTrue);
+      expect(viewModel.isSupplyConsentChecked, isFalse);
+      expect(viewModel.isPurchaseButtonEnabled, isFalse);
     });
 
     test(
@@ -535,6 +567,7 @@ Future<void> main() async {
 
     test("isUserLoggedIn affects isPurchaseButtonEnabled", () {
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
+      viewModel.updateSupplyConsentSelection();
 
       expect(viewModel.isPurchaseButtonEnabled, isTrue);
 
@@ -553,8 +586,13 @@ Future<void> main() async {
       expect(viewModel.bundle?.displayTitle, equals("Test Bundle"));
     });
 
-    test("isUserLoggedIn true enables purchase button", () {
+    test("isUserLoggedIn true enables purchase button once consent is given",
+        () {
       when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
+
+      expect(viewModel.isPurchaseButtonEnabled, isFalse);
+
+      viewModel.updateSupplyConsentSelection();
 
       expect(viewModel.isPurchaseButtonEnabled, isTrue);
     });

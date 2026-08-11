@@ -2110,6 +2110,12 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
       ) as bool);
 
   @override
+  bool get isSupplyConsentChecked => (super.noSuchMethod(
+        Invocation.getter(#isSupplyConsentChecked),
+        returnValue: false,
+      ) as bool);
+
+  @override
   bool get isLoginEnabled => (super.noSuchMethod(
         Invocation.getter(#isLoginEnabled),
         returnValue: false,
@@ -2623,6 +2629,15 @@ class MockBundleDetailBottomSheetViewModel extends _i1.Mock
   void updateTermsSelections() => super.noSuchMethod(
         Invocation.method(
           #updateTermsSelections,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateSupplyConsentSelection() => super.noSuchMethod(
+        Invocation.method(
+          #updateSupplyConsentSelection,
           [],
         ),
         returnValueForMissingStub: null,

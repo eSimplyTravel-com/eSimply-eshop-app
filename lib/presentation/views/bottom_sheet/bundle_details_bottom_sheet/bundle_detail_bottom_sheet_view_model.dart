@@ -66,6 +66,13 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
   bool _isLoginEnabled = false;
   bool _isValidPhoneNumber = false;
 
+  // Express consent to immediate supply of digital content. Required to
+  // lawfully waive the 14-day right of withdrawal (Forbrugeraftaleloven § 18),
+  // so it must be an active opt-in and can never start out ticked. Applies to
+  // logged-in users as well as guests — accepting the Terms is not this
+  // consent.
+  bool _isSupplyConsentChecked = false;
+
   final TextEditingController _emailController = TextEditingController();
 
   String? _promoCode;
@@ -75,6 +82,8 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
 
   bool get isTermsChecked => _isTermsChecked;
 
+  bool get isSupplyConsentChecked => _isSupplyConsentChecked;
+
   bool get isLoginEnabled => _isLoginEnabled;
 
   TextEditingController get emailController => _emailController;
@@ -83,6 +92,9 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
       AppEnvironment.appEnvironmentHelper.enablePromoCode;
 
   bool get isPurchaseButtonEnabled {
+    if (!_isSupplyConsentChecked) {
+      return false;
+    }
     if (isUserLoggedIn) {
       return true;
     }
@@ -155,6 +167,11 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
     _isTermsChecked = !_isTermsChecked;
     notifyListeners();
     _validateForm();
+  }
+
+  void updateSupplyConsentSelection() {
+    _isSupplyConsentChecked = !_isSupplyConsentChecked;
+    notifyListeners();
   }
 
   void expandedCallBack() {

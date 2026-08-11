@@ -104,6 +104,7 @@ class BundleDetailBottomSheetView extends StatelessWidget {
                                 .tr(),
                           ),
                           _buildGuestUserSection(context, viewModel),
+                          _buildSupplyConsentCheckbox(context, viewModel),
                           verticalSpaceSmallMedium,
                         ],
                       ),
@@ -339,6 +340,51 @@ class BundleDetailBottomSheetView extends StatelessWidget {
           horizontalSpaceSmall,
           termsAndConditionTappableWidget(context, viewModel),
         ],
+      ),
+    );
+  }
+
+  // Express consent to immediate supply — shown to guests and logged-in users
+  // alike, because accepting the Terms is not the same statement. Never
+  // pre-ticked: Forbrugeraftaleloven § 18 needs an active opt-in before the
+  // 14-day right of withdrawal can be waived.
+  Widget _buildSupplyConsentCheckbox(
+    BuildContext context,
+    BundleDetailBottomSheetViewModel viewModel,
+  ) {
+    return PaddingWidget.applySymmetricPadding(
+      horizontal: 5,
+      child: GestureDetector(
+        onTap: viewModel.updateSupplyConsentSelection,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 10,
+                bottom: 10,
+                top: 10,
+              ),
+              child: Image.asset(
+                width: 17,
+                _getCheckboxImagePath(viewModel.isSupplyConsentChecked),
+              ),
+            ),
+            horizontalSpaceSmall,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  LocaleKeys.bundleDetails_immediateSupplyConsent.tr(),
+                  style: captionOneMediumTextStyle(
+                    context: context,
+                    fontColor: mainDarkTextColor(context: context),
+                  ),
+                ).textSupportsRTL(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

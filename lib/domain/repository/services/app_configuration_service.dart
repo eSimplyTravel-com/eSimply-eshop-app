@@ -7,6 +7,10 @@ abstract class AppConfigurationService {
   Future<String> get getSupabaseUrl;
   Future<String> get getSupabaseAnon;
   Future<String> get getWhatsAppNumber;
+
+  /// Whether a WhatsApp number is configured at all, readable synchronously so
+  /// the UI can decide not to offer a chat button it cannot honour.
+  bool get isWhatsAppAvailable;
   Future<String> get getCatalogVersion;
   String get getDefaultCurrency;
   List<PaymentType>? get getPaymentTypes;

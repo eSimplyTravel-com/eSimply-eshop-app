@@ -338,6 +338,14 @@ Future<void> openWhatsApp({
   // Format the phone number (remove any non-numeric characters except the + sign)
   final String formattedNumber = phoneNumber.replaceAll(RegExp(r"[^\d+]"), "");
 
+  // Without a recipient this builds `https://wa.me/?text=`, which lands on
+  // WhatsApp's own site and does nothing for the user. Refuse rather than
+  // pretend.
+  if (formattedNumber.isEmpty) {
+    log("openWhatsApp called with no phone number — not launching");
+    return;
+  }
+
   // Encode the message for URL
   final String encodedMessage = Uri.encodeComponent(message);
 

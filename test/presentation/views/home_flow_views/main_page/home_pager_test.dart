@@ -1,3 +1,5 @@
+import "package:lottie/lottie.dart";
+import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/presentation/extensions/stacked_services/custom_route_observer.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
@@ -17,6 +19,13 @@ Future<void> main() async {
   group("HomePager Unit Tests", () {
     setUp(() async {
       await setupTest();
+    // The chat button is only offered when a number is configured; the live
+    // config has none, so these tests take the same path a real user does.
+    when(
+      (locator<AppConfigurationService>() as MockAppConfigurationService)
+          .isWhatsAppAvailable,
+    ).thenReturn(false);
+
     // The analytics-consent prompt reads this on first appearance. `false`
     // means "already answered", so these tests are not interrupted by it.
     when(
@@ -45,6 +54,41 @@ Future<void> main() async {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 1000));
+    });
+
+    testWidgets("no chat button is offered when no WhatsApp number is set",
+        (WidgetTester tester) async {
+      // The live configuration returns WHATSAPP_NUMBER = null, which made the
+      // button open `https://wa.me/?text=` — WhatsApp's site with no recipient.
+      // A button that goes nowhere is worse than no button.
+      when(
+        (locator<AppConfigurationService>() as MockAppConfigurationService)
+            .isWhatsAppAvailable,
+      ).thenReturn(false);
+
+      await tester.pumpWidget(createTestableWidget(HomePager()));
+      await tester.pump();
+      // HomePager schedules delayed work on first appearance; drain it or the
+      // binding fails the test on pending timers.
+      await tester.pump(const Duration(milliseconds: 1000));
+      tester.takeException();
+
+      expect(find.byType(Lottie), findsNothing);
+    });
+
+    testWidgets("the chat button appears once a number is configured",
+        (WidgetTester tester) async {
+      when(
+        (locator<AppConfigurationService>() as MockAppConfigurationService)
+            .isWhatsAppAvailable,
+      ).thenReturn(true);
+
+      await tester.pumpWidget(createTestableWidget(HomePager()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
+      tester.takeException();
+
+      expect(find.byType(Lottie), findsOneWidget);
     });
 
     test("debug properties with redirection", () {

@@ -1850,6 +1850,12 @@ class MockAppConfigurationService extends _i1.Mock
       ) as _i22.Future<String>);
 
   @override
+  bool get isWhatsAppAvailable => (super.noSuchMethod(
+        Invocation.getter(#isWhatsAppAvailable),
+        returnValue: false,
+      ) as bool);
+
+  @override
   _i22.Future<String> get getCatalogVersion => (super.noSuchMethod(
         Invocation.getter(#getCatalogVersion),
         returnValue: _i22.Future<String>.value(_i48.dummyValue<String>(

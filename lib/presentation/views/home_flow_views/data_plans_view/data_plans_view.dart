@@ -66,12 +66,12 @@ class DataPlansView extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(
-                            LocaleKeys.dataPlans_titleText.tr(),
-                            style: headerTwoBoldTextStyle(
-                              context: context,
-                              fontColor: mainDarkTextColor(context: context),
-                            ),
+                          Image.asset(
+                            EnvironmentImages.headerLockup.fullImagePath,
+                            height: 26,
+                            // the lockup replaces the screen title, so it
+                            // carries the title's label for screen readers
+                            semanticLabel: LocaleKeys.dataPlans_titleText.tr(),
                           ),
                           getTopTrialingWidget(
                             context: context,

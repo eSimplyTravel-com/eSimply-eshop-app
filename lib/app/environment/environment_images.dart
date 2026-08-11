@@ -112,6 +112,7 @@ enum EnvironmentImages {
   globalFlag,
   //logo
   splashIcon,
+  headerLockup,
   //stories
   storyCar,
   storyGirl,
@@ -163,6 +164,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.emptyNotifications:
       case EnvironmentImages.loginMail:
       case EnvironmentImages.splashIcon:
+      case EnvironmentImages.headerLockup:
       case EnvironmentImages.storyCar:
       case EnvironmentImages.storyGirl:
       case EnvironmentImages.storyBuilding:
@@ -323,6 +325,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.globalFlag:
         return "flags/$name";
       case EnvironmentImages.splashIcon:
+      case EnvironmentImages.headerLockup:
         return "logo/$name";
       case EnvironmentImages.storyCar:
       case EnvironmentImages.storyGirl:

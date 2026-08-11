@@ -302,7 +302,7 @@ void main() {
       expect(first.orderDate, "12344");
       expect(first.orderType, "order Type");
       expect(first.quantity, 2);
-      expect(first.companyName, "Monty Mobile");
+      expect(first.companyName, "eSimply");
       expect(first.orderDisplayPrice, "2.5 USD");
     });
 

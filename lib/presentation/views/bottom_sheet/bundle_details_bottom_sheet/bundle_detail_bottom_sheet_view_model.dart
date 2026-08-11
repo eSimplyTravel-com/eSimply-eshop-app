@@ -137,7 +137,12 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
     _emailController.addListener(_validateForm);
     _promoCodeController.addListener(_onPromoCodeTextChanged);
 
-    if (_referralCode.isNotEmpty) {
+    // Only validate once we can authenticate. PromotionApis.validatePromoCode
+    // declares hasAuthorization => true, so firing it as a guest 401s and puts
+    // an error dialog in front of the bundle — which is exactly what happens to
+    // someone who opens a referral link and browses a plan before signing in.
+    // The code stays in local storage, so it still applies after login.
+    if (isUserLoggedIn && _referralCode.isNotEmpty) {
       unawaited(validatePromoCode(_referralCode, isReferral: true));
     }
   }

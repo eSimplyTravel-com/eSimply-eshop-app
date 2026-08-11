@@ -1,4 +1,4 @@
-import "dart:developer";
+import "dart:async";
 import "dart:io";
 
 import "package:easy_localization/easy_localization.dart";
@@ -171,7 +171,7 @@ class LoginView extends StatelessWidget {
                   ),
                   PaddingWidget.applyPadding(
                     top: 10,
-                    child: termsAndConditionTappableWidget(context),
+                    child: termsAndConditionTappableWidget(context, viewModel),
                   ),
                 ],
               ),
@@ -182,7 +182,10 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget termsAndConditionTappableWidget(BuildContext context) {
+  Widget termsAndConditionTappableWidget(
+    BuildContext context,
+    LoginViewModel viewModel,
+  ) {
     return Text.rich(
       textAlign: TextAlign.center,
       TextSpan(
@@ -197,10 +200,16 @@ class LoginView extends StatelessWidget {
             style: captionOneMediumTextStyle(
               context: context,
               fontColor: mainWhiteTextColor(context: context),
+            ).copyWith(
+              fontSize: 13,
+              decoration: TextDecoration.underline,
+              decorationColor: mainWhiteTextColor(context: context),
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                log("Tappable word clicked!");
+                // Was a log statement. A legal link that looks tappable and
+                // opens nothing is worse than no link at all.
+                unawaited(viewModel.showTermsSheet());
               },
           ),
           TextSpan(

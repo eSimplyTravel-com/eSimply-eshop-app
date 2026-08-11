@@ -55,7 +55,7 @@
   "loginView_continueWithEmail": "Continuer avec Email",
   "loginView_termsText": "conditions générales",
   "loginView_termsFirstText": "En vous inscrivant, vous acceptez nos ",
-  "loginView_termsSecondText": " et acceptez de recevoir des newsletters et des promotions",
+  "loginView_termsSecondText": ".",
   "continueWithEmailView_titleText": "Connexion / Inscription",
   "continueWithEmailView_SubTitleText": "Veuillez entrer votre e-mail pour continuer",
   "continueWithEmailView_emailTitleField": "E-mail",

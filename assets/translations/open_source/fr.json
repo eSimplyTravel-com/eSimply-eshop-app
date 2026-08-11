@@ -397,5 +397,6 @@
   "validity_week_plural": "semaines",
   "validity_year": "an",
   "validity_year_plural": "ans",
-  "primaryBundle": "Offre Principale"
+  "primaryBundle": "Offre Principale",
+  "bundleDetails_immediateSupplyConsent": "Je souhaite que mon eSIM (code QR) soit livré immédiatement et je reconnais perdre mon droit de rétractation de 14 jours dès le début de la livraison/activation."
 }

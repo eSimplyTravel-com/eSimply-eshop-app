@@ -72,6 +72,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -135,6 +136,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -208,6 +210,7 @@ Future<void> main() async {
       when(mockViewModel.isUserLoggedIn).thenReturn(false);
       when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
       when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+      when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
       when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
       when(mockViewModel.showPhoneInput).thenReturn(false);
       when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -367,6 +370,7 @@ Future<void> main() async {
       when(mockViewModel.isUserLoggedIn).thenReturn(true);
       when(mockViewModel.isPromoCodeEnabled).thenReturn(true);
       when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+      when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
       when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
       when(mockViewModel.promoCodeMessage).thenReturn("");
       when(mockViewModel.promoCodeFieldEnabled).thenReturn(true);
@@ -431,6 +435,7 @@ Future<void> main() async {
       when(mockViewModel.isUserLoggedIn).thenReturn(false);
       when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
       when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+      when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
       when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
       when(mockViewModel.showPhoneInput).thenReturn(false);
       when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -492,6 +497,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -564,6 +570,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -636,6 +643,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(true);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -703,6 +711,7 @@ Future<void> main() async {
           when(mockViewModel.isUserLoggedIn).thenReturn(false);
           when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
           when(mockViewModel.isPurchaseButtonEnabled).thenReturn(true);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
           when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
           when(mockViewModel.showPhoneInput).thenReturn(false);
           when(mockViewModel.emailController).thenReturn(TextEditingController());
@@ -762,6 +771,86 @@ Future<void> main() async {
           tester.takeException(); // Consume any overflow exceptions
 
           expect(completerCalled, isTrue);
+        });
+
+    testWidgets(
+        "supply consent checkbox is shown to logged-in users and toggles",
+            (WidgetTester tester) async {
+          onViewModelReadyMock(viewName: "BundleDetailBottomSheetView");
+
+          final MockBundleDetailBottomSheetViewModel mockViewModel =
+          locator<BundleDetailBottomSheetViewModel>()
+          as MockBundleDetailBottomSheetViewModel;
+
+          final BundleResponseModel testBundle = BundleResponseModel(
+            displayTitle: "Test Bundle",
+            gprsLimitDisplay: "5GB",
+            priceDisplay: r"$10.00",
+            validityLabel: "days",
+          );
+
+          // Logged in: the guest section is hidden, so the consent checkbox is
+          // the only one on screen. It must still be there — accepting the
+          // Terms at sign-up is not consent to immediate supply.
+          when(mockViewModel.bundle).thenReturn(testBundle);
+          when(mockViewModel.isUserLoggedIn).thenReturn(true);
+          when(mockViewModel.isPromoCodeEnabled).thenReturn(false);
+          when(mockViewModel.isPurchaseButtonEnabled).thenReturn(false);
+          when(mockViewModel.isSupplyConsentChecked).thenReturn(false);
+          when(mockViewModel.isKeyboardVisible(any)).thenReturn(false);
+          when(mockViewModel.showPhoneInput).thenReturn(false);
+          when(mockViewModel.emailController)
+              .thenReturn(TextEditingController());
+          when(mockViewModel.emailErrorMessage).thenReturn("");
+          when(mockViewModel.isTermsChecked).thenReturn(false);
+          when(mockViewModel.viewState).thenReturn(ViewState.idle);
+          when(mockViewModel.isBusy).thenReturn(false);
+
+          final SheetRequest<PurchaseBundleBottomSheetArgs> request =
+          SheetRequest<PurchaseBundleBottomSheetArgs>(
+            data: PurchaseBundleBottomSheetArgs(
+              null,
+              <CountriesRequestModel>[],
+              testBundle,
+            ),
+          );
+
+          void completer(SheetResponse<EmptyBottomSheetResponse> response) {}
+
+          await tester.pumpWidget(
+            createTestableWidget(
+              MediaQuery(
+                data: const MediaQueryData(
+                  size: Size(1200, 2000),
+                ),
+                child: Scaffold(
+                  body: BundleDetailBottomSheetView(
+                    requestBase: request,
+                    completer: completer,
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 100));
+          tester.takeException(); // Consume any overflow exceptions
+          await tester.pump();
+          tester.takeException(); // Consume any overflow exceptions
+
+          // Translations are not loaded in tests, so `.tr()` yields the key.
+          final Finder consentFinder =
+          find.text("bundleDetails_immediateSupplyConsent");
+          expect(consentFinder, findsOneWidget);
+
+          // Never pre-ticked: the unselected checkbox asset must be the one
+          // rendered while isSupplyConsentChecked is false.
+          verifyNever(mockViewModel.updateSupplyConsentSelection());
+
+          await tester.tap(consentFinder, warnIfMissed: false);
+          await tester.pump();
+          tester.takeException(); // Consume any overflow exceptions
+
+          verify(mockViewModel.updateSupplyConsentSelection()).called(1);
         });
   });
 }

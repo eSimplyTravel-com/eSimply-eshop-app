@@ -58,7 +58,15 @@ class BundleDetailBottomSheetView extends StatelessWidget {
             vertical: 15,
             horizontal: 15,
             child: SizedBox(
-              height: screenHeight,
+              // `screenHeight` comes from BaseView.safeAreaHeight, which does
+              // not subtract viewInsets — so with the keyboard up this box was
+              // taller than the space the sheet actually had, and the bottom of
+              // the content (the checkboxes) was clipped. Subtract the inset
+              // here and let the scroll area take whatever is left, instead of
+              // the previous fixed 100/200 magic numbers, which under-estimated
+              // the real keyboard height.
+              height: (screenHeight - MediaQuery.viewInsetsOf(context).bottom)
+                  .clamp(0.0, screenHeight),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -67,10 +75,7 @@ class BundleDetailBottomSheetView extends StatelessWidget {
                       SheetResponse<EmptyBottomSheetResponse>(),
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight -
-                        100 -
-                        (viewModel.isKeyboardVisible(context) ? 200 : 0),
+                  Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -104,12 +109,12 @@ class BundleDetailBottomSheetView extends StatelessWidget {
                                 .tr(),
                           ),
                           _buildGuestUserSection(context, viewModel),
+                          _buildSupplyConsentCheckbox(context, viewModel),
                           verticalSpaceSmallMedium,
                         ],
                       ),
                     ),
                   ),
-                  const Spacer(),
                   _buildPurchaseButton(context, viewModel),
                 ],
               ),
@@ -339,6 +344,51 @@ class BundleDetailBottomSheetView extends StatelessWidget {
           horizontalSpaceSmall,
           termsAndConditionTappableWidget(context, viewModel),
         ],
+      ),
+    );
+  }
+
+  // Express consent to immediate supply — shown to guests and logged-in users
+  // alike, because accepting the Terms is not the same statement. Never
+  // pre-ticked: Forbrugeraftaleloven § 18 needs an active opt-in before the
+  // 14-day right of withdrawal can be waived.
+  Widget _buildSupplyConsentCheckbox(
+    BuildContext context,
+    BundleDetailBottomSheetViewModel viewModel,
+  ) {
+    return PaddingWidget.applySymmetricPadding(
+      horizontal: 5,
+      child: GestureDetector(
+        onTap: viewModel.updateSupplyConsentSelection,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 10,
+                bottom: 10,
+                top: 10,
+              ),
+              child: Image.asset(
+                width: 17,
+                _getCheckboxImagePath(viewModel.isSupplyConsentChecked),
+              ),
+            ),
+            horizontalSpaceSmall,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  LocaleKeys.bundleDetails_immediateSupplyConsent.tr(),
+                  style: captionOneMediumTextStyle(
+                    context: context,
+                    fontColor: mainDarkTextColor(context: context),
+                  ),
+                ).textSupportsRTL(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

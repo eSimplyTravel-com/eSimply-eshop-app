@@ -402,5 +402,6 @@ abstract class  LocaleKeys {
   static const validity_year = 'validity_year';
   static const validity_year_plural = 'validity_year_plural';
   static const primaryBundle = 'primaryBundle';
+  static const bundleDetails_immediateSupplyConsent = 'bundleDetails_immediateSupplyConsent';
 
 }

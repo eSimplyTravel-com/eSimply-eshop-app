@@ -398,5 +398,6 @@
   "validity_week_plural": "أسابيع",
   "validity_year": "سنة",
   "validity_year_plural": "سنوات",
-  "primaryBundle": "الحزمة الأساسية"
+  "primaryBundle": "الحزمة الأساسية",
+  "bundleDetails_immediateSupplyConsent": "أرغب في تسليم شريحة eSIM (رمز QR) الخاصة بي فوراً، وأقر بأنني أفقد حقي في الانسحاب خلال 14 يوماً بمجرد بدء التسليم/التفعيل."
 }

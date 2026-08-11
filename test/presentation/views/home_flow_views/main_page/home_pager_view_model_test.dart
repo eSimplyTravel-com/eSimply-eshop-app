@@ -1,4 +1,5 @@
 
+import "package:esim_open_source/domain/repository/services/analytics_service.dart";
 import "package:esim_open_source/domain/repository/services/redirections_handler_service.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/main_page/home_pager_view_model.dart";
@@ -26,6 +27,12 @@ Future<void> main() async {
       (MethodCall methodCall) async => null,
     );
     await setupTest();
+    // The analytics-consent prompt reads this on first appearance. `false`
+    // means "already answered", so these tests are not interrupted by it.
+    when(
+      (locator<AnalyticsService>() as MockAnalyticsService).analyticsConsent,
+    ).thenReturn(false);
+
     onViewModelReadyMock(viewName: "HomePager");
     viewModel = HomePagerViewModel();
     mockRedirectionsHandlerService =

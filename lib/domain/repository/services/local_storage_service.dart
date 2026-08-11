@@ -11,7 +11,8 @@ enum LocalStorageKeys {
   appCurrency("appCurrency"),
   referralCode("referralCode"),
   appLanguage("appLanguage"),
-  utm("utm");
+  utm("utm"),
+  analyticsConsent("analyticsConsent");
 
   const LocalStorageKeys(this.value);
 

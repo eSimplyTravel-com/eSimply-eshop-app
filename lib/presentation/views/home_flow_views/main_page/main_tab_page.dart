@@ -113,7 +113,13 @@ class _MainTabPageState extends State<MainTabPage>
     final bool isKeyboardVisible =
         KeyboardVisibilityProvider.isKeyboardVisible(context);
     final Color background = whiteBackGroundColor(context: context);
-    final Widget? whatsAppFab = tabController.index > 1
+    // Hide the chat button on the Profile tab. This used to test `index > 1`,
+    // which is only the Profile tab when the user is logged in and there are
+    // three tabs; logged out there are two, so Profile is index 1 and the
+    // button sat on top of the settings list. Test against the last tab
+    // instead, whatever the count is.
+    final bool isOnLastTab = tabController.index >= tabController.length - 1;
+    final Widget? whatsAppFab = isOnLastTab
         ? null
         : GestureDetector(
             onTap: () async {

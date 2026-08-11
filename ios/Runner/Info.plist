@@ -128,6 +128,29 @@
 		<false/>
 		<key>NSUserTrackingUsageDescription</key>
 		<string>This app would like to access IDFA to provide better ad experiences and measure ad performance.</string>
+		<!-- Analytics is off until the user consents. Privacy §3 promises
+		     analytics runs on consent (GDPR Art. 6(1)(a)), and storing SDK
+		     identifiers on the device needs prior consent under the Danish
+		     cookie rules. These defaults are the only thing that stops the
+		     SDKs' own automatic events (first_open, session_start,
+		     fb_mobile_activate_app) firing before anyone is asked — a Dart-side
+		     flag cannot, because those events never pass through our code.
+		     AnalyticsServiceImpl.applyConsent() flips them once consent is
+		     given, and that call persists across launches. -->
+		<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+		<false/>
+		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE</key>
+		<false/>
+		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE</key>
+		<false/>
+		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA</key>
+		<false/>
+		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS</key>
+		<false/>
+		<key>FacebookAutoLogAppEventsEnabled</key>
+		<false/>
+		<key>FacebookAdvertiserIDCollectionEnabled</key>
+		<false/>
 		<key>branch_key</key>
 	<dict>
 		<key>live</key>

@@ -2046,6 +2046,18 @@ class MockAnalyticsService extends _i1.Mock implements _i10.AnalyticsService {
         returnValue: _i22.Future<void>.value(),
         returnValueForMissingStub: _i22.Future<void>.value(),
       ) as _i22.Future<void>);
+
+  @override
+  _i22.Future<void> setAnalyticsConsent({required bool? granted}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setAnalyticsConsent,
+          [],
+          {#granted: granted},
+        ),
+        returnValue: _i22.Future<void>.value(),
+        returnValueForMissingStub: _i22.Future<void>.value(),
+      ) as _i22.Future<void>);
 }
 
 /// A class which mocks [BundleDetailBottomSheetViewModel].

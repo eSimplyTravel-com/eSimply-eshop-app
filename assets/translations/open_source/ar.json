@@ -399,5 +399,11 @@
   "validity_year": "سنة",
   "validity_year_plural": "سنوات",
   "primaryBundle": "الحزمة الأساسية",
-  "bundleDetails_immediateSupplyConsent": "أرغب في تسليم شريحة eSIM (رمز QR) الخاصة بي فوراً، وأقر بأنني أفقد حقي في الانسحاب خلال 14 يوماً بمجرد بدء التسليم/التفعيل."
+  "bundleDetails_immediateSupplyConsent": "أرغب في تسليم شريحة eSIM (رمز QR) الخاصة بي فوراً، وأقر بأنني أفقد حقي في الانسحاب خلال 14 يوماً بمجرد بدء التسليم/التفعيل.",
+  "analyticsConsent_title": "ساعدنا في تحسين التطبيق",
+  "analyticsConsent_body": "تُظهر لنا التحليلات كيفية استخدام التطبيق، حتى نتمكن من إصلاح ما يعيقك. تبقى معطّلة ما لم تسمح بها، ويمكنك تغيير رأيك في أي وقت من الملف الشخصي.",
+  "analyticsConsent_allow": "السماح بالتحليلات",
+  "analyticsConsent_deny": "لا، شكرًا",
+  "analyticsConsent_settingsTitle": "التحليلات",
+  "analyticsConsent_settingsSubtitle": "معطّلة ما لم تسمح بها."
 }

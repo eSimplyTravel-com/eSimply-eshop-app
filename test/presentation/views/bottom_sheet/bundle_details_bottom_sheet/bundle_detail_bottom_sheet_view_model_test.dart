@@ -475,6 +475,61 @@ Future<void> main() async {
       expect(newViewModel.emailController.hasListeners, isTrue);
     });
 
+    test(
+        "onViewModelReady does not validate a stored referral code while "
+        "logged out", () async {
+      // The endpoint requires a bearer token, so calling it as a guest 401s and
+      // shows an error dialog over the bundle. Reachable in production: open a
+      // referral link, then a bundle, before signing in.
+      when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(false);
+      when(mockLocalStorageService.getString(LocalStorageKeys.referralCode))
+          .thenReturn("REF123");
+
+      BundleDetailBottomSheetViewModel()
+        ..bundle = BundleResponseModel(bundleCode: "TEST", price: 10)
+        ..onViewModelReady();
+
+      await Future<void>.delayed(Duration.zero);
+
+      verifyNever(
+        mockApiPromotionRepository.validatePromoCode(
+          promoCode: anyNamed("promoCode"),
+          bundleCode: anyNamed("bundleCode"),
+        ),
+      );
+    });
+
+    test("onViewModelReady validates a stored referral code once logged in",
+        () async {
+      when(mockUserAuthenticationService.isUserLoggedIn).thenReturn(true);
+      when(mockLocalStorageService.getString(LocalStorageKeys.referralCode))
+          .thenReturn("REF123");
+      when(
+        mockApiPromotionRepository.validatePromoCode(
+          promoCode: anyNamed("promoCode"),
+          bundleCode: anyNamed("bundleCode"),
+        ),
+      ).thenAnswer(
+        (_) async => Resource<BundleResponseModel?>.success(
+          BundleResponseModel(bundleCode: "TEST", price: 5),
+          message: "Applied",
+        ),
+      );
+
+      BundleDetailBottomSheetViewModel()
+        ..bundle = BundleResponseModel(bundleCode: "TEST", price: 10)
+        ..onViewModelReady();
+
+      await Future<void>.delayed(Duration.zero);
+
+      verify(
+        mockApiPromotionRepository.validatePromoCode(
+          promoCode: "REF123",
+          bundleCode: anyNamed("bundleCode"),
+        ),
+      ).called(1);
+    });
+
     test("emailController updates form validation", () {
       viewModel.emailController.text = "test@example.com";
       viewModel.updateTermsSelections();

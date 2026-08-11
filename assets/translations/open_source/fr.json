@@ -404,5 +404,5 @@
   "analyticsConsent_allow": "Autoriser les statistiques",
   "analyticsConsent_deny": "Non merci",
   "analyticsConsent_settingsTitle": "Statistiques",
-  "analyticsConsent_settingsSubtitle": "Aidez-nous à améliorer l'application. Désactivé sauf autorisation."
+  "analyticsConsent_settingsSubtitle": "Désactivé sauf autorisation."
 }

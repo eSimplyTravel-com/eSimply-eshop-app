@@ -62,6 +62,11 @@ class ProfileView extends StatelessWidget {
               Expanded(
                 child: ListView.separated(
                   shrinkWrap: true,
+                  // The version label and the tab bar sit on top of the list,
+                  // so without this the last row is clipped — which for a
+                  // logged-out user is the analytics switch, i.e. the control
+                  // that has to be as reachable as the consent prompt was.
+                  padding: const EdgeInsets.only(bottom: 90),
                   itemCount: ProfileViewSections.values.length,
                   separatorBuilder: (
                     BuildContext context,
@@ -222,6 +227,10 @@ class ProfileView extends StatelessWidget {
                 verticalSpaceTiny,
                 Text(
                   LocaleKeys.analyticsConsent_settingsSubtitle.tr(),
+                  // Without these the line is clipped mid-sentence where the
+                  // switch begins. French and Arabic are longer again.
+                  softWrap: true,
+                  maxLines: 3,
                   style: captionOneMediumTextStyle(
                     context: context,
                     fontColor: contentTextColor(context: context),

@@ -61,6 +61,7 @@ enum EnvironmentImages {
   logout,
   orderHistory,
   profilePerson,
+  analytics,
   termsAndConditions,
   userGuide,
   wallet,
@@ -136,6 +137,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.logout:
       case EnvironmentImages.orderHistory:
       case EnvironmentImages.profilePerson:
+      case EnvironmentImages.analytics:
       case EnvironmentImages.termsAndConditions:
       case EnvironmentImages.userGuide:
       case EnvironmentImages.wallet:
@@ -280,6 +282,7 @@ extension EnvironmentImagesExtension on EnvironmentImages {
       case EnvironmentImages.logout:
       case EnvironmentImages.orderHistory:
       case EnvironmentImages.profilePerson:
+      case EnvironmentImages.analytics:
       case EnvironmentImages.termsAndConditions:
       case EnvironmentImages.userGuide:
       case EnvironmentImages.wallet:

@@ -140,7 +140,7 @@ enum ProfileViewSections {
       case ProfileViewSections.currency:
         return "currency";
       case ProfileViewSections.analyticsConsent:
-        return "notificationIcon";
+        return "analytics";
       case ProfileViewSections.accountHeader:
         return "";
       case ProfileViewSections.logout:

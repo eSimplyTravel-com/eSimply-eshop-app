@@ -405,5 +405,5 @@
   "analyticsConsent_allow": "Allow analytics",
   "analyticsConsent_deny": "No thanks",
   "analyticsConsent_settingsTitle": "Analytics",
-  "analyticsConsent_settingsSubtitle": "Help us improve the app. Off unless you allow it."
+  "analyticsConsent_settingsSubtitle": "Off unless you allow it."
 }

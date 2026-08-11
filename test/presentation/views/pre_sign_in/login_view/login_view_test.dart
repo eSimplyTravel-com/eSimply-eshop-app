@@ -10,6 +10,7 @@ import "package:esim_open_source/domain/repository/services/local_storage_servic
 import "package:esim_open_source/domain/repository/services/secure_storage_service.dart";
 import "package:esim_open_source/domain/repository/services/social_login_service.dart";
 import "package:esim_open_source/domain/util/resource.dart";
+import "package:esim_open_source/presentation/enums/bottomsheet_type.dart";
 import "package:esim_open_source/presentation/enums/login_type.dart";
 import "package:esim_open_source/presentation/reactive_service/user_authentication_service.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
@@ -307,7 +308,10 @@ Future<void> main() async {
       createTestableWidget(
         Builder(
           builder: (BuildContext context) {
-            return view.termsAndConditionTappableWidget(context);
+            return view.termsAndConditionTappableWidget(
+              context,
+              locator<LoginViewModel>(),
+            );
           },
         ),
       ),
@@ -380,8 +384,10 @@ Future<void> main() async {
         Builder(
           builder: (BuildContext context) {
             const LoginView view = LoginView();
-            final Widget widget =
-                view.termsAndConditionTappableWidget(context);
+            final Widget widget = view.termsAndConditionTappableWidget(
+              context,
+              locator<LoginViewModel>(),
+            );
             // Text.rich returns a Text widget with a textSpan property
             final Text textWidget = widget as Text;
             final TextSpan rootSpan = textWidget.textSpan! as TextSpan;
@@ -399,7 +405,16 @@ Future<void> main() async {
     capturedRecognizer.onTap!();
     await tester.pump();
 
-    expect(find.byType(Text), findsWidgets);
+    // The link used to call `log("Tappable word clicked!")` and open nothing.
+    // The login screen makes accepting these terms a condition of registering,
+    // so they have to be readable from here.
+    verify(
+      (locator<BottomSheetService>() as MockBottomSheetService).showCustomSheet(
+        variant: BottomSheetType.termsCondition,
+        isScrollControlled: anyNamed("isScrollControlled"),
+        enableDrag: anyNamed("enableDrag"),
+      ),
+    ).called(1);
   });
 
   testWidgets("getContinueWithText returns phone text for phoneNumber",

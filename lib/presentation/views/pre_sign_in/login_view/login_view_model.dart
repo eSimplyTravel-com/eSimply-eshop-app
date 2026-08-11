@@ -12,6 +12,7 @@ import "package:esim_open_source/domain/repository/services/local_storage_servic
 import "package:esim_open_source/domain/repository/services/social_login_service.dart";
 import "package:esim_open_source/domain/use_case/auth/social_media_verify_login_use_case.dart";
 import "package:esim_open_source/domain/util/resource.dart";
+import "package:esim_open_source/presentation/enums/bottomsheet_type.dart";
 import "package:esim_open_source/presentation/enums/view_state.dart";
 import "package:esim_open_source/presentation/helpers/view_state_utils.dart";
 import "package:esim_open_source/presentation/shared/in_app_redirection_heper.dart";
@@ -32,6 +33,17 @@ class LoginViewModel extends BaseModel {
   void onViewModelReady() {
     super.onViewModelReady();
     unawaited(initializeListener());
+  }
+
+  /// Opens the same terms sheet the purchase flow uses. The login screen asks
+  /// the user to accept these before it will create an account, so they have to
+  /// be readable from here.
+  Future<void> showTermsSheet() async {
+    await bottomSheetService.showCustomSheet(
+      variant: BottomSheetType.termsCondition,
+      isScrollControlled: true,
+      enableDrag: false,
+    );
   }
 
   Future<void> initializeListener() async {

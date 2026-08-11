@@ -55,7 +55,7 @@
   "loginView_continueWithEmail": "Continue with Email",
   "loginView_termsText": "terms and conditions",
   "loginView_termsFirstText": "By registering, you accept our ",
-  "loginView_termsSecondText": " ,and agree to receive newsletters and promotions",
+  "loginView_termsSecondText": ".",
   "continueWithEmailView_titleText": "Sign in / Sign up",
   "continueWithEmailView_SubTitleText": "Please enter your email to proceed",
   "continueWithEmailView_emailTitleField": "Email",

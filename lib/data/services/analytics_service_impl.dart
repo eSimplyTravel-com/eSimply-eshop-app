@@ -3,6 +3,7 @@ import "dart:developer";
 import "package:app_tracking_transparency/app_tracking_transparency.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/repository/services/analytics_service.dart";
+import "package:esim_open_source/domain/repository/services/dynamic_linking_service.dart";
 import "package:esim_open_source/domain/repository/services/local_storage_service.dart";
 import "package:facebook_app_events/facebook_app_events.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
@@ -30,8 +31,19 @@ class AnalyticsServiceImpl extends AnalyticsService {
   LocalStorageService get _localStorage => locator<LocalStorageService>();
 
   @override
-  bool? get analyticsConsent =>
-      _localStorage.getBool(LocalStorageKeys.analyticsConsent);
+  bool? get analyticsConsent {
+    // LocalStorageService is a `registerSingletonAsync` with no `allReady()`
+    // await anywhere, and configure() runs before runApp — so this can be the
+    // first sync access to a singleton that has not signalled ready, which
+    // GetIt answers with a throw. Failing closed keeps analytics off rather
+    // than taking the app down before its first frame.
+    try {
+      return _localStorage.getBool(LocalStorageKeys.analyticsConsent);
+    } on Object catch (ex) {
+      log("Could not read stored analytics consent, treating as unasked: $ex");
+      return null;
+    }
+  }
 
   /// Reads any stored choice and applies it. Called at start-up.
   ///
@@ -63,10 +75,16 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
   @override
   Future<void> setAnalyticsConsent({required bool granted}) async {
-    await _localStorage.setBool(
-      LocalStorageKeys.analyticsConsent,
-      value: granted,
-    );
+    try {
+      await _localStorage.setBool(
+        LocalStorageKeys.analyticsConsent,
+        value: granted,
+      );
+    } on Object catch (ex) {
+      // A choice we cannot persist must not silently become a permanent one.
+      log("Could not store analytics consent: $ex");
+      rethrow;
+    }
 
     _useFirebaseAnalytics = granted;
     _useFacebookAnalytics = granted;
@@ -123,6 +141,15 @@ class AnalyticsServiceImpl extends AnalyticsService {
       );
     } on Object catch (ex) {
       log("ATT request failed: $ex");
+    }
+
+    // Branch ships its own ATT call, which used to run from main() before the
+    // user had been asked anything. iOS only ever shows the dialog once, so
+    // this now just hands Branch the status the user already chose.
+    try {
+      await locator<DynamicLinkingService>().requestTrackingAuthorization();
+    } on Object catch (ex) {
+      log("Branch tracking authorization failed: $ex");
     }
   }
 

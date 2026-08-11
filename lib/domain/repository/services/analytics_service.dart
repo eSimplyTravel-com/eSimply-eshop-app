@@ -258,4 +258,14 @@ abstract class AnalyticsService {
   });
 
   Future<void> setUserId(String? hashedEmail);
+
+  /// The stored analytics consent, or `null` when the user has never been
+  /// asked. Deliberately tri-state: "not asked" is not the same as "refused",
+  /// and only the first of those may be turned into a question.
+  bool? get analyticsConsent;
+
+  /// Records the user's choice and pushes it into both SDKs. Granting also
+  /// clears the platform defaults that keep collection off at launch; both
+  /// calls persist across launches, so this is not re-applied on every start.
+  Future<void> setAnalyticsConsent({required bool granted});
 }

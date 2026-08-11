@@ -113,6 +113,37 @@
         <meta-data android:name="com.facebook.sdk.ClientToken"
             android:value="@string/fb_client_token"/>
 
+        <!-- Analytics is off until the user consents. Privacy §3 promises
+             analytics runs on consent (GDPR Art. 6(1)(a)), and storing SDK
+             identifiers on the device needs prior consent under the Danish
+             cookie rules. These defaults are the only thing that stops the
+             SDKs' own automatic events (first_open, session_start,
+             fb_mobile_activate_app) firing before anyone is asked — a Dart-side
+             flag cannot, because those events never pass through our code.
+             AnalyticsServiceImpl.applyConsent() flips them once consent is
+             given, and that call persists across launches. -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_analytics_storage"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_storage"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_user_data"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_personalization_signals"
+            android:value="false" />
+        <meta-data
+            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="false" />
+        <meta-data
+            android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
+            android:value="false" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2"/>

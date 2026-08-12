@@ -119,6 +119,18 @@ class AppConfigurationServiceImpl extends AppConfigurationService {
   }
 
   @override
+  bool get isWhatsAppAvailable {
+    // The live configuration returns WHATSAPP_NUMBER = null, which used to give
+    // `https://wa.me/?text=` — WhatsApp's site with no recipient, i.e. a button
+    // that goes nowhere. Read it synchronously so the button is simply not
+    // offered until a number exists.
+    final String number = _getConfigData(
+      key: ConfigurationResponseKeys.whatsAppNumber,
+    ).replaceAll(RegExp(r"[^\d+]"), "");
+    return number.isNotEmpty;
+  }
+
+  @override
   LoginType? get getLoginType {
     String loginTypeString = _getConfigData(
       key: ConfigurationResponseKeys.loginType,

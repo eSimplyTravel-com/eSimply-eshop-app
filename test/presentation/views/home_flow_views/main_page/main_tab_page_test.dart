@@ -1,3 +1,4 @@
+import "package:esim_open_source/domain/repository/services/app_configuration_service.dart";
 import "package:esim_open_source/presentation/enums/view_state.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/main_page/home_pager_view_model.dart";
 import "package:esim_open_source/presentation/views/home_flow_views/main_page/main_tab_page.dart";
@@ -9,6 +10,7 @@ import "package:mockito/mockito.dart";
 import "../../../../helpers/view_helper.dart";
 import "../../../../helpers/view_model_helper.dart";
 import "../../../../locator_test.dart";
+import "../../../../locator_test.mocks.dart";
 
 Future<void> main() async {
   await prepareTest();
@@ -18,6 +20,13 @@ Future<void> main() async {
 
     setUp(() async {
       await setupTest();
+    // The chat button is only offered when a number is configured; the live
+    // config has none, so these tests take the same path a real user does.
+    when(
+      (locator<AppConfigurationService>() as MockAppConfigurationService)
+          .isWhatsAppAvailable,
+    ).thenReturn(false);
+
       onViewModelReadyMock(viewName: "HomePager");
       viewModel = locator<HomePagerViewModel>();
     });

@@ -119,7 +119,12 @@ class _MainTabPageState extends State<MainTabPage>
     // button sat on top of the settings list. Test against the last tab
     // instead, whatever the count is.
     final bool isOnLastTab = tabController.index >= tabController.length - 1;
-    final Widget? whatsAppFab = isOnLastTab
+    // No number configured means the button can only open wa.me with no
+    // recipient, so do not offer it at all. Verified against the live config on
+    // 2026-08-11: WHATSAPP_NUMBER was null.
+    final bool canChat =
+        locator<AppConfigurationService>().isWhatsAppAvailable;
+    final Widget? whatsAppFab = (isOnLastTab || !canChat)
         ? null
         : GestureDetector(
             onTap: () async {

@@ -518,6 +518,7 @@
 				945059B72D96A36C0080F222 /* Sources */,
 				945059B82D96A36C0080F222 /* Frameworks */,
 				945059B92D96A36C0080F222 /* Resources */,
+				8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */,
 			);
 			buildRules = (
 			);
@@ -788,6 +789,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Stamp version from pubspec.yaml";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# The App Store rejects an appex with no CFBundleVersion, and this target\n# cannot read FLUTTER_BUILD_NAME/FLUTTER_BUILD_NUMBER: its base configuration\n# is Pods-NotificationServiceExtension.*.xcconfig, which does not include\n# Flutter's Generated.xcconfig (only Runner and RunnerAppClip do). So take the\n# version straight from pubspec.yaml, the same source Flutter reads.\nset -euo pipefail\n\nPUBSPEC=\"$SRCROOT/../pubspec.yaml\"\nif [ ! -f \"$PUBSPEC\" ]; then\n  echo \"error: $PUBSPEC not found\"\n  exit 1\nfi\n\nVERSION_LINE=\"$(sed -n 's/^version:[[:space:]]*\\(.*\\)$/\\1/p' \"$PUBSPEC\" | head -1 | tr -d '[:space:]')\"\nSHORT_VERSION=\"${VERSION_LINE%%+*}\"\nBUILD_NUMBER=\"${VERSION_LINE##*+}\"\n\nif [ -z \"$SHORT_VERSION\" ] || [ -z \"$BUILD_NUMBER\" ] || [ \"$SHORT_VERSION\" = \"$VERSION_LINE\" ]; then\n  echo \"error: could not parse 'version: <name>+<number>' from pubspec.yaml (read: '$VERSION_LINE')\"\n  exit 1\nfi\n\nPLIST=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nif [ ! -f \"$PLIST\" ]; then\n  echo \"error: built Info.plist not found at $PLIST\"\n  exit 1\nfi\n\nfor entry in \"CFBundleShortVersionString:$SHORT_VERSION\" \"CFBundleVersion:$BUILD_NUMBER\"; do\n  key=\"${entry%%:*}\"\n  value=\"${entry#*:}\"\n  /usr/libexec/PlistBuddy -c \"Set :$key $value\" \"$PLIST\" 2>/dev/null \\\n    || /usr/libexec/PlistBuddy -c \"Add :$key string $value\" \"$PLIST\"\ndone\n\necho \"note: stamped NotificationServiceExtension as $SHORT_VERSION ($BUILD_NUMBER)\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8F1ED5DD2DF177DE00729D61 /* BRANCH_USE_TEST_MODE flag */ = {

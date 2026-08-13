@@ -23,15 +23,13 @@ class ShareReferralCodeBottomSheetViewModel extends BaseModel {
       locator<ReferralInfoService>().getReferralMessage;
 
   Future<void> shareButtonTapped() async {
-    String? link;
-    if (AppEnvironment.appEnvironmentHelper.enableBranchIO) {
-      link = await locator<DynamicLinkingService>()
-          .generateBranchLink(deepLinkUrl: deepLink, referUserID: referralCode);
-    } else {
-      link = deepLink;
-    }
+    // Always the plain website link. The Branch short-link path is gone: the SDK
+    // was never configured (empty key, disabled in every environment), so it
+    // only ever returned an empty string. The website URL is covered by the
+    // app's associated domains, so tapping it opens the app when installed.
+    final String link = deepLink;
 
-    log(link ?? "");
+    log(link);
 
     SharePlus.instance.share(
       ShareParams(
@@ -39,7 +37,7 @@ class ShareReferralCodeBottomSheetViewModel extends BaseModel {
           namedArgs: <String, String>{
             "amount": amount,
             "code": referralCode,
-            "link": link ?? "",
+            "link": link,
           },
         ),
       ),

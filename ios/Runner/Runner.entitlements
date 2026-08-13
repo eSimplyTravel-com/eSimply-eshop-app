@@ -10,15 +10,9 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>appclips:www.$(DEEP_LINK_DOMAIN)</string>
-		<string>appclips:$(DEEP_LINK_DOMAIN)</string>
 		<string>$(FACEBOOK_CALLBACK_DOMAIN)://</string>
 		<string>applinks:$(DEEP_LINK_DOMAIN)</string>
 		<string>applinks:www.$(DEEP_LINK_DOMAIN)</string>
-		<string>applinks:$(BRANCH_DOMAIN).app.link</string>
-		<string>applinks:$(BRANCH_DOMAIN)-alternate.app.link</string>
-		<string>applinks:$(BRANCH_DOMAIN).test-app.link</string>
-		<string>applinks:$(BRANCH_DOMAIN)-alternate.test-app.link</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array/>

@@ -13,7 +13,6 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - BranchSDK (3.14.0)
   - connectivity_plus (0.0.1):
     - Flutter
   - cupertino_http (0.0.1):
@@ -132,9 +131,6 @@ PODS:
   - FirebaseSharedSwift (12.13.0)
   - Flutter (1.0.0)
   - flutter_app_badger (1.3.0):
-    - Flutter
-  - flutter_branch_sdk (8.12.1):
-    - BranchSDK (~> 3.14.0)
     - Flutter
   - flutter_esim (0.0.1):
     - Flutter
@@ -392,7 +388,6 @@ DEPENDENCIES:
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
-  - flutter_branch_sdk (from `.symlinks/plugins/flutter_branch_sdk/ios`)
   - flutter_esim (from `.symlinks/plugins/flutter_esim/ios`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
@@ -426,7 +421,6 @@ SPEC REPOS:
   trunk:
     - AppAuth
     - AppCheckCore
-    - BranchSDK
     - DTTJailbreakDetection
     - FBAEMKit
     - FBSDKCoreKit
@@ -496,8 +490,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_app_badger:
     :path: ".symlinks/plugins/flutter_app_badger/ios"
-  flutter_branch_sdk:
-    :path: ".symlinks/plugins/flutter_branch_sdk/ios"
   flutter_esim:
     :path: ".symlinks/plugins/flutter_esim/ios"
   flutter_facebook_auth:
@@ -558,7 +550,6 @@ SPEC CHECKSUMS:
   app_links: 3dbc685f76b1693c66a6d9dd1e9ab6f73d97dc0a
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  BranchSDK: 542614d201368be39b03e1a384df5c6b45873798
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   cupertino_http: 94ac07f5ff090b8effa6c5e2c47871d48ab7c86c
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
@@ -587,7 +578,6 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 76bdd9de8ff1da7a601236ee058253e36206978e
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_app_badger: 16b371e989d04cd265df85be2c3851b49cb68d18
-  flutter_branch_sdk: e58649c1ece2f0592c1f90c0234a31a5f68933b6
   flutter_esim: 99a7c04932507d4864018c9232fdac787d331ab2
   flutter_facebook_auth: fa3b69b1df0831d2178fe87a05ee2d7d0156db70
   flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1

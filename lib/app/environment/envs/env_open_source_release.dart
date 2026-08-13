@@ -6,7 +6,7 @@ AppEnvironmentHelper openSourceProdEnvInstance = AppEnvironmentHelper(
   omniConfigBaseUrl: "",
   omniConfigApiKey: "",
   omniConfigAppGuid: "",
-  websiteUrl: "esimply-eshop-web.onrender.com",
+  websiteUrl: "esimplytravel.com",
   isCruiseEnabled: true,
   environmentFamilyName: "Inter",
   enableLanguageSelection: false,

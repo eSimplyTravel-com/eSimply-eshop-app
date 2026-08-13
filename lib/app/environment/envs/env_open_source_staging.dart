@@ -6,7 +6,7 @@ AppEnvironmentHelper openSourceStagingEnvInstance = AppEnvironmentHelper(
   omniConfigBaseUrl: "",
   omniConfigApiKey: "",
   omniConfigAppGuid: "",
-  websiteUrl: "esimply-eshop-web.onrender.com",
+  websiteUrl: "esimplytravel.com",
   isCruiseEnabled: true,
   enableLanguageSelection: false,
   environmentFamilyName: "Inter",

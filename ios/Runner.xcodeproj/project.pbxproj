@@ -16,7 +16,6 @@
 		702402CA6316E9EF51031AA5 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A5ED69F9EDE7A348404E59E /* Pods_RunnerTests.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
-		9429F2AF2E01A1BD00657654 /* RunnerAppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 9429F29B2E01A1BB00657654 /* RunnerAppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9429F2CA2E01A3DB00657654 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		9429F2CB2E01A3E000657654 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		9429F2CC2E01A3EB00657654 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -38,13 +37,6 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
-		9429F2AD2E01A1BD00657654 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9429F29A2E01A1BB00657654;
-			remoteInfo = RunnerAppClip;
-		};
 		945059C02D96A36C0080F222 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -55,17 +47,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		941E463D2DEEF6A000B66903 /* Embed App Clips */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
-			dstSubfolderSpec = 16;
-			files = (
-				9429F2AF2E01A1BD00657654 /* RunnerAppClip.app in Embed App Clips */,
-			);
-			name = "Embed App Clips";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		947BED4A2D672DC500AE9F07 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -211,6 +192,7 @@
 		FCFB59E8218D6E34D7F9BC64 /* Pods-Runner.profile-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-debug.xcconfig"; sourceTree = "<group>"; };
 		FD2813C69BE37F4B606E72B4 /* Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig"; path = "Target Support Files/Pods-NotificationServiceExtension/Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig"; sourceTree = "<group>"; };
 		FE8B2C3D43CB1DDA9CBF6FA8 /* Pods-RunnerAppClip.profile-staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerAppClip.profile-staging.xcconfig"; path = "Target Support Files/Pods-RunnerAppClip/Pods-RunnerAppClip.profile-staging.xcconfig"; sourceTree = "<group>"; };
+		FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -314,6 +296,7 @@
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
+				FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */,
 			);
 			name = Flutter;
 			sourceTree = "<group>";
@@ -518,7 +501,6 @@
 				945059B72D96A36C0080F222 /* Sources */,
 				945059B82D96A36C0080F222 /* Frameworks */,
 				945059B92D96A36C0080F222 /* Resources */,
-				8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */,
 			);
 			buildRules = (
 			);
@@ -543,12 +525,10 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				947BED4A2D672DC500AE9F07 /* Embed Foundation Extensions */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				941E463D2DEEF6A000B66903 /* Embed App Clips */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				CE3A921AB7B20B493A1E6F86 /* [CP] Embed Pods Frameworks */,
 				45383681A0CC722A30749758 /* [CP] Copy Pods Resources */,
 				8FE355902DA6D0E000497155 /* Set Status Bar Appearance : UIViewControllerBasedStatusBarAppearance true */,
-				8F1ED5DD2DF177DE00729D61 /* BRANCH_USE_TEST_MODE flag */,
 				0D7F8EFB398FDB5F5E6EEF80 /* FlutterFire: "flutterfire bundle-service-file" */,
 				189DA44774AA5055798791EB /* FlutterFire: "flutterfire upload-crashlytics-symbols" */,
 			);
@@ -556,7 +536,6 @@
 			);
 			dependencies = (
 				945059C12D96A36C0080F222 /* PBXTargetDependency */,
-				9429F2AE2E01A1BD00657654 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -791,44 +770,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Stamp version from pubspec.yaml";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# The App Store rejects an appex with no CFBundleVersion, and this target\n# cannot read FLUTTER_BUILD_NAME/FLUTTER_BUILD_NUMBER: its base configuration\n# is Pods-NotificationServiceExtension.*.xcconfig, which does not include\n# Flutter's Generated.xcconfig (only Runner and RunnerAppClip do). So take the\n# version straight from pubspec.yaml, the same source Flutter reads.\nset -euo pipefail\n\nPUBSPEC=\"$SRCROOT/../pubspec.yaml\"\nif [ ! -f \"$PUBSPEC\" ]; then\n  echo \"error: $PUBSPEC not found\"\n  exit 1\nfi\n\nVERSION_LINE=\"$(sed -n 's/^version:[[:space:]]*\\(.*\\)$/\\1/p' \"$PUBSPEC\" | head -1 | tr -d '[:space:]')\"\nSHORT_VERSION=\"${VERSION_LINE%%+*}\"\nBUILD_NUMBER=\"${VERSION_LINE##*+}\"\n\nif [ -z \"$SHORT_VERSION\" ] || [ -z \"$BUILD_NUMBER\" ] || [ \"$SHORT_VERSION\" = \"$VERSION_LINE\" ]; then\n  echo \"error: could not parse 'version: <name>+<number>' from pubspec.yaml (read: '$VERSION_LINE')\"\n  exit 1\nfi\n\nPLIST=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nif [ ! -f \"$PLIST\" ]; then\n  echo \"error: built Info.plist not found at $PLIST\"\n  exit 1\nfi\n\nfor entry in \"CFBundleShortVersionString:$SHORT_VERSION\" \"CFBundleVersion:$BUILD_NUMBER\"; do\n  key=\"${entry%%:*}\"\n  value=\"${entry#*:}\"\n  /usr/libexec/PlistBuddy -c \"Set :$key $value\" \"$PLIST\" 2>/dev/null \\\n    || /usr/libexec/PlistBuddy -c \"Add :$key string $value\" \"$PLIST\"\ndone\n\necho \"note: stamped NotificationServiceExtension as $SHORT_VERSION ($BUILD_NUMBER)\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8F1ED5DD2DF177DE00729D61 /* BRANCH_USE_TEST_MODE flag */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "BRANCH_USE_TEST_MODE flag";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Modify Info.plist based on user-defined build setting\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\necho \"Current build configuration: ${CONFIGURATION}\"\necho \"BRANCH_USE_TEST_MODE setting: ${BRANCH_USE_TEST_MODE}\"\n\n# Use the user-defined variable with default to false when not set\nif [ \"${BRANCH_USE_TEST_MODE}\" = \"true\" ]; then\n    echo \"✅ Setting Branch to TEST mode\"\n    /usr/libexec/PlistBuddy -c \"Set :branch_use_test_instance true\" \"$INFO_PLIST\"\nelse\n    echo \"🚀 Setting Branch to LIVE mode\"\n    /usr/libexec/PlistBuddy -c \"Set :branch_use_test_instance false\" \"$INFO_PLIST\"\nfi\n\n# Verify the setting was applied\nTEST_MODE_VALUE=$(/usr/libexec/PlistBuddy -c \"Print :branch_use_test_instance\" \"$INFO_PLIST\")\necho \"Final branch_use_test_instance value: ${TEST_MODE_VALUE}\"\n";
-		};
 		8FE355902DA6D0E000497155 /* Set Status Bar Appearance : UIViewControllerBasedStatusBarAppearance true */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -1020,11 +961,6 @@
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
 		};
-		9429F2AE2E01A1BD00657654 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9429F29A2E01A1BB00657654 /* RunnerAppClip */;
-			targetProxy = 9429F2AD2E01A1BD00657654 /* PBXContainerItemProxy */;
-		};
 		945059C12D96A36C0080F222 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 945059BA2D96A36C0080F222 /* NotificationServiceExtension */;
@@ -1054,6 +990,7 @@
 /* Begin XCBuildConfiguration section */
 		9403F79A2D7EF6AB0011FB70 /* Debug-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1125,7 +1062,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1175,6 +1112,7 @@
 		};
 		9403F79E2D7EF6BD0011FB70 /* Debug-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1244,7 +1182,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1293,6 +1231,7 @@
 		};
 		9403F7A22D7EF6CC0011FB70 /* Debug-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1362,7 +1301,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1411,6 +1350,7 @@
 		};
 		9403F7A62D7EF7190011FB70 /* Release-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1479,7 +1419,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1526,6 +1466,7 @@
 		};
 		9403F7AA2D7EF7240011FB70 /* Release-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1592,7 +1533,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1638,6 +1579,7 @@
 		};
 		9403F7AE2D7EF7300011FB70 /* Release-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1704,7 +1646,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1750,6 +1692,7 @@
 		};
 		9403F7B22D7EF73A0011FB70 /* Profile-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1816,7 +1759,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1863,6 +1806,7 @@
 		};
 		9403F7B62D7EF7460011FB70 /* Profile-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1927,7 +1871,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";
@@ -1973,6 +1917,7 @@
 		};
 		9403F7BA2D7EF74F0011FB70 /* Profile-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -2037,7 +1982,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEP_LINK_DOMAIN = "";
+				DEEP_LINK_DOMAIN = esimplytravel.com;
 				DEVELOPMENT_TEAM = 62RZ7FVUZJ;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SELECTED_FILES = "";

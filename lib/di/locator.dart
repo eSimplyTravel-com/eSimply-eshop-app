@@ -23,7 +23,6 @@ import "package:esim_open_source/data/services/app_configuration_service_impl.da
 import "package:esim_open_source/data/services/connectivity_service_impl.dart";
 import "package:esim_open_source/data/services/device_info_service_impl.dart";
 import "package:esim_open_source/data/services/dynamic_linking_service_empty_impl.dart";
-import "package:esim_open_source/data/services/dynamic_linking_service_impl.dart";
 import "package:esim_open_source/data/services/environment_service_impl.dart";
 import "package:esim_open_source/data/services/flutter_channel_handler_service_impl.dart";
 import "package:esim_open_source/data/services/payment/payment_service_impl.dart";
@@ -218,13 +217,12 @@ Future<void> appAPIServicesModule() async {
         apiPromotion: locator(),
       ) as ApiPromotionRepository,
     )
+    // Branch was never configured for this app — `branch_key` shipped empty and
+    // `enableBranchIO` was false in every environment, so the empty
+    // implementation was the only one ever registered. The SDK is gone now; deep
+    // links arrive through app_links (universal links) instead.
     ..registerLazySingleton(
-      () {
-        if (AppEnvironment.appEnvironmentHelper.enableBranchIO) {
-          return DynamicLinkingServiceImpl() as DynamicLinkingService;
-        }
-        return DynamicLinkingServiceEmptyImpl() as DynamicLinkingService;
-      },
+      () => DynamicLinkingServiceEmptyImpl() as DynamicLinkingService,
     );
     // ..registerLazySingleton(() => GetOrderHistoryPaginationUseCase(locator()));
   // ..registerLazySingleton(() => GetBundlesByRegionUseCase(locator()))

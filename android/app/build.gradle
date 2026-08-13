@@ -96,12 +96,6 @@ android {
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
-                    branchScheme: "",
-                    branchDomain: "",
-                    branchTestDomain:"",
-                    branchKeyLive:"",
-                    branchKeyTest:"",
-                    branchUseTest:true
             ]
         }
         OpenSourceStaging {
@@ -115,12 +109,6 @@ android {
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
-                    branchScheme: "",
-                    branchDomain: "",
-                    branchTestDomain:"",
-                    branchKeyLive:"",
-                    branchKeyTest:"",
-                    branchUseTest:true
             ]
         }
         OpenSourceProd {
@@ -134,12 +122,6 @@ android {
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
-                    branchScheme: "",
-                    branchDomain: "",
-                    branchTestDomain:"",
-                    branchKeyLive:"",
-                    branchKeyTest:"",
-                    branchUseTest:true
             ]
         }
     }

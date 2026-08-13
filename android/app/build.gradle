@@ -95,7 +95,7 @@ android {
             resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
-                    domain: "subscriber-open-source.onrender.com",
+                    domain: "esimplytravel.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",
@@ -114,7 +114,7 @@ android {
             resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
-                    domain: "sales-esim-shop-portal.onrender.com",
+                    domain: "esimplytravel.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",
@@ -133,7 +133,7 @@ android {
             resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
-                    domain: "sales-esim-shop-portal.onrender.com",
+                    domain: "esimplytravel.com",
                     branchScheme: "",
                     branchDomain: "",
                     branchTestDomain:"",

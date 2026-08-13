@@ -61,34 +61,23 @@ Future<void> main() async {
       expect(message, equals(r"Get $10 when you join!"));
     });
 
-    test("shareButtonTapped line coverage", () async {
-      // Enable BranchIO so generateBranchLink is called
-      AppEnvironment.appEnvironmentHelper.enableBranchIO = true;
-
-      // Setup mocks for shareButtonTapped method
+    test("shareButtonTapped shares the plain website link, never Branch",
+        () async {
       when(mockUserAuthService.referralCode).thenReturn("TEST123");
       when(mockReferralInfoService.getReferralAmountAndCurrency)
           .thenReturn(r"$10 USD");
-      when(
-        mockDynamicLinkingService.generateBranchLink(
-          deepLinkUrl: anyNamed("deepLinkUrl"),
-          referUserID: anyNamed("referUserID"),
-        ),
-      ).thenAnswer((_) async => "https://branch.link/test");
 
-      // Execute the method to hit lines
       await viewModel.shareButtonTapped();
 
-      // Verify the method executed key lines
-      verify(
+      // The Branch short-link path is gone with the SDK: the shared link is the
+      // website URL, which the app's associated domains cover.
+      expect(viewModel.deepLink, contains("TEST123"));
+      verifyNever(
         mockDynamicLinkingService.generateBranchLink(
           deepLinkUrl: anyNamed("deepLinkUrl"),
           referUserID: anyNamed("referUserID"),
         ),
-      ).called(1);
-
-      // Restore default
-      AppEnvironment.appEnvironmentHelper.enableBranchIO = false;
+      );
     });
   });
 }

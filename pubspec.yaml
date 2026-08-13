@@ -136,10 +136,12 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
-  # This fork's AppDelegate.swift imports flutter_local_notifications and
-  # BranchSDK directly. Under Swift Package Manager those modules are not
+  # This fork's own Swift code imports plugin modules directly —
+  # flutter_local_notifications in AppDelegate.swift, FBSDKCoreKit in
+  # SceneDelegate.swift. Under Swift Package Manager those modules are not
   # visible to the Runner target's own Swift code, so the build fails with
   # "Unable to resolve module dependency". Keep plugins on CocoaPods.
+  # (BranchSDK used to be in this list; it was removed with the Branch SDK.)
   config:
     enable-swift-package-manager: false
 

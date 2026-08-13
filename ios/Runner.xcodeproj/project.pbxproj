@@ -192,6 +192,7 @@
 		FCFB59E8218D6E34D7F9BC64 /* Pods-Runner.profile-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-debug.xcconfig"; sourceTree = "<group>"; };
 		FD2813C69BE37F4B606E72B4 /* Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig"; path = "Target Support Files/Pods-NotificationServiceExtension/Pods-NotificationServiceExtension.release-opensourcestaging.xcconfig"; sourceTree = "<group>"; };
 		FE8B2C3D43CB1DDA9CBF6FA8 /* Pods-RunnerAppClip.profile-staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerAppClip.profile-staging.xcconfig"; path = "Target Support Files/Pods-RunnerAppClip/Pods-RunnerAppClip.profile-staging.xcconfig"; sourceTree = "<group>"; };
+		FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -295,6 +296,7 @@
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
+				FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */,
 			);
 			name = Flutter;
 			sourceTree = "<group>";
@@ -499,7 +501,6 @@
 				945059B72D96A36C0080F222 /* Sources */,
 				945059B82D96A36C0080F222 /* Frameworks */,
 				945059B92D96A36C0080F222 /* Resources */,
-				8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */,
 			);
 			buildRules = (
 			);
@@ -769,26 +770,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8D6644E5548A6267C228C792 /* Stamp version from pubspec.yaml */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Stamp version from pubspec.yaml";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# The App Store rejects an appex with no CFBundleVersion, and this target\n# cannot read FLUTTER_BUILD_NAME/FLUTTER_BUILD_NUMBER: its base configuration\n# is Pods-NotificationServiceExtension.*.xcconfig, which does not include\n# Flutter's Generated.xcconfig (only Runner and RunnerAppClip do). So take the\n# version straight from pubspec.yaml, the same source Flutter reads.\nset -euo pipefail\n\nPUBSPEC=\"$SRCROOT/../pubspec.yaml\"\nif [ ! -f \"$PUBSPEC\" ]; then\n  echo \"error: $PUBSPEC not found\"\n  exit 1\nfi\n\nVERSION_LINE=\"$(sed -n 's/^version:[[:space:]]*\\(.*\\)$/\\1/p' \"$PUBSPEC\" | head -1 | tr -d '[:space:]')\"\nSHORT_VERSION=\"${VERSION_LINE%%+*}\"\nBUILD_NUMBER=\"${VERSION_LINE##*+}\"\n\nif [ -z \"$SHORT_VERSION\" ] || [ -z \"$BUILD_NUMBER\" ] || [ \"$SHORT_VERSION\" = \"$VERSION_LINE\" ]; then\n  echo \"error: could not parse 'version: <name>+<number>' from pubspec.yaml (read: '$VERSION_LINE')\"\n  exit 1\nfi\n\nPLIST=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nif [ ! -f \"$PLIST\" ]; then\n  echo \"error: built Info.plist not found at $PLIST\"\n  exit 1\nfi\n\nfor entry in \"CFBundleShortVersionString:$SHORT_VERSION\" \"CFBundleVersion:$BUILD_NUMBER\"; do\n  key=\"${entry%%:*}\"\n  value=\"${entry#*:}\"\n  /usr/libexec/PlistBuddy -c \"Set :$key $value\" \"$PLIST\" 2>/dev/null \\\n    || /usr/libexec/PlistBuddy -c \"Add :$key string $value\" \"$PLIST\"\ndone\n\necho \"note: stamped NotificationServiceExtension as $SHORT_VERSION ($BUILD_NUMBER)\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8FE355902DA6D0E000497155 /* Set Status Bar Appearance : UIViewControllerBasedStatusBarAppearance true */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -1009,6 +990,7 @@
 /* Begin XCBuildConfiguration section */
 		9403F79A2D7EF6AB0011FB70 /* Debug-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1130,6 +1112,7 @@
 		};
 		9403F79E2D7EF6BD0011FB70 /* Debug-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1248,6 +1231,7 @@
 		};
 		9403F7A22D7EF6CC0011FB70 /* Debug-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1366,6 +1350,7 @@
 		};
 		9403F7A62D7EF7190011FB70 /* Release-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1481,6 +1466,7 @@
 		};
 		9403F7AA2D7EF7240011FB70 /* Release-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1593,6 +1579,7 @@
 		};
 		9403F7AE2D7EF7300011FB70 /* Release-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1705,6 +1692,7 @@
 		};
 		9403F7B22D7EF73A0011FB70 /* Profile-OpenSourceDev */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1818,6 +1806,7 @@
 		};
 		9403F7B62D7EF7460011FB70 /* Profile-OpenSourceStaging */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;
@@ -1928,6 +1917,7 @@
 		};
 		9403F7BA2D7EF74F0011FB70 /* Profile-OpenSourceProd */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEC5697F4704A2FB2A571FB5 /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = AppIcon;

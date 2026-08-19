@@ -5,7 +5,6 @@ import "dart:developer";
 import "package:crypto/crypto.dart";
 import "package:esim_open_source/app/environment/app_environment.dart";
 import "package:esim_open_source/domain/repository/services/social_login_service.dart";
-import "package:flutter_facebook_auth/flutter_facebook_auth.dart";
 import "package:google_sign_in/google_sign_in.dart";
 import "package:sign_in_with_apple/sign_in_with_apple.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
@@ -189,28 +188,14 @@ class SocialLoginServiceImpl extends SocialLoginService {
     return socialLoginResultStream;
   }
 
-  //Facebook Sign in
-  FacebookAuth facebookAuth = FacebookAuth.instance;
-
+  // Facebook Sign in.
+  //
+  // Deliberately NOT the native Facebook SDK. Login runs through Supabase's
+  // browser-based OAuth, so no Meta SDK ships in the binary — that SDK's own
+  // privacy manifest declares NSPrivacyTracking=true for UserID/DeviceID, which
+  // is what got 1.0.4 rejected under App Store guideline 5.1.2(i).
   @override
   Future<Stream<SocialLoginResult>> signInWithFaceBook() async {
-    // final LoginResult result = await facebookAuth.login();
-    // if (result.status == LoginStatus.success) {
-    //   String accessToken = result.accessToken?.tokenString ?? "";
-    //
-    //   //log("accessToken: $accessToken");
-    //
-    //   return SocialLoginResult(
-    //     accessToken: accessToken,
-    //     socialType: SocialMediaLoginType.facebook,
-    //   );
-    // } else {
-    //   log("Login Failed! Please try again.");
-    //   return SocialLoginResult(
-    //     socialType: SocialMediaLoginType.facebook,
-    //   );
-    // }
-
     try {
       await Supabase.instance.client.auth.signInWithOAuth(
         OAuthProvider.facebook,
@@ -236,7 +221,6 @@ class SocialLoginServiceImpl extends SocialLoginService {
   Future<void> logOut() async {
     Supabase.instance.client.auth.signOut();
     googleSignIn.signOut();
-    facebookAuth.logOut();
   }
 
   Future<dynamic> _initializeSupaBase({

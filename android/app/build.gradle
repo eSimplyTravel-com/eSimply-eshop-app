@@ -90,9 +90,6 @@ android {
             applicationId "com.esimply.esim"
             versionNameSuffix "-dev"
             resValue "string", "app_name", "eSimply Dev"
-            resValue "string", "facebook_app_id", "1724588091576653"
-            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
-            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
@@ -103,9 +100,6 @@ android {
             applicationId "com.esimply.esim"
             versionNameSuffix "-staging"
             resValue "string", "app_name", "eSimply Stg"
-            resValue "string", "facebook_app_id", "1724588091576653"
-            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
-            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
@@ -116,9 +110,6 @@ android {
             applicationId "com.esimply.esim"
             versionNameSuffix ""
             resValue "string", "app_name", "eSimply"
-            resValue "string", "facebook_app_id", "1724588091576653"
-            resValue "string", "fb_login_protocol_scheme", "fb1724588091576653"
-            resValue "string", "fb_client_token", "647312bca91adb1e0b8fde9b41ffe83c"
             manifestPlaceholders = [
                     scheme: "iosupabaseesimply",
                     domain: "esimplytravel.com",
@@ -135,5 +126,4 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     implementation 'androidx.window:window:1.0.0'
     implementation 'androidx.window:window-java:1.0.0'
-    implementation 'com.facebook.android:facebook-login:[version]'
 }

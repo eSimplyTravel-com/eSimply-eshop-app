@@ -1,7 +1,6 @@
 import UIKit
 import Flutter
 import flutter_local_notifications
-import FBSDKCoreKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -9,12 +8,6 @@ import FBSDKCoreKit
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
-        // ✅ Enables advertiser tracking
-        Settings.shared.isAdvertiserTrackingEnabled = true
-        
-        // ✅ Optional: Enable debug logging
-        Settings.shared.enableLoggingBehavior(.appEvents)
 
         FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
             GeneratedPluginRegistrant.register(with: registry)

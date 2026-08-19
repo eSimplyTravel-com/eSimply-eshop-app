@@ -29,7 +29,6 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>fb$(FACEBOOK_SIGN_IN_APP_ID)</string>
 					<string>com.googleusercontent.apps.$(GOOGLE_SIGN_IN_CLIENT_ID)</string>
 					<string>$(FACEBOOK_CALLBACK_DOMAIN)</string>
 				</array>
@@ -47,12 +46,6 @@
 		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
-		<key>FacebookAppID</key>
-		<string>$(FACEBOOK_SIGN_IN_APP_ID)</string>
-		<key>FacebookDisplayName</key>
-		<string>$(PRODUCT_DISPLAY_NAME)</string>
-		<key>FacebookClientToken</key>
-		<string>$(FACEBOOK_CLIENT_TOKEN)</string>
 		<key>GIDClientID</key>
 		<string>$(GOOGLE_SIGN_IN_CLIENT_ID).apps.googleusercontent.com</string>
 		<key>LSApplicationQueriesSchemes</key>
@@ -144,10 +137,6 @@
 		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA</key>
 		<false/>
 		<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS</key>
-		<false/>
-		<key>FacebookAutoLogAppEventsEnabled</key>
-		<false/>
-		<key>FacebookAdvertiserIDCollectionEnabled</key>
 		<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>

@@ -674,6 +674,11 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
     String promoCode, {
     bool isReferral = false,
   }) async {
+    // Codes are stored uppercase and matched byte-exact by the backend; the
+    // soft keyboard defaults to lowercase, so normalise before anything else.
+    // This also fixes the old bug where the UNtrimmed value was stored on
+    // _promoCode after the trimmed one was validated.
+    final String normalizedCode = promoCode.trim().toUpperCase();
     if (!promoCodeFieldEnabled) {
       _promoCode = null;
       bundle = tempBundle;
@@ -688,7 +693,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
     Resource<BundleResponseModel?> response =
         await validatePromoCodeUseCase.execute(
       ValidatePromoCodeUseCaseParams(
-        promoCode: promoCode.trim(),
+        promoCode: normalizedCode,
         bundleCode: bundle?.bundleCode ?? "",
       ),
     );
@@ -697,7 +702,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
       response,
       onSuccess: (Resource<BundleResponseModel?> result) async {
         bundle = result.data;
-        _promoCode = promoCode;
+        _promoCode = normalizedCode;
         if (isReferral) {
           _promoCodeController.text = _referralCode;
           isPromoCodeExpanded = true;

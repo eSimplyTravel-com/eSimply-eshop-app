@@ -10,4 +10,6 @@ AppEnvironmentHelper openSourceProdEnvInstance = AppEnvironmentHelper(
   isCruiseEnabled: true,
   environmentFamilyName: "Inter",
   enableLanguageSelection: false,
+  // Wallet removed 2026-09-17: top-ups were abused with fraudulent cards; backend also refuses it.
+  enableWalletView: false,
 );

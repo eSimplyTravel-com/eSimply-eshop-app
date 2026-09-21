@@ -210,7 +210,7 @@ class UpgradeWalletBottomSheetViewModel extends BaseModel {
             event: AnalyticEvent.walletPaymentSuccessful(
               bundleCode: params.idParams.bundleCode,
               bundleName: params.idParams.bundleName,
-              user: userEmailAddress,
+              user: analyticsUserId,
               orderId: params.idParams.orderID,
             ),
           );

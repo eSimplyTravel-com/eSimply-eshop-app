@@ -91,9 +91,11 @@ class AnalyticsServiceImpl extends AnalyticsService {
       await _firebaseAppEvents.setAnalyticsCollectionEnabled(granted);
       await _firebaseAppEvents.setConsent(
         analyticsStorageConsentGranted: granted,
-        adStorageConsentGranted: granted,
-        adUserDataConsentGranted: granted,
-        adPersonalizationSignalsConsentGranted: granted,
+        // eSimply runs no advertising. These stay denied whatever the user answers, so the app
+        // cannot be read as collecting data for ads.
+        adStorageConsentGranted: false,
+        adUserDataConsentGranted: false,
+        adPersonalizationSignalsConsentGranted: false,
       );
     } on Object catch (ex) {
       log("Failed to apply analytics consent: $ex");

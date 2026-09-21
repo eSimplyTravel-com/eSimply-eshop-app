@@ -1,6 +1,7 @@
 import "dart:async";
 import "dart:developer";
 
+import "package:esim_open_source/core/analytics_pseudonym.dart";
 import "package:esim_open_source/di/locator.dart";
 import "package:esim_open_source/domain/data/response/bundles/bundle_response_model.dart";
 import "package:esim_open_source/domain/data/response/bundles/country_response_model.dart";
@@ -88,6 +89,10 @@ class BaseModel extends ReactiveViewModel
   String get userLastName => userAuthenticationService.userLastName;
 
   String get userEmailAddress => userAuthenticationService.userEmailAddress;
+
+  /// A stable pseudonym for analytics; never the raw email. See analytics_pseudonym.dart.
+  String get analyticsUserId =>
+      analyticsUserIdOf(userAuthenticationService.userEmailAddress);
 
   String get userMsisdn => userAuthenticationService.userPhoneNumber;
 

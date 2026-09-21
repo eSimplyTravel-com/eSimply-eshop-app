@@ -30,6 +30,11 @@ flutter_ios_podfile_setup
 
 
 
+# Firebase Analytics without the advertising identifier: firebase_analytics.podspec switches to
+# FirebaseAnalytics/Core, so GoogleAdsOnDeviceConversion and GoogleAppMeasurement/IdentitySupport
+# disappear from Podfile.lock. eSimply runs no ads and declares no IDFA use.
+$FirebaseAnalyticsWithoutAdIdSupport = true
+
 target 'Runner' do
   use_frameworks!
   use_modular_headers!

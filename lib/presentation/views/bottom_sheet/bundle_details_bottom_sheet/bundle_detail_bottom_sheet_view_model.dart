@@ -238,7 +238,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
       event: AnalyticEvent.bundleDetail(
         bundleCode: bundle?.bundleCode ?? "",
         bundleName: bundle?.bundleName ?? "",
-        user: userEmailAddress,
+        user: analyticsUserId,
       ),
     );
     // Show compatible sheet
@@ -436,7 +436,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
           event: AnalyticEvent.createOrder(
             bundleCode: bundle?.bundleCode ?? "",
             bundleName: bundle?.bundleName ?? "",
-            user: userEmailAddress,
+            user: analyticsUserId,
             orderId: result.data?.orderId ?? "",
             method: paymentType.type,
           ),
@@ -509,7 +509,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
         event: AnalyticEvent.stripePay(
           bundleCode: bundle?.bundleCode ?? "",
           bundleName: bundle?.bundleName ?? "",
-          user: userEmailAddress,
+          user: analyticsUserId,
           orderId: params.idParams.orderID,
         ),
       );
@@ -535,7 +535,7 @@ class BundleDetailBottomSheetViewModel extends BaseModel {
             event: AnalyticEvent.stripePaymentSuccessful(
               bundleCode: bundle?.bundleCode ?? "",
               bundleName: bundle?.bundleName ?? "",
-              user: userEmailAddress,
+              user: analyticsUserId,
               orderId: params.idParams.orderID,
             ),
           );
